@@ -1,0 +1,6 @@
+[myPapers]2024/11/19 - 22:59:06.036	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/19 - 22:59:12.856	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/19 - 22:59:16.864	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/19 - 22:59:42.052	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/19 - 22:59:43.382	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/19 - 23:34:56.221	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}

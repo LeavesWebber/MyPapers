@@ -1,0 +1,69 @@
+jwt:
+  signing-key: e161ff6f-50b6-4c00-96b5-f7ac7f61455f #jwt签名
+  expires-time: 168 #过期时间（单位：小时）
+  buffer-time: 86400 # 缓冲时间
+  issuer: blingder # 签发者
+zap:
+  level: info # 级别,这个级别以上的日志都会被记录
+  prefix: '[myPapers]' # 日志前缀
+  format: console # 输出格式
+  director: log # 日志文件夹
+  encode-level: LowercaseColorLevelEncoder # 编码级
+  stacktrace-key: stacktrace #栈名
+  max-age: 30 # 日志留存时间
+  show-line: true # 显示行
+  log-in-console: true # 输出控制台
+system:
+  env: public # 环境值
+  addr: 8887 # 端口值
+  db-type: mysql # 数据库类型
+  oss-type: local # Oss类型
+  use-multipoint: false # 多点登录拦截
+  use-redis: false # 使用redis
+  iplimit-count: 15000 #
+  iplimit-time: 3600 #
+  start-time: "2024-11-19"
+  machine-id: 1
+captcha:
+  key-long: 6 # 验证码长度
+  img-width: 240 # 验证码宽度
+  img-height: 80 # 验证码高度
+mysql:
+  path: 127.0.0.1 # 服务器地址:端口
+#  path: MySQL80 # 服务器地址:端口
+  port: "3306" # :端口
+  config: charset=utf8mb4&parseTime=True&loc=Local # 高级配置
+  db-name: my_papers # 数据库名
+  username: root # 数据库用户名
+  password: qtwwhxbhkMS520 # 数据库密码
+  max-idle-conns: 10 # 空闲中的最大连接数
+  max-open-conns: 100 # 打开到数据库的最大连接数
+  log-mode: debug # 是否开启Gorm全局日志
+  log-zap: false # 是否通过zap写入日志文件
+cors:
+  mode: allowall
+  whitelist:
+    - allow-origin: http://localhost:8080/
+      allow-methods: GET, POST
+      allow-headers: content-type
+      expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,
+        Content-Type
+      allow-credentials: true
+    - allow-origin: http://localhost:8080/
+      allow-methods: GET, POST
+      allow-headers: content-type
+      expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,
+        Content-Type
+      allow-credentials: true
+#image-path: http://127.0.0.1:8081/image/ # 传统图片路径 port是nginx监听的端口
+image-path: image # 传统图片路径 port是nginx监听的端口
+ipfs:
+  host: 127.0.0.1
+  port: 5001
+  gateway-port: 8081
+  gateway-path: /ipfs
+#nginx:
+#  host: 127.0.0.1
+#  port: 8081
+# host: localhost
+# port: 8080

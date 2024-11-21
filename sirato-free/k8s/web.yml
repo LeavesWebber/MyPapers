@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: sirato-web
+  name: sirato-web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: sirato-web
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: sirato-web
+    spec:
+      containers:
+        - name: sirato-web
+          env:
+            - name: API_URL
+              value: /api
+          image: web3labs/epirus-free-web:latest
+          ports:
+            - containerPort: 3000
+          resources: {}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sirato-web
+  labels:
+    run: sirato-web
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+  selector:
+    run: sirato-web

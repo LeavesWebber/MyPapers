@@ -1,0 +1,4 @@
+[myPapers]2024/11/21 - 08:41:36.747	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/21 - 08:41:36.751	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/21 - 08:41:36.755	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/21 - 08:41:36.755	[34minfo[0m	D:/Projects/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
