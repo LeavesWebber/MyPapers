@@ -48,53 +48,123 @@
 export default {
   data() {
     return {
-       menuData: [
-         {
-           path: "/center",
-           name: "information",
-           label: "Information",
-           icon: "user",
-           url: "Center",
-         },
-         {
-           
-           name: "committees",
-           label: "committees",
-           icon: "user",
-           children:[
+      menuData: [
+        {
+          path: "/center/information",
+          name: "个人信息",
+          icon: "user",
+          title: "1",
+        },
+        {
+          label: "委员会管理",
+          icon: "s-custom",
+          title: "2",
+          children: [
             {
-              path:"/center/createcommittees",
-              name:"Create Committee",
-              label:"Create Committee",
+              path: "/center/createcommittees",
+              label: "创建委员会",
             },
             {
-              path:"/center/mycommittees",
-              name:"My Committees",
-              label:"My Committees",
+              path: "/center/mycommittees",
+              label: "我的委员会",
+            },
+            {
+              path: "/center/selfCommittee",
+              label: "管理委员会",
             }
-           ]
-         },
-         {
-           label: "Conference",
-           icon: "location",
-           children: [
-             {
-               path: "/center/myconference",
-               name: "My conferences",
-               label: "My Conferences",
-               icon: "setting",
-               url: "Center/MyConference",
-             },
-             {
-               path: "/center/createConference",
-               name: "Create Conference",
-               label: "Create Conference",
-               icon: "setting",
-               url: "Center/CreateConference",
-             },
-           ],
-         },
-       ],
+          ]
+        },
+        {
+          label: "会议管理",
+          icon: "s-marketing",
+          title: "3", 
+          children: [
+            {
+              path: "/center/createConference",
+              label: "创建会议",
+            },
+            {
+              path: "/center/myconference",
+              label: "我的会议",
+            },
+            {
+              path: "/center/selfConference", 
+              label: "管理会议",
+            },
+            {
+              path: "/center/conferenceIssues",
+              label: "会议期刊",
+            }
+          ]
+        },
+        {
+          label: "期刊管理",
+          icon: "document",
+          title: "4",
+          children: [
+            {
+              path: "/center/createJournal",
+              label: "创建期刊",
+            },
+            {
+              path: "/center/selfJournal",
+              label: "管理期刊", 
+            },
+            {
+              path: "/center/journalIssues",
+              label: "期刊期次",
+            }
+          ]
+        },
+        {
+          label: "论文管理",
+          icon: "document-copy",
+          title: "5",
+          children: [
+            {
+              path: "/center/papers",
+              label: "我的论文",
+            },
+            {
+              path: "/center/inReview",
+              label: "审核中论文",
+            },
+            {
+              path: "/center/reviewed",
+              label: "已审核论文",
+            },
+            {
+              path: "/center/reviews",
+              label: "待审核论文",
+            }
+          ]
+        },
+        {
+          label: "NFT管理",
+          icon: "picture",
+          title: "6",
+          children: [
+            {
+              path: "/center/myNFTs",
+              label: "我的NFT",
+            },
+            {
+              path: "/center/nftSelling",
+              label: "NFT交易",
+            },
+            {
+              path: "/center/mint",
+              label: "铸造NFT",
+            }
+          ]
+        },
+        {
+          path: "/center/users",
+          name: "用户管理",
+          icon: "user-solid",
+          title: "7"
+        }
+      ]
     };
   },
   methods: {

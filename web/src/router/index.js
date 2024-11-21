@@ -40,7 +40,12 @@ import MyNFTs from '../views/center/MyNFTs.vue'
 import MyCommittee from '../views/center/SelfCommittee.vue'
 import MyConference from '../views/center/SelfConference.vue'
 import NFTSelling from '../views/center/NFTSelling.vue'
-import { component } from 'vue'
+import Mint from '../views/center/Mint.vue'
+import Papers from '../views/center/Papers.vue'
+import InReview from '../views/center/InReview.vue'
+import Reviewed from '../views/center/Reviewed.vue'
+import Reviews from '../views/center/Reviews.vue'
+import Users from '../views/center/Users.vue'
 
 Vue.use(VueRouter)
 const routes = [
@@ -113,6 +118,14 @@ const routes = [
              { path: '/center/myconference', name: 'MyConference', component: MyConference, meta: { requireAuth: true } }, // 商品管理
              { path: '/center/createConference', name: 'createConference', component: CreateConference, meta: { requireAuth: true } }, // 页面1
             // { path: 'Page2', name: 'page2', component: PageTwo } // 页面2
+            { path: '/center/papers', component: Papers, meta: { requireAuth: true } },
+            { path: '/center/inReview', component: InReview, meta: { requireAuth: true } },
+            { path: '/center/reviewed', component: Reviewed, meta: { requireAuth: true } },
+            { path: '/center/reviews', component: Reviews, meta: { requireAuth: true } },
+            { path: '/center/users', component: Users, meta: { requireAuth: true } },
+            { path: '/center/nftSelling', component: NFTSelling, meta: { requireAuth: true } },
+            { path: '/center/mint', component: Mint, meta: { requireAuth: true } },
+            { path: '/center/myNFTs', component: MyNFTs, meta: { requireAuth: true } }
         ]
     }
 ]
