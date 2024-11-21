@@ -1,0 +1,5 @@
+[myPapers]2024/05/14 - 15:28:45.093	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/paper.go:414	logic.GetNFTInfoByTokenId failed	{"error": "strconv.Atoi: parsing \"\": invalid syntax"}
+[myPapers]2024/05/14 - 15:28:48.311	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/paper.go:414	logic.GetNFTInfoByTokenId failed	{"error": "strconv.Atoi: parsing \"\": invalid syntax"}
+[myPapers]2024/05/14 - 15:35:13.831	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/paper.go:414	logic.GetNFTInfoByTokenId failed	{"error": "strconv.Atoi: parsing \"\": invalid syntax"}
+[myPapers]2024/05/14 - 17:15:55.292	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/paper.go:414	logic.GetNFTInfoByTokenId failed	{"error": "strconv.Atoi: parsing \"\": invalid syntax"}
+[myPapers]2024/05/14 - 17:16:18.075	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/paper.go:414	logic.GetNFTInfoByTokenId failed	{"error": "strconv.Atoi: parsing \"\": invalid syntax"}

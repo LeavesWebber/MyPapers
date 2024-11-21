@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column prop="end_time" label="End Time" width="120">
       </el-table-column>
-      
+      </el-table-column>
       <!-- <el-table-column prop="category" label="Category" width="120">
       </el-table-column> -->
       <el-table-column fixed="right" label="Options" width="165">

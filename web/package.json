@@ -15,7 +15,6 @@
     "highlight.js": "^11.9.0",
     "ipfs-http-client": "^60.0.1",
     "less-loader": "^6.0.0",
-    "my_papers": "file:",
     "vue": "^2.6.14",
     "vue-buffer": "^0.0.1",
     "vue-prism-editor": "^1.3.0",

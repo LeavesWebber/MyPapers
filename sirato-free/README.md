@@ -50,12 +50,13 @@ Follow the appropriate guide to run Sirato locally against an Ethereum, Quorum, 
 
 Recommended minimum system requirements.
 
-| Components | Description                         |
-| ---------- | ----------------------------------- |
-| CPUs       | 1 CPU                               |
-| Memory     | 8 GB                                |
-| Disk       | Proportional to the blockchain size |
+| Components | Description |
+|-----------|-------------|
+|  CPUs        | 1 CPU |
+|  Memory      | 8 GB |
+|  Disk        | Proportional to the blockchain size |
 
 ## License
 
 Sirato is free for non-commercial use and evaluation purposes only, for further details refer to the [LICENSE](LICENSE). To speak to use about commercial use you can email us via `hi <at> web3labs.com` or submit an enquiry [here](https://pages.web3labs.com/sirato-enterprise).
+

@@ -1,3 +1,0 @@
-[myPapers]2024/11/17 - 23:09:16.057	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
-[myPapers]2024/11/17 - 23:09:16.061	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
-[myPapers]2024/11/17 - 23:09:16.062	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
