@@ -62,8 +62,6 @@ ipfs:
   port: 5001
   gateway-port: 8081
   gateway-path: /ipfs
-#nginx:
-#  host: 127.0.0.1
-#  port: 8081
-# host: localhost
-# port: 8080
+nginx:
+  host: 127.0.0.1
+  port: 8080

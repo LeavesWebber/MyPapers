@@ -12,8 +12,10 @@ func Routers() *gin.Engine {
 	Router := gin.Default()
 	systemRouter := router.RouterGroupApp
 
+	Router.static("/public", "./public")
+	Router.Static("/image", "./image")
 	// 跨域，如需跨域可以打开下面的注释
-	//Router.Use(middleware.Cors())        // 直接放行全部跨域请求
+	Router.Use(middleware.Cors()) // 直接放行全部跨域请求
 	//Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求
 
 	global.MPS_LOG.Info("use middleware cors")
