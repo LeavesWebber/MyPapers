@@ -64,6 +64,7 @@ export default {
           });
           // 调用接口，实现文件上传
           submitPaper(formData).then((res) => {
+            console.log(formData)
             console.log(res);
           });
         } else {
