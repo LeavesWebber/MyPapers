@@ -5,14 +5,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="369e16b2-8a03-4533-a3c4-f0f47c18c9e8" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f43adda-a961-4c65-b5b4-a453eb6a8d8b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/8f43adda-a961-4c65-b5b4-a453eb6a8d8b.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ERC721.sol" beforeDir="false" afterPath="$PROJECT_DIR$/ERC721.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.yarn-integrity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/server/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/api/paper.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/api/paper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/log/2024-11-24/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-24/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/core/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/core/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/server/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/initialize/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/initialize/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-04-25/error.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-05-06/error.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-05-11/error.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-05-13/error.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-05-14/error.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-05-25/error.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-10-27/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-10-27/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-10-28/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-10-28/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-10-30/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-10-30/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-10-31/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-10-31/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-10-31/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-10-31/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-03/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-03/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-03/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-03/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-04/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-04/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-08/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-08/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-08/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-08/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-10/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-10/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-10/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-10/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-11/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-11/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-11/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-11/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-13/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-13/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-14/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-14/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-14/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-14/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-15/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-15/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-15/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-15/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-16/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-16/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-16/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-16/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-17/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-17/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-18/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-18/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-20/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-20/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-21/info.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-23/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-23/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-23/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-23/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/log/2024-11-24/error.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server/log/2024-11-24/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-24/info.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sirato-free/docker-compose/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/sirato-free/docker-compose/nginx.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/logic/paper.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/logic/paper.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/logic/review.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/logic/review.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

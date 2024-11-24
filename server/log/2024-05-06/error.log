@@ -1,4 +1,0 @@
-[myPapers]2024/05/06 - 09:25:44.815	[31merror[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:34	register table failed	{"error": "Error 1062 (23000): Duplicate entry '20231221000100' for key 'papers.version_id'"}
-[myPapers]2024/05/06 - 09:28:45.736	[31merror[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:34	register table failed	{"error": "Error 1062 (23000): Duplicate entry '20240107000200' for key 'papers.version_id'"}
-[myPapers]2024/05/06 - 09:51:06.998	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/paper.go:72	logic.GetPaper failed	{"error": "record not found"}
-[myPapers]2024/05/06 - 11:36:47.081	[31merror[0m	E:/goWorkspace/myPapers-new/server/api/user.go:37	logic.Login() failed	{"error": "record not found"}
