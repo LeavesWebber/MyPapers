@@ -160,7 +160,7 @@ export default {
         },
         {
           label: "NFT管理",
-          icon: "picture",
+          icon: "trophy-1",
           title: "6",
           children: [
             {
