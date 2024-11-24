@@ -1,0 +1,88 @@
+[myPapers]2024/11/10 - 13:41:39.821	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 13:41:39.855	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 13:41:39.861	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 13:41:39.861	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 15:00:20.333	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 15:00:20.368	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 15:00:20.372	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 15:00:20.373	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 15:01:13.458	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 15:01:13.492	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 15:01:13.497	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 15:01:13.498	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 15:05:52.456	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 15:05:52.489	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 15:05:52.494	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 15:05:52.494	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 15:13:44.440	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 15:13:44.476	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 15:13:44.481	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 15:13:44.481	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 16:54:09.923	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 16:54:09.958	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 16:54:09.962	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 16:54:09.963	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 16:58:35.038	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 16:58:35.071	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 16:58:35.076	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 16:58:35.076	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 16:58:46.337	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 16:58:46.370	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 16:58:46.375	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 16:58:46.376	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:34:08.199	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:34:08.233	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:34:08.237	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:34:08.237	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:34:28.389	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:34:28.426	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:34:28.431	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:34:28.432	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:35:22.637	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:35:22.675	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:35:22.680	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:35:22.681	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:36:05.532	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:36:05.572	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:36:05.578	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:36:05.578	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:38:51.782	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:38:51.818	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:38:51.822	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:38:51.823	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:40:43.517	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:40:43.555	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:40:43.559	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:40:43.560	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:42:22.214	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:42:22.254	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:42:22.259	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:42:22.259	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:49:29.908	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:49:29.945	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:49:29.951	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:49:29.951	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:50:38.255	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:50:38.291	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:50:38.297	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:50:38.297	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:56:35.780	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:56:35.820	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:56:35.825	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:56:35.825	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 21:58:49.633	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 21:58:49.674	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 21:58:49.678	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 21:58:49.679	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 22:00:00.239	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 22:00:00.282	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 22:00:00.289	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 22:00:00.290	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 22:05:22.060	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 22:05:22.098	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 22:05:22.103	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 22:05:22.104	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/10 - 22:05:38.179	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/10 - 22:05:38.220	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/10 - 22:05:38.226	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/10 - 22:05:38.226	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}

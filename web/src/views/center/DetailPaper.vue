@@ -1,3 +1,9 @@
+<!--作用：显示论文的详细信息页面
+功能：
+显示论文的基本信息(标题、作者、摘要等)
+显示论文的区块链信息
+提供论文更新、修改和发布功能
+PDF预览相关：包含论文PDF文件的预览链接(通过paperDetail.filepath访问)-->
 <template>
   <div>
     <el-dialog :visible.sync="dialogVisible" width="740px" append-to-body>

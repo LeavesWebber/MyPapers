@@ -5,7 +5,6 @@
         <el-col :span="2"
           ><div class="grid-content bg-purple-dark name">
             <el-button
-              v-if="showAllIssueButton"
               size="small"
               type="primary"
               @click="Issues()"
@@ -16,7 +15,6 @@
         <el-col :span="3"
           ><div class="grid-content bg-purple-dark name">
             <el-button
-              v-if="showSubmitButton"
               size="small"
               type="primary"
               @click="Submit()"

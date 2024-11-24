@@ -1,0 +1,10 @@
+[myPapers]2024/11/03 - 15:09:22.421	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:09:50.081	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:09:55.367	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:09:56.333	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:10:02.041	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:10:17.615	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:10:27.320	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:10:50.722	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:11:47.770	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/03 - 15:13:24.295	[31merror[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/api/user.go:37	logic.Login() failed	{"error": "record not found"}
