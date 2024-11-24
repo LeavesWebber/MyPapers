@@ -11,7 +11,7 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
 
     constructor(address initialOwner)
-        ERC721("MyNFT", "MNT")
+        ERC721("MyNFT", "MPER")
         Ownable(initialOwner)
     {}
 
