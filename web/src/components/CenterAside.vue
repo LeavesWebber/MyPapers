@@ -12,18 +12,17 @@
   <h4>{{ isCollapse ? 'Center': 'Personal Center' }}</h4>
     <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.title" :index="item.title">
       <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
-      <span slot="title">{{item.title}}</span>
+      <span slot="title">{{item.name}}</span>
     </el-menu-item>
     <el-submenu v-for="item in hasChildren" :key="item.title" :index="item.title">
       <template slot="title">
         <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
-        <span slot="title">{{item.title}}</span>
+        <span slot="title">{{item.label}}</span>
       </template>
       <el-menu-item-group v-for="subItem in item.children" :key="subItem.path">
-        <el-menu-item  @click="clickMenu(subItem)" :index="subItem">{{subItem.title}}</el-menu-item>
+        <el-menu-item  @click="clickMenu(subItem)" :index="subItem">{{subItem.label}}</el-menu-item>
       </el-menu-item-group>
       </el-submenu>
-    </el-submenu>
   </el-menu>
 </template>
 
@@ -49,42 +48,92 @@
 export default {
   data() {
     return {
-      // menuData: [
-      //   {
-      //     path: "/center",
-      //     name: "information",
-      //     label: "Information",
-      //     icon: "user",
-      //     url: "Center",
-      //   },
-      //   {
-      //     path: "/center/committee",
-      //     name: "committee",
-      //     label: "Committee",
-      //     icon: "user",
-      //     url: "Center/Committee",
-      //   },
-      //   {
-      //     label: "Conference",
-      //     icon: "location",
-      //     children: [
-      //       {
-      //         path: "/center/conference",
-      //         name: "conferences",
-      //         label: "Conferences",
-      //         icon: "setting",
-      //         url: "Center/Conference",
-      //       },
-      //       {
-      //         path: "/center/createConference",
-      //         name: "Create Conference",
-      //         label: "Create Conference",
-      //         icon: "setting",
-      //         url: "Center/CreateConference",
-      //       },
-      //     ],
-      //   },
-      // ],
+       menuData: [
+         {
+           path: "/center",
+           name: "information",
+           label: "Information",
+           icon: "user",
+           url: "Center",
+         },
+         {
+           
+           name: "committees",
+           label: "committees",
+           icon: "user",
+           children:[
+            {
+              path:"/center/createcommittees",
+              name:"Create Committee",
+              label:"Create Committee",
+            },
+            {
+              path:"/center/mycommittees",
+              name:"My Committees",
+              label:"My Committees",
+            }
+           ]
+         },
+         {
+          label:"Reviews",
+          children:[
+            {
+              path:"/center/inReview",
+              name:"inReview",
+              label:"inReview",
+            },
+            {
+              path:"/center/Reviewed",
+              label:"Reviewed"
+            }
+          ]
+         },
+         {
+          label:"Papers",
+          children:[
+            {
+              path:"/center/ReviewedPapers",
+              label:"ReviewedPapers"
+            },
+            {
+              path:"/center/InReviewPapers",
+              label:"InReviewPapers",
+            }
+          ]
+         },{
+          label:"NFTs",
+          children:[
+            {
+              path:"/center/myNFTs",
+              label:"My NFTs",
+            },
+            {
+              path:"/center/nftSelling",
+              label:"NFT Selling",
+            }
+          ]
+         },
+         {
+           label: "Conference",
+           icon: "location",
+           children: [
+             {
+               path: "/center/myconference",
+               name: "My conferences",
+               label: "My Conferences",
+               icon: "setting",
+               url: "Center/MyConference",
+             },
+             {
+               path: "/center/createConference",
+               name: "Create Conference",
+               label: "Create Conference",
+               icon: "setting",
+               url: "Center/CreateConference",
+             },
+           ],
+         },
+       ],
     };
   },
   methods: {

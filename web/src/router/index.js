@@ -22,7 +22,7 @@ import RevisePaper from '../views/center/RevisePaper.vue'
 import ReviewPaperDetail from '../views/center/ReviewPaperDetail.vue'
 import JournalIssuesCenter from '../views/center/JournalIssues.vue'
 import ConferenceIssuesCenter from '../views/center/ConferenceIssues.vue'
-
+import CreateCommittee from '@/views/center/CreateCommittee.vue'
 import Committees from '../views/home/Committees.vue'
 import HomeDetailCommittee from '../views/home/DetailCommittee.vue'
 import Conferences from '../views/home/Conferences.vue'
@@ -37,10 +37,16 @@ import ConferenceIssues from '../views/home/ConferenceIssues.vue'
 import Publications from '../views/home/Publications.vue'
 import HomeDetailPaper from '../views/home/DetailPaper.vue'
 import MyNFTs from '../views/center/MyNFTs.vue'
+import MyCommittee from '../views/center/SelfCommittee.vue'
+import MyConference from '../views/center/SelfConference.vue'
 import NFTSelling from '../views/center/NFTSelling.vue'
-
-import Mint from '../views/center/Mint.vue'
-
+import { component } from 'vue'
+import SelfCommittee from '../views/center/SelfCommittee.vue'
+import SelfConference from '../views/center/SelfConference.vue'
+import InReviewPapers from '@/views/center/InReviewPapers.vue'
+import InReview from '@/views/center/InReview.vue'
+import Reviewed from '@/views/center/Reviewed.vue'
+import ReviewedPapers from '@/views/center/ReviewedPapers.vue'
 Vue.use(VueRouter)
 const routes = [
     // 主路由
@@ -103,12 +109,19 @@ const routes = [
             { path: '/center/journalIssues', name: JournalIssuesCenter, component: JournalIssuesCenter, meta: { requireAuth: true } },
             { path: '/center/conferenceIssues', name: ConferenceIssuesCenter, component: ConferenceIssuesCenter, meta: { requireAuth: true } },
             { path: '/center/myNFTs', name: MyNFTs, component: MyNFTs, meta: { requireAuth: true } },
+            { path: '/center/inReview', name: InReview, component: InReview, meta: { requireAuth: true } },
+            { path: '/center/mycommittees', name: MyCommittee, component: MyCommittee, meta: { requireAuth: true } },
+            { path: '/center/selfCommittee', name: SelfCommittee, component: SelfCommittee, meta: { requireAuth: true } },
             { path: '/center/nftSelling', name: NFTSelling, component: NFTSelling, meta: { requireAuth: true } },
-            { path: '/center/mint', name: Mint, component: Mint },
-            // { path: '/center/information', component: Information, meta: { requireAuth: true } }, // 首页
-            // { path: '/center/committee', component: CenterCommittee, meta: { requireAuth: true } }, // 用户管理
-            // { path: '/center/conference', name: 'centerConference', component: CenterConference, meta: { requireAuth: true } }, // 商品管理
-            // { path: '/center/createConference', name: 'createConference', component: CreateConference, meta: { requireAuth: true } }, // 页面1
+            //{ path: '/center/mint', name: Mint, component: Mint },
+            { path: '/center/createcommittees',name:CreateCommittee,component:CreateCommittee,meta:{requireAuth:true}},
+            { path: '/center/information', component: Information, meta: { requireAuth: true } },// 首页
+            { path: '/center/selfConference', component: SelfConference, meta: { requireAuth: true } },// 
+            { path: '/center/inReviewPapers', component: InReviewPapers, meta: { requireAuth: true } },// 
+            { path: '/center/ReviewedPapers', component: ReviewedPapers, meta: { requireAuth: true } },// 
+            { path: '/center/Reviewed', component: Reviewed, meta: { requireAuth: true } },// 
+             { path: '/center/myconference', name: 'MyConference', component: MyConference, meta: { requireAuth: true } }, // 商品管理
+             { path: '/center/createConference', name: 'createConference', component: CreateConference, meta: { requireAuth: true } }, // 页面1
             // { path: 'Page2', name: 'page2', component: PageTwo } // 页面2
         ]
     }

@@ -5,7 +5,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/mypapers': {
-        target: 'http://127.0.0.1:8887/mypapers/',// 后端接口
+        target: 'http://localhost:8887/mypapers/',// 后端接口
         changeOrigin: true, // 是否跨域
         pathRewrite: {
           '/mypapers': ''

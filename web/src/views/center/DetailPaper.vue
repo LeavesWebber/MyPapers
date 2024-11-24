@@ -532,7 +532,6 @@ export default {
           "window.ethereum.selectedAddress:",
           window.ethereum.selectedAddress
         );
-
         const result = await contractInstance.methods[functionName](
           ...functionArgs
         ).send({
@@ -542,6 +541,7 @@ export default {
         console.log("result:", result);
         // 输出结果
         this.transctionResoult = result;
+    
         console.log("this.transctionResoult:", this.transctionResoult);
         this.formData.transaction_hash = result.transactionHash;
         // 将this.$route.query.paper_id转为数字
