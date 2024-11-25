@@ -29,8 +29,8 @@ captcha:
   img-width: 240 # 验证码宽度
   img-height: 80 # 验证码高度
 mysql:
-#  path: 127.0.0.1 # 服务器地址:端口
-  path: mysql8019 # 服务器地址:端口
+  path: localhost # 服务器地址:端口
+#  path: MySQL80 # 服务器地址:端口
   port: "3306" # :端口
   config: charset=utf8mb4&parseTime=True&loc=Local # 高级配置
   db-name: my-papers # 数据库名
@@ -55,15 +55,20 @@ cors:
       expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,
         Content-Type
       allow-credentials: true
-#image-path: http://127.0.0.1:8081/image/ # 传统图片路径 port是nginx监听的端口
-image-path: https://172.16.170.195:443/image/ # 传统图片路径 port是nginx监听的端口
+#image-path: http://127.0.0.1:8080/image/ # 传统图片路径 port是nginx监听的端口
+image-path: http://localhost:8887/image/ # 传统图片路径 port是nginx监听的端口
+#image-path: https://172.16.170.195:443/image/ # 传统图片路径 port是nginx监听的端口
 ipfs:
-  host: 172.16.170.195
+  #host: 172.16.170.195
+  #port: 5001
+  host: 127.0.0.1
   port: 5001
-  gateway-port: 26000
+  gateway-port: 8080
   gateway-path: /ipfs/
 nginx:
-#  host: 127.0.0.1
-#  port: 8081
-  host: 172.16.170.195
-  port: 8080
+  host : localhost
+  #host: 10.22.237.248
+  #host: 127.0.0.1
+  port: 8887
+  #host: 172.16.170.195
+  #port: 8080

@@ -3,10 +3,6 @@ package logic
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/golang/freetype"
-	"github.com/golang/freetype/truetype"
-	"go.uber.org/zap"
 	"image"
 	"image/draw"
 	"image/png"
@@ -23,6 +19,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang/freetype"
+	"github.com/golang/freetype/truetype"
+	"go.uber.org/zap"
 )
 
 func getPaperVersionID() (uint, error) {
@@ -430,13 +431,14 @@ func GetHonoraryCertificate(paperId uint) (honoraryCertificateInfo *response.Hon
 	// 生成证书
 	honoraryCertificateInfo.Url, err = createHonoraryCertificate(paper)
 	// 把图片存入ipfs并且返回cid
+	println("create success")
 	cid, err := saveToIPFS(honoraryCertificateUri)
+	println(cid)
 	if err != nil {
 		return
 	}
 	honoraryCertificateInfo.Cid = cid
 	honoraryCertificateInfo.Uri = "http://" + global.MPS_CONFIG.IPFS.Host + ":" + global.MPS_CONFIG.IPFS.GatewayPort + global.MPS_CONFIG.IPFS.GatewayPath + cid
-
 	// 创建json元数据
 	//metadata := make(map[string]string)
 	//metadata["name"] = paper.Title
@@ -533,17 +535,18 @@ func contentData(content *freetype.Context, title, name string) {
 	dataY := 1300
 	for i := 0; i < len(data); i += 90 {
 		if i == 0 {
-			content.DrawString(data[i:i+80], freetype.Pt(dataX+110, dataY))
-			dataY += 80
+			content.DrawString(data[i:i+75], freetype.Pt(dataX+110, dataY))
+			dataY += 75
 			i -= 10
 			continue
 		}
+		content.DrawString(data[i:i+75], freetype.Pt(dataX+110, dataY))
 		if i+90 > len(data) {
 			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
 			break
 		}
-		content.DrawString(data[i:i+90], freetype.Pt(dataX, dataY))
-		dataY += 80
+		content.DrawString(data[i:i+85], freetype.Pt(dataX, dataY))
+		dataY += 75
 	}
 }
 func contentHash(content *freetype.Context, transactionAddress, blockAddress string) {

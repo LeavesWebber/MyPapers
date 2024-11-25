@@ -1,0 +1,20 @@
+[myPapers]2024/10/31 - 19:58:35.462	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/new papers/mypapers 程序源代码/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/10/31 - 19:58:35.482	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/new papers/mypapers 程序源代码/server/initialize/router.go:44	router register success
+[myPapers]2024/10/31 - 19:58:35.483	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/new papers/mypapers 程序源代码/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/10/31 - 20:03:09.281	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/new papers/mypapers 程序源代码/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/10/31 - 20:03:09.291	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/new papers/mypapers 程序源代码/server/initialize/router.go:44	router register success
+[myPapers]2024/10/31 - 20:03:09.292	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/new papers/mypapers 程序源代码/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/10/31 - 20:05:12.596	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/10/31 - 20:05:12.607	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/10/31 - 20:05:12.607	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/10/31 - 20:13:55.210	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/10/31 - 20:13:55.244	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/10/31 - 20:13:55.249	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/10/31 - 20:13:55.249	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/10/31 - 20:16:56.267	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/10/31 - 20:16:56.284	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/10/31 - 20:16:56.284	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/10/31 - 20:17:20.621	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/10/31 - 20:17:20.660	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/10/31 - 20:17:20.664	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/10/31 - 20:17:20.664	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}

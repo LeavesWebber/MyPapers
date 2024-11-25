@@ -1,0 +1,4 @@
+[myPapers]2024/11/04 - 12:28:46.516	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/04 - 12:28:46.550	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/11/04 - 12:28:46.561	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
+[myPapers]2024/11/04 - 12:28:46.561	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}

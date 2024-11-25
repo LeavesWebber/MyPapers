@@ -291,6 +291,7 @@
   </div>
 </template>
 <script>
+import { from } from "vue-buffer";
 import {
   getDetailPapers,
   getPaperVersions,
@@ -528,20 +529,21 @@ export default {
           this.userInfo.block_chain_address,
           this.metadata_uri,
         ];
+        console.log(this.metadata_uri)
         console.log(
           "window.ethereum.selectedAddress:",
           window.ethereum.selectedAddress
         );
+
         const result = await contractInstance.methods[functionName](
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: "0",
+          gasPrice: "1000",
         });
         console.log("result:", result);
         // 输出结果
         this.transctionResoult = result;
-    
         console.log("this.transctionResoult:", this.transctionResoult);
         this.formData.transaction_hash = result.transactionHash;
         // 将this.$route.query.paper_id转为数字
