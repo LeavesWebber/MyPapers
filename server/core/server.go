@@ -18,5 +18,6 @@ func RunServer() {
 	address := fmt.Sprintf(":%d", global.MPS_CONFIG.System.Addr)
 	s := initServer(address, Router)
 	global.MPS_LOG.Info("server run success on ", zap.String("address", address))
+	s.ListenAndServe()
 	global.MPS_LOG.Error(s.ListenAndServe().Error())
 }
