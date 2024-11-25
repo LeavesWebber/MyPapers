@@ -14,3 +14,7 @@
 [myPapers]2024/11/24 - 15:56:21.968	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/router.go:21	use middleware cors
 [myPapers]2024/11/24 - 15:56:21.972	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/router.go:46	router register success
 [myPapers]2024/11/24 - 15:56:21.972	[34minfo[0m	D:/Projects/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/24 - 16:39:26.759	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/24 - 16:39:26.766	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/router.go:21	use middleware cors
+[myPapers]2024/11/24 - 16:39:26.769	[34minfo[0m	D:/Projects/mypapers/mypapers/server/initialize/router.go:46	router register success
+[myPapers]2024/11/24 - 16:39:26.769	[34minfo[0m	D:/Projects/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}

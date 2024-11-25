@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="369e16b2-8a03-4533-a3c4-f0f47c18c9e8" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/log/2024-11-24/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-11-24/info.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/logic/paper.go" beforeDir="false" afterPath="$PROJECT_DIR$/server/logic/paper.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/components/CenterAside.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/components/CenterAside.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/views/center/DetailPaper.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/views/center/DetailPaper.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

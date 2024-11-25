@@ -499,7 +499,7 @@ export default {
       });
     },
     showHonoraryCertificate() {
-      // 请求后端获得荣誉证书，弹出荣誉证书预览，点击确定后，调用后端接口发布论文，然后刷新页面
+      // 请求后端获得荣誉证书，弹出荣誉证书预览点击确定后，调用后端接口发布论文，然后刷新页面
       this.dialogVisible = true;
       getHonoraryCertificate({
         paper_id: this.$route.query.paper_id,
@@ -513,7 +513,6 @@ export default {
       });
     },
     async publish() {
-      // 调用智能合约的铸币函数，将荣誉证书铸造到用户的钱包中
       try {
         // 调用智能合约函数
         if (
@@ -545,16 +544,21 @@ export default {
           from: window.ethereum.selectedAddress,
           gasPrice: "0",
         });
-        console.log("result:", result);
-        // 输出结果
+        
+        // 添加结果检查
+        if (!result.events || !result.events.Transfer) {
+          this.$message({
+            message: "交易成功但未获取到Token ID，请检查交易记录",
+            type: "warning"
+          });
+          return;
+        }
+
         this.transctionResoult = result;
-        console.log("this.transctionResoult:", this.transctionResoult);
         this.formData.transaction_hash = result.transactionHash;
-        // 将this.$route.query.paper_id转为数字
         this.formData.paper_id = parseInt(this.$route.query.paper_id);
         this.formData.download_price = parseInt(this.formData.download_price);
-        this.formData.token_id =
-          result.events.Transfer.returnValues.tokenId.toString();
+        this.formData.token_id = result.events.Transfer.returnValues.tokenId.toString();
         this.formData.copyright_trading_price = parseInt(
           this.formData.copyright_trading_price
         );
@@ -576,8 +580,11 @@ export default {
           }
         });
       } catch (error) {
-        // 处理错误
         console.error("Error:", error);
+        this.$message({
+          message: "发布失败: " + error.message,
+          type: "error"
+        });
       }
     },
     viewPaper(row) {
