@@ -1,5 +1,5 @@
 # MyPapers  
-[README](README.md) | [中文文档](README_zh.md)  
+[English](README.md) | [中文简体](README_zh.md)  
 
 > A decentralized paper management system based on web3.  
 

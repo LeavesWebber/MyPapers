@@ -1,5 +1,5 @@
 # MyPapers  
-[README](README.md) | [中文文档](README_zh.md)  
+[English](README.md) | [中文简体](README_zh.md)  
 
 > 这是一个基于 web3 的去中心化论文管理系统。  
 
