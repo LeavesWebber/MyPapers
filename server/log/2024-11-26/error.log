@@ -1,0 +1,10 @@
+[myPapers]2024/11/26 - 11:23:36.887	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 11:23:37.051	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 11:24:54.554	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 11:24:54.690	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 11:24:55.219	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 11:24:55.364	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 11:27:37.100	[31merror[0m	/opt/MyPapers/server/api/user.go:71	logic.Register() failed	{"error": "用户名已存在"}
+[myPapers]2024/11/26 - 12:08:09.802	[31merror[0m	/opt/MyPapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/26 - 12:08:10.231	[31merror[0m	/opt/MyPapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
+[myPapers]2024/11/26 - 12:08:20.978	[31merror[0m	/opt/MyPapers/server/api/committee.go:36	logic.CreateCommittee() failed	{"error": "用户名不存在"}
