@@ -64,7 +64,7 @@ ipfs:
   host: 127.0.0.1
   port: 5001
   gateway-port: 8081
-  gateway-path: /ip4/127.0.0.1/tcp/
+  gateway-path: /ipfs/
 nginx:
   host : localhost
   #host: 10.22.237.248
