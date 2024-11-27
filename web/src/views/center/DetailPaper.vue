@@ -297,6 +297,7 @@ PDF预览相关：包含论文PDF文件的预览链接(通过paperDetail.filepat
   </div>
 </template>
 <script>
+import { from } from "vue-buffer";
 import {
   getDetailPapers,
   getPaperVersions,
@@ -499,7 +500,7 @@ export default {
       });
     },
     showHonoraryCertificate() {
-      // 请求后端获得荣誉证书，弹出荣誉证书预览点击确定后，调用后端接口发布论文，然后刷新页面
+      // 请求后端获得荣誉证书，弹出荣誉证书预览,点击确定后，调用后端接口发布论文，然后刷新页面
       this.dialogVisible = true;
       getHonoraryCertificate({
         paper_id: this.$route.query.paper_id,
@@ -513,6 +514,7 @@ export default {
       });
     },
     async publish() {
+      // 调用智能合约的铸币函数，将荣誉证书铸造到用户的钱包中
       try {
         // 调用智能合约函数
         if (
@@ -580,6 +582,7 @@ export default {
           }
         });
       } catch (error) {
+        // 处理错误
         console.error("Error:", error);
         this.$message({
           message: "发布失败: " + error.message,

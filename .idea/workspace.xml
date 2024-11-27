@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="369e16b2-8a03-4533-a3c4-f0f47c18c9e8" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README_zh.md" beforeDir="false" afterPath="$PROJECT_DIR$/README_zh.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/views/center/DetailPaper.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/views/center/DetailPaper.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +27,9 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2p8px1BXaYIk5KAOSjYxb3T1Ct5" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -35,7 +41,7 @@
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Leaves&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
