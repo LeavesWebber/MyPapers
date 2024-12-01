@@ -1,80 +1,95 @@
 # MyPapers 开发手册
 
-[English](README.md) | [中文简体](README_zh.md)
+[English](README.md) | [中文简体](README_zh.md)  
 
-> 这是一个基于 web3 的去中心化论文管理系统。
+> 这是一个基于 web3 的去中心化论文管理系统。  
 
-> 这并**不是**一个最终的 README 文件，我仅在这里做基本简述，便于大家开发
+> 这并**不是**一个最终的 README 文件，我仅在这里做基本简述，便于大家开发  
 
-> 私有仓库，内含敏感凭证信息，**不要**操作公开此仓库
+> 私有仓库，内含敏感凭证信息，**不要**操作公开此仓库   
 
 ## 关于URL
 
 ### 域名：
 
-[MyPapers.io](https://mypapers.io)
+[MyPapers.io](https://mypapers.io)  
 
 ### 项目地址：
 
 - [MyPapers Project（Gitee）](https://gitee.com/leaveswebber/MyPapers)
-- [MyPapers Project（Github）](https://github.com/LeavesWebber/MyPapers)
+
+- [MyPapers Project（Github）](https://github.com/LeavesWebber/MyPapers)  
   
   ### Host
-- 内网： `10.35.54.29`
-- 公网： `107.155.56.166`
+
+- 内网： `10.35.54.29`  
+
+- 公网： `107.155.56.166`  
 
 ## 关于项目结构
 
 ### 基于 `GO` + `VUE` + `JS` + `HTML` + `CSS`
 
-- `server` 文件夹：基于 **go** 开发的**后端**项目文件
-- `sirato-free` 文件夹： 一个区块链浏览器，用于查看区块链交易数据
-- `web` 文件夹： 基于 **vue** + **js** + **html** + **css** 开发的**前端**项目文件
+- `server` 文件夹：基于 **go** 开发的**后端**项目文件  
+
+- `sirato-free` 文件夹： 一个区块链浏览器，用于查看区块链交易数据  
+
+- `web` 文件夹： 基于 **vue** + **js** + **html** + **css** 开发的**前端**项目文件  
   
   ### 基于 `Solidity`：
-- `ERC20.sol` 代币合约
-- `ERC721.sol` NFT合约
-- `nft-market.sol` 交易市场合约
+
+- `ERC20.sol` 代币合约  
+
+- `ERC721.sol` NFT合约  
+
+- `nft-market.sol` 交易市场合约  
 
 ## 关于 Gitee 分支
 
-> 请创建并使用自己的分支，请**不要**直接向 `main` 分支推送代码
+> 请创建并使用自己的分支，请**不要**直接向 `main` 分支推送代码  
 
 > 每周例会结束后，组长会合并代码到 `main` 分支，请大家及时从 `main` 分支 pull 代码到自己的分支
 
-- `main` 分支： 用于发布合并（Merge）后的代码到生产环境
-- `raw` 分支： 用于存放学长最初给的代码，分支只读，请不要向此推送
-- `Leaves` 分支： [22 网络 叶文博](https://kiss1314.top) 工作的分支
-- `MRdada` 分支： [22 计科 林振超]() 工作的分支
-- 待添加
+- `main` 分支： 用于发布合并（Merge）后的代码到生产环境  
+- `raw` 分支： 用于存放学长最初给的代码，分支只读，请不要向此推送  
+- `Leaves` 分支： [22 网络 叶文博](https://kiss1314.top) 工作的分支  
+- `MRdada` 分支： [22 计科 林振超]() 工作的分支  
+- 待添加  
 
 ## 关于配置信息
 
 ### SSH：
 
 - username: `ubuntu`
+
 - password: `xmutBC2024`
   
   ### 数据库（mysql）:
-- db-name: `MyPapers`
-- username: `leaves`
-- password: `leaves`
+
+- db-name: `MyPapers`  
+
+- username: `leaves`  
+
+- password: `leaves`  
+
 - port: `3306`
 
 ### 端口
 
 - `22`: ssh && sftp
-- `3306`: mysql 数据库
-- `4001`: IPFS P2P 节点通信
-- `5001`: IPFS 的 webui && API
-- `8080`: MyPapers web 前端
-- `8081`: IPFS 的网关
-- `8887`: MyPapers 后端
+- `3306`: mysql 数据库  
+- `4001`: IPFS P2P 节点通信  
+- `5001`: IPFS 的 webui && API  
+  
+   （web UI 请使用 http://107.155.56.166:5001/webui/ 访问）  
+- `8080`: MyPapers web 前端  
+- `8081`: IPFS 的网关  
+- `8887`: MyPapers 后端  
 
 ---  
 
 文档编辑人： **叶文博**   
-最后更新时间： **2024-11-25**
+最后更新时间： **2024-11-25**  
 
 ---
 

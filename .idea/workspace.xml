@@ -5,10 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="369e16b2-8a03-4533-a3c4-f0f47c18c9e8" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/server/log/2024-12-01/info.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README_zh.md" beforeDir="false" afterPath="$PROJECT_DIR$/README_zh.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/server/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/20240417000101.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/20240511000200.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/20241110000102.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/20241116001300.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/20241124000500.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/407100771406974976_GO.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/407100771406974976_kimi.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/409604278336884736_kimi.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/certificate.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/image/img.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240417000101.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240511000100_2022-2023校历.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240511000200.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240511000200_2022-2023校历.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240514000100_学术期刊出版深度融合发展路...块链技术的协同创新平台构建_宋雪飞.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240525000100_基于区块链技术的学术期刊评价体系的探讨与展望_王峥.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20240525000200_学术数字出版联盟__重构学术出版生态圈_刘宇阳.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241121000200_20240514000100_学术期刊出版深度融合发展路...块链技术的协同创新平台构建_宋雪飞.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241124000100_怎么制作美味双皮奶？.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241124000200_应用密码Note.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241124000300_应用密码Note.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241124000400_应用密码Note.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241124000500.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/public/20241124000500_LeavesTest.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/constant.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/constant.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/src/views/center/DetailPaper.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/views/center/DetailPaper.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/vue.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/yarn.lock" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,30 +64,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Leaves&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/26646&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\Program Files\\Jetbrains\\GoLand\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "Leaves",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/26646",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "ts.external.directory.path": "D:\\Program Files\\Jetbrains\\GoLand\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -67,6 +98,9 @@
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <servers />
+  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>

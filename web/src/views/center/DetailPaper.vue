@@ -500,7 +500,7 @@ export default {
       });
     },
     showHonoraryCertificate() {
-      // 请求后端获得荣誉证书，弹出荣誉证书预览,点击确定后，调用后端接口发布论文，然后刷新页面
+      // 请求后端获得荣誉证书，弹出荣誉证书预览点击确定后，调用后端接口发布论文，然后刷新页面
       this.dialogVisible = true;
       getHonoraryCertificate({
         paper_id: this.$route.query.paper_id,
