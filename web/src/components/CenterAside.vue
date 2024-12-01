@@ -75,6 +75,45 @@ export default {
            ]
          },
          {
+          label:"Reviews",
+          children:[
+            {
+              path:"/center/inReview",
+              name:"inReview",
+              label:"inReview",
+            },
+            {
+              path:"/center/Reviewed",
+              label:"Reviewed"
+            }
+          ]
+         },
+         {
+          label:"Papers",
+          children:[
+            {
+              path:"/center/ReviewedPapers",
+              label:"ReviewedPapers"
+            },
+            {
+              path:"/center/InReviewPapers",
+              label:"InReviewPapers",
+            }
+          ]
+         },{
+          label:"NFTs",
+          children:[
+            {
+              path:"/center/myNFTs",
+              label:"My NFTs",
+            },
+            {
+              path:"/center/nftSelling",
+              label:"NFT Selling",
+            }
+          ]
+         },
+         {
            label: "Conference",
            icon: "location",
            children: [

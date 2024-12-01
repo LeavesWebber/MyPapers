@@ -1,3 +1,0 @@
-[myPapers]2024/10/28 - 12:38:03.947	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:19	use middleware cors
-[myPapers]2024/10/28 - 12:38:03.957	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/initialize/router.go:44	router register success
-[myPapers]2024/10/28 - 12:38:03.957	[34minfo[0m	C:/Users/MRdada/Desktop/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
