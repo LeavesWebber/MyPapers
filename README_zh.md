@@ -65,7 +65,7 @@
 
 - password: `xmutBC2024`
   
-  ### 数据库（mysql）:
+### 数据库（mysql）:
 
 - db-name: `MyPapers`  
 
