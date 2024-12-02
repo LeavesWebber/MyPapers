@@ -185,9 +185,8 @@ export default {
       getConferenceIssuePapers({
         conference_id: this.$route.query.id,
         start_time: issue.submission_start_time + "T00:00:00Z",
-        end_time: issue.submission_end_time + "T00:00:00Z",   
+        end_time: issue.submission_end_time + "T00:00:00Z",
       }).then((res) => {
-        console.log("12312321312312",conference_id)
         this.conferencePapers = res.data.data;
         console.log(res.data.data, "res.data.data--------");
         // 格式化时间 2023-09-30T16:50:21.503+08:00 变成 2023-09-30
@@ -239,8 +238,9 @@ export default {
             res.data.data[i].submission_end_time = res.data.data[
               i
             ].submission_end_time.substring(0, 10);
-          }
 
+          }
+          
           this.tableData = res.data.data;
           console.log(this.tableData, "tableDate");
           // 处理tableData：里面有不同的year，进行分组，得到years，yeas下面有多个issues
