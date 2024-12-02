@@ -2,6 +2,7 @@ package logic
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"image"
 	"image/draw"
@@ -528,9 +529,13 @@ func contentAuthors(content *freetype.Context, authors string) {
 	authorsX := (3508 - authorsWidth) / 2
 	content.DrawString(authors, freetype.Pt(authorsX, 1200))
 }
-func contentData(content *freetype.Context, title, name string) {
+func contentData(content *freetype.Context, title string, conferenceOrJournalName string) error {
+	if title == "" || conferenceOrJournalName == "" {
+		return errors.New("标题或期刊/会议名称不能为空")
+	}
+
 	content.SetFontSize(70) // 设置字体大小
-	data := "Certificate of acceptance for the manuscrip(" + name + ") titled: " + title + " from MyPapers."
+	data := "Certificate of acceptance for the manuscrip(" + conferenceOrJournalName + ") titled: " + title + " from MyPapers."
 	dataX := 400
 	dataY := 1300
 	for i := 0; i < len(data); i += 90 {
@@ -548,6 +553,7 @@ func contentData(content *freetype.Context, title, name string) {
 		content.DrawString(data[i:i+85], freetype.Pt(dataX, dataY))
 		dataY += 75
 	}
+	return nil
 }
 func contentHash(content *freetype.Context, transactionAddress, blockAddress string) {
 	content.SetFontSize(50) // 设置字体大小
@@ -571,7 +577,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	if err != nil {
 		return
 	}
-	// 新建一张和模板文件一样大小的画布
+	// 新建一张和模板文��一样大小的画布
 	newTemplateImage := image.NewRGBA(templateFileImage.Bounds())
 	// 将模板图片画到新建的画布上
 	draw.Draw(newTemplateImage, templateFileImage.Bounds(), templateFileImage, templateFileImage.Bounds().Min, draw.Over)
@@ -595,7 +601,10 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	contentAuthors(content, paper.Authors) // 写入作者信息
 	// 根据paperId查投的是哪个会议或者期刊
 	conferenceOrJournalName, err := mysql.GetConferenceOrJournal(paper.ConferenceId, paper.JournalId)
-	contentData(content, paper.Title, conferenceOrJournalName)           // 写入数据信息
+	err = contentData(content, paper.Title, conferenceOrJournalName)
+	if err != nil {
+		return "", fmt.Errorf("生成证书内容失败: %w", err)
+	}
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentDate(content)                                                 // 写入日期信息
 

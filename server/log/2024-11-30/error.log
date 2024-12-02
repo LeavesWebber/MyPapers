@@ -1,0 +1,7 @@
+[myPapers]2024/11/30 - 14:13:52.680	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 15:27:44.278	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:28	SubmitPaper with invalid param	{"error": "Key: 'SubmitPaper.BlockAddress' Error:Field validation for 'BlockAddress' failed on the 'required' tag\nKey: 'SubmitPaper.PaperTransactionAddress' Error:Field validation for 'PaperTransactionAddress' failed on the 'required' tag"}
+[myPapers]2024/11/30 - 15:27:50.488	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:27:51.831	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:34:42.899	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:28	SubmitPaper with invalid param	{"error": "Key: 'SubmitPaper.BlockAddress' Error:Field validation for 'BlockAddress' failed on the 'required' tag\nKey: 'SubmitPaper.PaperTransactionAddress' Error:Field validation for 'PaperTransactionAddress' failed on the 'required' tag"}
+[myPapers]2024/11/30 - 15:55:12.380	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 15:58:29.205	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}

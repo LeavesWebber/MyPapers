@@ -1,0 +1,1 @@
+[myPapers]2024/12/01 - 21:36:12.943	[31merror[0m	D:/Projects/mypapers/mypapers/server/api/paper.go:415	logic.GetNFTInfoByTokenId failed	{"error": "strconv.Atoi: parsing \"\": invalid syntax"}

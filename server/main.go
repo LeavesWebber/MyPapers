@@ -1,11 +1,12 @@
 package main
 
 import (
-	"go.uber.org/zap"
 	"server/core"
 	"server/global"
 	"server/initialize"
 	"server/utils"
+
+	"go.uber.org/zap"
 )
 
 // @title Swagger for MPS

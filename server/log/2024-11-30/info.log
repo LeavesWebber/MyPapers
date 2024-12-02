@@ -1,0 +1,8 @@
+[myPapers]2024/11/30 - 14:13:38.847	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/30 - 14:13:38.911	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/initialize/router.go:21	use middleware cors
+[myPapers]2024/11/30 - 14:13:38.917	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/initialize/router.go:46	router register success
+[myPapers]2024/11/30 - 14:13:38.918	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/30 - 15:26:11.678	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/initialize/gorm.go:37	register table success
+[myPapers]2024/11/30 - 15:26:11.715	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/initialize/router.go:21	use middleware cors
+[myPapers]2024/11/30 - 15:26:11.747	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/initialize/router.go:46	router register success
+[myPapers]2024/11/30 - 15:26:11.748	[34minfo[0m	E:/vue/mypapers/gitee/MyPapers/server/core/server.go:20	server run success on 	{"address": ":8887"}

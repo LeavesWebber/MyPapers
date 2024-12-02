@@ -48,92 +48,146 @@
 export default {
   data() {
     return {
-       menuData: [
-         {
-           path: "/center",
-           name: "information",
-           label: "Information",
-           icon: "user",
-           url: "Center",
-         },
-         {
-           
-           name: "committees",
-           label: "committees",
-           icon: "user",
-           children:[
+      menuData: [
+        {
+          path: "/center/information",
+          name: "information",
+          label: "个人信息",
+          icon: "user",
+          title: "1",
+          url: "Center",
+        },
+        {
+          label: "委员会管理",
+          icon: "s-custom",
+          title: "2",
+          children: [
             {
               path:"/center/createcommittees",
-              name:"Create Committee",
-              label:"Create Committee",
+              name:"createCommittee",
+              label: "创建委员会",
             },
             {
-              path:"/center/mycommittees",
-              name:"My Committees",
-              label:"My Committees",
-            }
-           ]
-         },
-         {
-          label:"Reviews",
-          children:[
-            {
-              path:"/center/inReview",
-              name:"inReview",
-              label:"inReview",
-            },
-            {
-              path:"/center/Reviewed",
-              label:"Reviewed"
+              path: "/center/selfCommittee",
+              name:"selfCommittee",
+              label: "管理委员会",
             }
           ]
-         },
-         {
-          label:"Papers",
-          children:[
+        },
+        {
+          label: "会议管理",
+          icon: "s-marketing",
+          title: "3", 
+          children: [
+            {
+              path: "/center/createConference",
+              name: "createConference",
+              label: "创建会议",
+              url: "Center/CreateConference",
+            },
+            {
+              path: "/center/selfConference", 
+              label: "管理会议",
+              name: "selfConference",
+              url: "center/selfConference",
+            },
+            {
+              path: "/center/conferenceIssues",
+              label: "会议期刊",
+              name: "conferenceIssues",
+              url: "center/conferenceIssues",
+            }
+          ]
+        },
+        {
+          label: "期刊管理",
+          icon: "document",
+          title: "4",
+          children: [
+            {
+              path: "/center/createJournal",
+              label: "创建期刊",
+              name: "createJournal",
+            },
+            {
+              path: "/center/selfJournal",
+              label: "管理期刊",
+              name: "selfJournal",
+            },
+            {
+              path: "/center/journalIssues",
+              label: "期刊期次",
+              name: "journalIssues",
+            }
+          ]
+        },
+        {
+          label: "论文管理",
+          icon: "document-copy",
+          title: "5",
+          children: [
+            {
+              path: "/center/papers",
+              label: "我的论文",
+              name:"papers",
+            },
             {
               path:"/center/ReviewedPapers",
-              label:"ReviewedPapers"
+              name:"reviewedPapers",
+              label: "我的论文（已审核）",
             },
             {
               path:"/center/InReviewPapers",
-              label:"InReviewPapers",
-            }
-          ]
-         },{
-          label:"NFTs",
-          children:[
-            {
-              path:"/center/myNFTs",
-              label:"My NFTs",
+              name:"inReviewPapers",
+              label: "我的论文（待审核）",
             },
             {
-              path:"/center/nftSelling",
-              label:"NFT Selling",
+              path: "/center/inReview",
+              name:"inReview",
+              label: "审核中论文",
+            },
+            {
+              path: "/center/Reviewed",
+              label: "我已审核的论文",
+              name:"Reviewed",
+            },
+            {
+              path: "/center/Reviews",
+              label: "待审核论文",
+              name:"Reviews",
             }
           ]
-         },
-         {
-           label: "Conference",
-           icon: "location",
-           children: [
-             {
-               path: "/center/myconference",
-               name: "My conferences",
-               label: "My Conferences",
-               icon: "setting",
-               url: "Center/MyConference",
-             },
-             {
-               path: "/center/createConference",
-               name: "Create Conference",
-               label: "Create Conference",
-               icon: "setting",
-               url: "Center/CreateConference",
-             },
-           ],
-         },
-       ],
+        },
+        {
+          label: "NFT管理",
+          icon: "trophy-1",
+          title: "6",
+          children: [
+            {
+              path: "/center/MyNFTs",
+              label: "我的NFT",
+              name: "myNFTs",
+            },
+            {
+              path: "/center/NFTSelling",
+              label: "NFT交易",
+              name: "nftSelling",
+            },
+            {
+              path: "/center/Mint",
+              label: "铸造NFT",
+              name: "mint",
+            }
+          ]
+        },
+        {
+          path: "/center/Users",
+          name: "users",
+          label: "用户管理",
+          icon: "user-solid",
+          title: "7"
+        }
+      ]
     };
   },
   methods: {

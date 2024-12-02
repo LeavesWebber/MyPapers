@@ -2085,7 +2085,7 @@ const MarketplacecontractABI = [
         "type": "function"
     }
 ]
-export const MarketplacecontractAddress = "0xB44C3C0E60bB72C39730A6999aD378954E18DEeB";
+export const MarketplacecontractAddress = "0xc5a0854d71fcC7592A310E200E25Bc43d519521d";
 export const MarketplacecontractInstance = new web3.eth.Contract(
     MarketplacecontractABI,
     MarketplacecontractAddress
