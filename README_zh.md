@@ -36,7 +36,7 @@
 
 - `web` 文件夹： 基于 **vue** + **js** + **html** + **css** 开发的**前端**项目文件  
   
-  ### 基于 `Solidity`：
+### 基于 `Solidity`：
 
 - `ERC20.sol` 代币合约  
 
