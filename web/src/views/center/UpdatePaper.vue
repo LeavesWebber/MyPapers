@@ -1,10 +1,3 @@
-<!-- 作用：更新论文信息的页面
-功能：
-修改论文信息
-上传新版本论文
-更新作者信息
-PDF预览相关：包含PDF文件上传功能 -->
-
 <template>
   <div class="box">
     <el-form ref="form" :model="form" label-width="200px" :rules="rules">

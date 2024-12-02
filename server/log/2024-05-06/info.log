@@ -1,0 +1,36 @@
+[myPapers]2024/05/06 - 09:29:29.828	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 09:29:29.862	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 09:29:29.872	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 09:29:29.872	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 09:45:30.686	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 09:45:30.718	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 09:45:30.726	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 09:45:30.726	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 10:03:53.936	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 10:03:53.963	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 10:03:53.972	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 10:03:53.972	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 15:31:09.765	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 15:31:09.797	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 15:31:09.806	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 15:31:09.807	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 15:34:40.873	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 15:34:40.901	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 15:34:40.909	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 15:34:40.910	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 15:36:06.732	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 15:36:06.762	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 15:36:06.770	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 15:36:06.770	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 15:37:20.808	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 15:37:20.838	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 15:37:20.846	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 15:37:20.846	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 16:24:36.170	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 16:24:36.199	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 16:24:36.206	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 16:24:36.207	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/05/06 - 16:41:17.923	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/gorm.go:37	register table success
+[myPapers]2024/05/06 - 16:41:17.951	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:19	use middleware cors
+[myPapers]2024/05/06 - 16:41:17.960	[34minfo[0m	E:/goWorkspace/myPapers-new/server/initialize/router.go:44	router register success
+[myPapers]2024/05/06 - 16:41:17.960	[34minfo[0m	E:/goWorkspace/myPapers-new/server/core/server.go:20	server run success on 	{"address": ":8887"}

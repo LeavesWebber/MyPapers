@@ -1,9 +1,3 @@
-<!-- 作用：评审论文的详细信息页面
-功能：
-显示论文详情
-提交评审意见
-查看评审历史
-PDF预览相关：包含论文PDF文件的预览链接(通过paperDetail.filepath访问) -->
 <template>
   <div>
     <el-dialog :visible.sync="dialogVisible" width="60%" append-to-body>

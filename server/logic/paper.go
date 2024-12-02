@@ -2,8 +2,11 @@ package logic
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/golang/freetype"
+	"github.com/golang/freetype/truetype"
+	"go.uber.org/zap"
 	"image"
 	"image/draw"
 	"image/png"
@@ -20,11 +23,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/golang/freetype"
-	"github.com/golang/freetype/truetype"
-	"go.uber.org/zap"
 )
 
 func getPaperVersionID() (uint, error) {
@@ -432,14 +430,13 @@ func GetHonoraryCertificate(paperId uint) (honoraryCertificateInfo *response.Hon
 	// 生成证书
 	honoraryCertificateInfo.Url, err = createHonoraryCertificate(paper)
 	// 把图片存入ipfs并且返回cid
-	println("create success")
 	cid, err := saveToIPFS(honoraryCertificateUri)
-	println(cid)
 	if err != nil {
 		return
 	}
 	honoraryCertificateInfo.Cid = cid
 	honoraryCertificateInfo.Uri = "http://" + global.MPS_CONFIG.IPFS.Host + ":" + global.MPS_CONFIG.IPFS.GatewayPort + global.MPS_CONFIG.IPFS.GatewayPath + cid
+
 	// 创建json元数据
 	//metadata := make(map[string]string)
 	//metadata["name"] = paper.Title
@@ -529,24 +526,25 @@ func contentAuthors(content *freetype.Context, authors string) {
 	authorsX := (3508 - authorsWidth) / 2
 	content.DrawString(authors, freetype.Pt(authorsX, 1200))
 }
-func contentData(content *freetype.Context, title string, conferenceOrJournalName string) error {
-	if title == "" || conferenceOrJournalName == "" {
-		return errors.New("标题或期刊/会议名称不能为空")
-	}
-
+func contentData(content *freetype.Context, title, name string) {
 	content.SetFontSize(70) // 设置字体大小
-	data := "Certificate of acceptance for the manuscrip(" + conferenceOrJournalName + ") titled: " + title + " from MyPapers."
+	data := "Certificate of acceptance for the manuscrip(" + name + ") titled: " + title + " from MyPapers."
 	dataX := 400
 	dataY := 1300
-	for i := 0; i < len(data); i += 75 {
-		end := i + 75
-		if end > len(data) {
-			end = len(data)
+	for i := 0; i < len(data); i += 90 {
+		if i == 0 {
+			content.DrawString(data[i:i+80], freetype.Pt(dataX+110, dataY))
+			dataY += 80
+			i -= 10
+			continue
 		}
-		content.DrawString(data[i:end], freetype.Pt(dataX+110, dataY))
-		dataY += 30 // 调整行间距
+		if i+90 > len(data) {
+			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
+			break
+		}
+		content.DrawString(data[i:i+90], freetype.Pt(dataX, dataY))
+		dataY += 80
 	}
-	return nil
 }
 func contentHash(content *freetype.Context, transactionAddress, blockAddress string) {
 	content.SetFontSize(50) // 设置字体大小
@@ -570,7 +568,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	if err != nil {
 		return
 	}
-	// 新建一张和模板文��一样大小的画布
+	// 新建一张和模板文件一样大小的画布
 	newTemplateImage := image.NewRGBA(templateFileImage.Bounds())
 	// 将模板图片画到新建的画布上
 	draw.Draw(newTemplateImage, templateFileImage.Bounds(), templateFileImage, templateFileImage.Bounds().Min, draw.Over)
@@ -594,10 +592,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	contentAuthors(content, paper.Authors) // 写入作者信息
 	// 根据paperId查投的是哪个会议或者期刊
 	conferenceOrJournalName, err := mysql.GetConferenceOrJournal(paper.ConferenceId, paper.JournalId)
-	err = contentData(content, paper.Title, conferenceOrJournalName)
-	if err != nil {
-		return "", fmt.Errorf("生成证书内容失败: %w", err)
-	}
+	contentData(content, paper.Title, conferenceOrJournalName)           // 写入数据信息
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentDate(content)                                                 // 写入日期信息
 

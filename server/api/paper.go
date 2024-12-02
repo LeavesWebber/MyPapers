@@ -2,6 +2,9 @@ package api
 
 import (
 	"errors"
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -10,10 +13,6 @@ import (
 	"server/utils"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 )
 
 type PaperApi struct{}

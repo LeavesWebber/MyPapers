@@ -1,9 +1,3 @@
-<!-- 作用：修改已提交论文的页面
-功能：
-修改论文信息
-上传修改后的论文
-更新元数据
-PDF预览相关：包含PDF文件上传功能 -->
 <template>
   <div class="box">
     <el-form ref="form" :model="form" label-width="200px" :rules="rules">

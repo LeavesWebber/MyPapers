@@ -2,14 +2,13 @@ package logic
 
 import (
 	"bytes"
+	shell "github.com/ipfs/go-ipfs-api"
 	"os"
 	"server/dao/mysql"
 	"server/global"
 	"server/model/request"
 	"server/model/response"
 	"server/model/tables"
-
-	shell "github.com/ipfs/go-ipfs-api"
 )
 
 // GetAllReviews 查询审核列表
@@ -150,7 +149,7 @@ func SubmitReview(in *request.SubmitReview, currentId uint) (out *tables.Review,
 		if in.Status == "Accept" {
 			// 获取审核文章的路径
 			paper, err = mysql.GetPaper(in.PaperId)
-			println(paper.Filepath)
+
 			//把文件存入ipfs并且返回cid
 			cid, err := saveToIPFS(paper.Filepath)
 			if err != nil {
@@ -183,7 +182,6 @@ func saveToIPFS(filePath string) (cid string, err error) {
 	if err != nil {
 		return
 	}
-	println("OK")
 	// 连接到ipfs
 	sh := shell.NewShell(global.MPS_CONFIG.IPFS.Host + ":" + global.MPS_CONFIG.IPFS.Port)
 	//sh := shell.NewShell("127.0.0.1:5001")
