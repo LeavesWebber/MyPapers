@@ -1,0 +1,10 @@
+.idea/
+server/config.yaml
+server/public
+server/image
+server/go.mod
+server/log
+pkg
+web/vue.config.js
+node_modules
+web/yarn.lock
