@@ -1,0 +1,6 @@
+[myPapers]2024/11/26 - 15:07:21.503	[34minfo[0m	/Users/zxh/Desktop/MyPaper/MyPapers/server/initialize/router.go:21	use middleware cors
+[myPapers]2024/11/26 - 15:07:21.505	[34minfo[0m	/Users/zxh/Desktop/MyPaper/MyPapers/server/initialize/router.go:46	router register success
+[myPapers]2024/11/26 - 15:07:21.505	[34minfo[0m	/Users/zxh/Desktop/MyPaper/MyPapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
+[myPapers]2024/11/26 - 15:27:28.027	[34minfo[0m	/Users/zxh/Desktop/MyPaper/MyPapers/server/initialize/router.go:21	use middleware cors
+[myPapers]2024/11/26 - 15:27:28.031	[34minfo[0m	/Users/zxh/Desktop/MyPaper/MyPapers/server/initialize/router.go:46	router register success
+[myPapers]2024/11/26 - 15:27:28.031	[34minfo[0m	/Users/zxh/Desktop/MyPaper/MyPapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
