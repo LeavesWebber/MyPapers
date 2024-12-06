@@ -1659,7 +1659,7 @@ const ERC20contractABI = [
         "type": "function"
     }
 ]
-const ERC20contractAddress = "0x548746c5DE169B603f804aB8ABBCE133981f6B36";
+const ERC20contractAddress = "0x3f63992C47aB0Ad8b83B0d31b23b265996264474";
 export const ERC20contractInstance = new web3.eth.Contract(
     ERC20contractABI,
     ERC20contractAddress
