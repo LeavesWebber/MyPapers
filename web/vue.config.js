@@ -15,5 +15,6 @@ module.exports = defineConfig({
     client: {
       overlay: false,
     },
+    allowedHosts: 'all',  // 新增这一行，允许所有的 Host 请求
   }
 })

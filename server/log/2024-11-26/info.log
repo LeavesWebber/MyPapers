@@ -1,8 +1,0 @@
-[myPapers]2024/11/26 - 10:34:05.658	[34minfo[0m	/opt/MyPapers/server/initialize/gorm.go:37	register table success
-[myPapers]2024/11/26 - 10:34:05.659	[34minfo[0m	/opt/MyPapers/server/initialize/router.go:21	use middleware cors
-[myPapers]2024/11/26 - 10:34:05.659	[34minfo[0m	/opt/MyPapers/server/initialize/router.go:46	router register success
-[myPapers]2024/11/26 - 10:34:05.659	[34minfo[0m	/opt/MyPapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
-[myPapers]2024/11/26 - 10:49:31.157	[34minfo[0m	/opt/MyPapers/server/initialize/gorm.go:37	register table success
-[myPapers]2024/11/26 - 10:49:31.157	[34minfo[0m	/opt/MyPapers/server/initialize/router.go:21	use middleware cors
-[myPapers]2024/11/26 - 10:49:31.158	[34minfo[0m	/opt/MyPapers/server/initialize/router.go:46	router register success
-[myPapers]2024/11/26 - 10:49:31.158	[34minfo[0m	/opt/MyPapers/server/core/server.go:20	server run success on 	{"address": ":8887"}

@@ -1,3 +1,0 @@
-[myPapers]2024/11/25 - 14:56:33.158	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
-[myPapers]2024/11/25 - 14:56:55.646	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
-[myPapers]2024/11/25 - 14:59:38.957	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:28	SubmitPaper with invalid param	{"error": "Key: 'SubmitPaper.BlockAddress' Error:Field validation for 'BlockAddress' failed on the 'required' tag\nKey: 'SubmitPaper.PaperTransactionAddress' Error:Field validation for 'PaperTransactionAddress' failed on the 'required' tag"}

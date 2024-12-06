@@ -1,4 +1,0 @@
-[myPapers]2024/11/20 - 18:06:38.723	[34minfo[0m	E:/vue/mypapers/mypapers/server/initialize/gorm.go:37	register table success
-[myPapers]2024/11/20 - 18:06:38.758	[34minfo[0m	E:/vue/mypapers/mypapers/server/initialize/router.go:21	use middleware cors
-[myPapers]2024/11/20 - 18:06:38.771	[34minfo[0m	E:/vue/mypapers/mypapers/server/initialize/router.go:46	router register success
-[myPapers]2024/11/20 - 18:06:38.771	[34minfo[0m	E:/vue/mypapers/mypapers/server/core/server.go:20	server run success on 	{"address": ":8887"}
