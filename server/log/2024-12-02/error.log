@@ -1,0 +1,2 @@
+[myPapers]2024/12/02 - 10:27:46.552	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/logic/paper.go:211	mysql.Getpaper error	{"error": "record not found"}
+[myPapers]2024/12/02 - 10:27:46.571	[31merror[0m	E:/vue/mypapers/gitee/MyPapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
