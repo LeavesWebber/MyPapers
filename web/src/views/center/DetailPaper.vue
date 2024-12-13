@@ -297,6 +297,7 @@ PDF预览相关：包含论文PDF文件的预览链接(通过paperDetail.filepat
   </div>
 </template>
 <script>
+import { from } from "vue-buffer";
 import {
   getDetailPapers,
   getPaperVersions,
@@ -513,6 +514,7 @@ export default {
       });
     },
     async publish() {
+      // 调用智能合约的铸币函数，将荣誉证书铸造到用户的钱包中
       try {
         // 调用智能合约函数
         if (
@@ -580,6 +582,7 @@ export default {
           }
         });
       } catch (error) {
+        // 处理错误
         console.error("Error:", error);
         this.$message({
           message: "发布失败: " + error.message,
