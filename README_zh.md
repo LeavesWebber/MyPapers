@@ -36,7 +36,7 @@
 
 - `web` 文件夹： 基于 **vue** + **js** + **html** + **css** 开发的**前端**项目文件  
   
-### 基于 `Solidity`：
+  ### 基于 `Solidity`：
 
 - `ERC20.sol` 代币合约  
 
@@ -54,7 +54,6 @@
 - `raw` 分支： 用于存放学长最初给的代码，分支只读，请不要向此推送  
 - `Leaves` 分支： [22 网络 叶文博](https://kiss1314.top) 工作的分支  
 - `MRdada` 分支： [22 计科 林振超]() 工作的分支  
-- `le` 分支： [22 网络 尧家乐](http://lekami.cn/) 工作的分支
 - 待添加  
 
 ## 关于配置信息
@@ -65,7 +64,7 @@
 
 - password: `xmutBC2024`
   
-### 数据库（mysql）:
+  ### 数据库（mysql）:
 
 - db-name: `MyPapers`  
 
