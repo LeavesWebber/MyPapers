@@ -14,13 +14,13 @@
 
 [MyPapers.io](https://mypapers.io)  
 
-### 项目地址：
-
+### 项目地址：  
+私有仓库，目前仅项目组员可见
 - [MyPapers Project（Gitee）](https://gitee.com/leaveswebber/MyPapers)
 
 - [MyPapers Project（Github）](https://github.com/LeavesWebber/MyPapers)  
   
-  ### Host
+### Host
 
 - 内网： `10.35.54.29`  
 
@@ -36,7 +36,7 @@
 
 - `web` 文件夹： 基于 **vue** + **js** + **html** + **css** 开发的**前端**项目文件  
   
-  ### 基于 `Solidity`：
+### 基于 `Solidity`：
 
 - `ERC20.sol` 代币合约  
 
@@ -64,7 +64,7 @@
 
 - password: `xmutBC2024`
   
-  ### 数据库（mysql）:
+### 数据库（mysql）:
 
 - db-name: `MyPapers`  
 
