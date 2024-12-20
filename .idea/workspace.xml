@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="369e16b2-8a03-4533-a3c4-f0f47c18c9e8" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/log/2024-12-03/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/server/log/2024-12-03/info.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/components/CenterAside.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/components/CenterAside.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/constant.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/constant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README_zh.md" beforeDir="false" afterPath="$PROJECT_DIR$/README_zh.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +94,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="Leaves" />
+                        <option value="main" />
                       </list>
                     </value>
                   </entry>
