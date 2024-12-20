@@ -12,7 +12,7 @@
   <h4>{{ isCollapse ? 'Center': 'Personal Center' }}</h4>
     <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.title" :index="item.title">
       <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
-      <span slot="title">{{item.name}}</span>
+      <span slot="title">{{item.label}}</span>
     </el-menu-item>
     <el-submenu v-for="item in hasChildren" :key="item.title" :index="item.title">
       <template slot="title">

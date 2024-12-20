@@ -1,9 +1,7 @@
 import axios from "axios";
 
 const http = axios.create({
-    // 通用请求的地址前缀
     baseURL: '/mypapers',
-    // 超时时间
     timeout: 10000,
 });
 
