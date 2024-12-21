@@ -16,6 +16,9 @@ zap:
 system:
   env: public # 环境值
   addr: 8887 # 端口值
+  use-ssl: false
+  ssl-cert: /etc/ssl/certs/blockchain-fullchain.cer
+  ssl-key: /etc/ssl/private/blockchain-cert.key
   db-type: mysql # 数据库类型
   oss-type: local # Oss类型
   use-multipoint: false # 多点登录拦截
