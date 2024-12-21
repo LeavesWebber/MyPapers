@@ -15,7 +15,12 @@ module.exports = defineConfig({
       }
     },
     client: {
-      webSocketURL: 'wss://www.mypapers.io/ws'
+      webSocketURL: {
+        hostname: 'localhost',
+        pathname: '/ws',
+        port: 8080,
+        protocol: 'ws',
+      }
     },
     allowedHosts: 'all'
   }

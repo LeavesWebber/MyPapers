@@ -24,32 +24,78 @@ export default {
         },
         // 动态注册路由
         addMenu(state, router) {
-            // 判断当前缓存中是否有数据
-            // if (!Cookies.get('menu')) return
-            if (!localStorage.getItem('menu')) return
-            // const menu = JSON.parse(Cookies.get('menu')) // 转成数组
-            const menu = JSON.parse(localStorage.getItem('menu')) // 转成数组
-            state.menu = menu // 更新state中的数据
-            // 组装动态路由的数据
-            console.log(menu, 'menu')
-            const menuArray = []
-            menu.forEach(item => { // 遍历数组
-                if (item.children) {
-                    item.children = item.children.map(item => {
-                        item.component = () => import(`../views/center/${item.url}`)
-                        return item
-                    })
-                    menuArray.push(...item.children)
-                } else {
-                    item.component = () => import(`../views/center/${item.url}`)
-                    menuArray.push(item)
+            try {
+                // 检查缓存中的菜单数据
+                const menuStr = localStorage.getItem('menu');
+                if (!menuStr) {
+                    console.warn('No menu data in localStorage');
+                    return;
                 }
-            });
-            console.log(menuArray, 'menuArray')
-            // 路由的动态添加
-            menuArray.forEach(item => {
-                router.addRoute('Center', item)
-            })
+
+                // 解析菜单数据
+                let menu;
+                try {
+                    menu = JSON.parse(menuStr);
+                } catch (error) {
+                    console.error('Failed to parse menu data:', error);
+                    return;
+                }
+
+                // 验证菜单数据
+                if (!Array.isArray(menu)) {
+                    console.error('Menu data is not an array:', menu);
+                    return;
+                }
+
+                // 更新状态
+                state.menu = menu;
+                const menuArray = [];
+
+                // 处理菜单项
+                for (const item of menu) {
+                    if (item.children) {
+                        // 处理子菜单
+                        item.children = item.children.map(child => {
+                            if (!child.url) {
+                                console.warn('Child menu item missing url:', child);
+                                return child;
+                            }
+                            
+                            try {
+                                child.component = () => import(/* webpackChunkName: "center" */ `../views/center/${child.url}`);
+                            } catch (error) {
+                                console.error(`Failed to load component for ${child.url}:`, error);
+                            }
+                            return child;
+                        });
+                        menuArray.push(...item.children);
+                    } else if (item.url) {
+                        // 处理主菜单
+                        try {
+                            item.component = () => import(/* webpackChunkName: "center" */ `../views/center/${item.url}`);
+                            menuArray.push(item);
+                        } catch (error) {
+                            console.error(`Failed to load component for ${item.url}:`, error);
+                        }
+                    }
+                }
+
+                // 添加路由
+                menuArray.forEach(item => {
+                    if (item.path && item.component) {
+                        try {
+                            router.addRoute('Center', item);
+                        } catch (error) {
+                            console.error(`Failed to add route for ${item.path}:`, error);
+                        }
+                    } else {
+                        console.warn('Invalid route item:', item);
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error in addMenu:', error);
+            }
         }
     },
 }

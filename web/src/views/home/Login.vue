@@ -74,46 +74,79 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.ruleForm);
           login(this.ruleForm).then(({ data }) => {
-            console.log(data.data, "dddddd");
-            console.log(data.code, "cccccc");
             if (data.code === 1000) {
               localStorage.setItem(
                 "userInfo",
                 JSON.stringify(data.data.userInfo)
-              ); // 用localStorage缓存用户信息
-              localStorage.setItem("token", data.data.token); // 用localStorage缓存token值
-              getMenu().then(({ data }) => {
-                console.log(data, "mmmmm");
-                // 获取菜单的数据，存入store中
-                // 用localStorage缓存token值
-                localStorage.setItem("menu", JSON.stringify(data.data));
-                this.$store.commit("setMenu", data.data);
-                this.$store.commit("addMenu", this.$router);
-                console.log("----------------------------------------");
-                // console.log(this.$router);
-                // 跳转至首页
-                // this.$router.push("/userinfo");
-              });
-              this.$notify({
-                title: "Login Success!",
-                type: "success",
-                position: "bottom-right",
-              });
-              this.$router.push("/home");
-            }
+              );
+              localStorage.setItem("token", data.data.token);
+              
+              getMenu()
+                .then(({ data: menuData }) => {
+                  console.log('Menu response:', menuData);
+                  
+                  if (menuData.code === 1000) {
+                    const defaultMenu = [
+                      {
+                        path: "/center",
+                        name: "information",
+                        label: "Information",
+                        icon: "user",
+                        url: "Information",
+                      }
+                    ];
+                    
+                    const menuToUse = menuData.data || defaultMenu;
+                    
+                    localStorage.setItem("menu", JSON.stringify(menuToUse));
+                    this.$store.commit("setMenu", menuToUse);
+                    
+                    try {
+                      this.$store.commit("addMenu", this.$router);
+                    } catch (error) {
+                      console.error('Failed to add routes:', error);
+                      throw new Error('Failed to add routes');
+                    }
 
-            if (data.code === 1005) {
-              // this.$alert("User Not Exist!", {
-              this.$alert("UserName Or Password False", {
-                confirmButtonText: "ok",
+                    this.$notify({
+                      title: "Login Success!",
+                      type: "success",
+                      position: "bottom-right",
+                    });
+                    
+                    setTimeout(() => {
+                      this.$router.push("/home");
+                    }, 100);
+                    
+                  } else {
+                    throw new Error(menuData.msg || 'Failed to get menu data');
+                  }
+                })
+                .catch(error => {
+                  console.error('Menu error:', error);
+                  this.$notify({
+                    title: "Login Error",
+                    message: error.message || "Failed to load menu data",
+                    type: "error",
+                    position: "bottom-right",
+                  });
+                });
+            } else if (data.code === 1005) {
+              this.$alert("Username or Password incorrect", {
+                confirmButtonText: "OK",
+              });
+            } else {
+              this.$alert(data.msg || "Login failed", {
+                confirmButtonText: "OK",
               });
             }
+          }).catch(error => {
+            console.error('Login error:', error);
+            this.$alert("Login failed. Please try again.", {
+              confirmButtonText: "OK",
+            });
           });
-        } else {
-          console.log("error submit!!");
-          return false;
         }
       });
     },
