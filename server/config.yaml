@@ -16,9 +16,9 @@ zap:
 system:
   env: public # 环境值
   addr: 8887 # 端口值
-  use-ssl: false
-  ssl-cert: /etc/ssl/certs/blockchain-fullchain.cer
-  ssl-key: /etc/ssl/private/blockchain-cert.key
+  #use-ssl: true
+  #ssl-cert: /etc/ssl/certs/blockchain-fullchain.cer
+  #ssl-key: /etc/ssl/private/blockchain-cert.key
   db-type: mysql # 数据库类型
   oss-type: local # Oss类型
   use-multipoint: false # 多点登录拦截
@@ -69,9 +69,5 @@ ipfs:
   gateway-port: 8081
   gateway-path: /ipfs
 nginx:
-  host : localhost
-  #host: 10.22.237.248
-  #host: 127.0.0.1
+  host: localhost
   port: 8887
-  #host: 172.16.170.195
-  #port: 8080
