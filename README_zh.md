@@ -88,24 +88,56 @@
 
 ---  
 
-文档编辑人： **叶文博**   
-最后更新时间： **2024-11-25**  
+本次文档更新者： **叶文博**   
+最后更新时间： **2025-01-04**  
 
 ---
+## 附录目录：  
+1. [附录1： 项目待办事项](#附录1-项目待办事项-)
+2. [附录2： 后端数据库结构](#附录2-后端数据库结构)
+3. [附录3： 学长最初的开发环境](#附录3学长最初的开发环境)  
 
-## *另附：学长最初的开发环境*
+<br>
 
-操作系统：centos7.9.2009  
-开发平台：Visual Studio Code 1.88.0；Remix   0.47.0；Goland  2023.1.2  
-开发语言：Solidity ^0.8.0 ；javascript ；css ；html；go 1.20.2
+### 附录1： 项目待办事项  
+#### Avatar 显示异常
+本地已经可显示、修改头像，但是服务器显示不了，有多个报错如下：  
+![](https://kiss1314.top:5555/d/webImage/20250104205949.png)
+经测试，图片上传是正常的。
 
----  
+#### 权限管理异常
+> 这个问题在 **center** 里的 **User Management** 里能复现。
+- 仅管理员才能有修改 role 的权限
+  ![](https://kiss1314.top:5555/d/webImage/20250104224620.png)
 
-## *另附： 后端数据库结构*
+
+
+#### ws 请求头问题
+这个问题服务器有，本地没有，尝试过很多修改仍未解决
+![](https://kiss1314.top:5555/d/webImage/20250104210137.png)
+
+#### 属性值复定义的问题
+这在打开 center 时会显示出来，一堆让人头疼的报错  
+![](https://kiss1314.top:5555/d/webImage/20250104221345.png)
+
+
+#### smtp 验证码机制
+- [ ] 在咱们的 VPS 上搭建 smtp 服务器，或采用域名注册商那边的邮件服务。
+- [ ] 用户注册时，用咱们的域名（`mypapers.io`）作为邮件发件方，发送邮箱验证码，认证后才准许注册。
+- [ ] 有基本的域审查（仅像`@edu`这样受到认可的邮箱才准许注册）
+  
+#### 已完成
+- [x] ~~Journey 显示异常~~
+
+- [x] ~~修复侧边栏折叠按钮的显示异常~~
+
+- [x] ~~Desr 加入编辑栏~~
+
+### 附录2： 后端数据库结构
 
 > 我把后端数据库结构做成了 `Markdown` 表格，作为大家执行 `sql` 查询时的参考
 
-### 1. authorities
+#### 1. authorities
 
 | Column Name    | Data Type |
 | -------------- | --------- |
@@ -116,14 +148,14 @@
 | parent_id      | bigint    |
 | authority_name | varchar   |
 
-### 2. authority_menus
+#### 2. authority_menus
 
 | Column Name            | Data Type |
 | ---------------------- | --------- |
 | base_menu_id           | bigint    |
 | authority_authority_id | bigint    |
 
-### 3. base_menus
+#### 3. base_menus
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -139,7 +171,7 @@
 | title       | varchar   |
 | icon        | varchar   |
 
-### 4. committees
+#### 4. committees
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -151,7 +183,7 @@
 | name        | varchar   |
 | description | text      |
 
-### 5. conference_issues
+#### 5. conference_issues
 
 | Column Name           | Data Type |
 | --------------------- | --------- |
@@ -167,7 +199,7 @@
 | year                  | bigint    |
 | volume                | bigint    |
 
-### 6. conferences
+#### 6. conferences
 
 | Column Name  | Data Type |
 | ------------ | --------- |
@@ -184,7 +216,7 @@
 | start_time   | datetime  |
 | end_time     | datetime  |
 
-### 7. journal_issues
+#### 7. journal_issues
 
 | Column Name           | Data Type |
 | --------------------- | --------- |
@@ -200,7 +232,7 @@
 | year                  | bigint    |
 | volume                | bigint    |
 
-### 8. journals
+#### 8. journals
 
 | Column Name  | Data Type |
 | ------------ | --------- |
@@ -214,7 +246,7 @@
 | description  | text      |
 | category     | varchar   |
 
-### 9. paper_viewers
+#### 9. paper_viewers
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -225,7 +257,7 @@
 | paper_id    | bigint    |
 | viewer_id   | bigint    |
 
-### 10. papers
+#### 10. papers
 
 | Column Name             | Data Type |
 | ----------------------- | --------- |
@@ -263,7 +295,7 @@
 | json_uri                | varchar   |
 | transaction_hash        | varchar   |
 
-### 11. reviews
+#### 11. reviews
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -277,14 +309,14 @@
 | status      | varchar   |
 | old_version | tinyint   |
 
-### 12. user_authority
+#### 12. user_authority
 
 | Column Name            | Data Type |
 | ---------------------- | --------- |
 | user_id                | bigint    |
 | authority_authority_id | bigint    |
 
-### 13. user_committee
+#### 13. user_committee
 
 | Column Name  | Data Type |
 | ------------ | --------- |
@@ -295,7 +327,7 @@
 | position     | varchar   |
 | level        | varchar   |
 
-### 14. user_conference
+#### 14. user_conference
 
 | Column Name   | Data Type |
 | ------------- | --------- |
@@ -306,7 +338,7 @@
 | position      | varchar   |
 | level         | varchar   |
 
-### 15. user_journal
+#### 15. user_journal
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -317,7 +349,7 @@
 | position    | varchar   |
 | level       | varchar   |
 
-### 16. user_paper
+#### 16. user_paper
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -325,7 +357,7 @@
 | paper_id    | bigint    |
 | old_version | tinyint   |
 
-### 17. users
+#### 17. users
 
 | Column Name         | Data Type |
 | ------------------- | --------- |
@@ -351,3 +383,13 @@
 | block_chain_address | varchar   |
 | affiliation         | varchar   |
 | affiliation_type    | varchar   |
+
+  
+---
+### 附录3：学长最初的开发环境
+
+操作系统：centos7.9.2009  
+开发平台：Visual Studio Code 1.88.0；Remix   0.47.0；Goland  2023.1.2  
+开发语言：Solidity ^0.8.0 ；javascript ；css ；html；go 1.20.2
+
+---  
