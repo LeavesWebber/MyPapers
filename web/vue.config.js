@@ -7,21 +7,16 @@ module.exports = defineConfig({
     port: 8080,        // 设置端口号
     proxy: {
       '/mypapers': {
-        target: 'http://localhost:8887/mypapers/',  // 改回http
-        changeOrigin: true,
+        target: 'http://127.0.0.1:8887/mypapers/', // 后端接口
+        changeOrigin: true, // 是否跨域
         pathRewrite: {
           '/mypapers': ''
         }
       }
     },
     client: {
-      webSocketURL: {
-        hostname: 'localhost',
-        pathname: '/ws',
-        port: 8080,
-        protocol: 'ws',
-      }
+      overlay: false,
     },
-    allowedHosts: 'all'
+    allowedHosts: 'all',  // 新增这一行，允许所有的 Host 请求
   }
 })
