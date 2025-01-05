@@ -26,3 +26,10 @@ type MPS_MODEL struct {
 	UpdatedAt time.Time      // 更新时间
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"` // 删除时间
 }
+
+const (
+	SUPER_ADMIN   = 101 // 超级管理员
+	CREATOR_ADMIN = 102 // 创建者管理员
+	MEMBER        = 103 // 成员
+	USER          = 104 // 普通用户
+)

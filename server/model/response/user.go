@@ -21,3 +21,17 @@ type GetAllUser struct {
 	Phone       string `json:"phone"`
 	Address     string `json:"address"`
 }
+
+func ToGetAllUser(user tables.User) GetAllUser {
+	return GetAllUser{
+		ID:          user.ID,
+		AuthorityId: user.AuthorityId,
+		Username:    user.Username,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		Email:       user.Email,
+		Department:  user.Department,
+		Phone:       user.Phone,
+		Address:     user.Address,
+	}
+}

@@ -2,8 +2,6 @@ package logic
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -11,6 +9,9 @@ import (
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // Login 用户登录
