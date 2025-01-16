@@ -78,6 +78,8 @@
 
 <script>
 import { register } from "../../api";
+import { MPScontractInstance } from "@/constant";
+const contractInstance = MPScontractInstance;
 export default {
   data() {
     var checkData = (rule, value, callback) => {
@@ -148,6 +150,20 @@ export default {
     };
   },
   methods: {
+    async registe_gift(block_chain_address) {
+      const functionArgs = [
+          block_chain_address
+        ];
+      const functionName="registerUser"
+      const result = await contractInstance.methods[functionName](
+          ...functionArgs
+        ).send({
+          from: window.ethereum.selectedAddress,
+          gasPrice: "0",
+        });
+      
+      },
+
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -159,6 +175,7 @@ export default {
               this.$alert("Register success", {
                 confirmButtonText: "ok",
               });
+              this.registe_gift(this.ruleForm.block_chain_address)
               this.$router.push("/home");
             }
 
