@@ -2201,7 +2201,7 @@ const MPScontractABI = [
         "type": "function"
     }
 ]
-const MPScontractAddress = "0xCcb36A4B1DaBeCd5e0B03A9801A1cDc5e897d383";
+const MPScontractAddress = "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0";
 export const MPScontractInstance = new web3.eth.Contract(
     MPScontractABI,
     MPScontractAddress

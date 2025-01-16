@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract MPS is ERC20 {
     using Counters for Counters.Counter;
     Counters.Counter private _hashCounter;
-
+    const PopularizeAccount = 0x7978c92C6DE8aAd1210FeBe413C7206917999B3c;
     // 哈希值到账户地址的映射
     mapping(string => address) private _hashToAddress;
     // 审稿内容到账户地址的映射
@@ -41,10 +41,13 @@ contract MPS is ERC20 {
         return _hashToAddress[hash];
     }
 
-     function registerUser(address user) public onlyOwner {
-        // 给用户铸造 500 个代币
-        require(user != address(0),"Invalid address");
-        _mint(user, 500 * 10 ** decimals());
+     function registerUser(address user) public {
+        //推广账户地址
+        address tokenSource=0x7978c92C6DE8aAd1210FeBe413C7206917999B3c;
+        // 检查发送者是否有足够的代币
+        require(balanceOf(tokenSource) >= 500 * 10 ** decimals(), "Insufficient tokens in the source account");
+        // 从代币来源账户转移 500 个代币给用户
+        _transfer(tokenSource, user, 500 * 10 ** decimals());
     }
 
     // 转账函数
