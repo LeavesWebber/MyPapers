@@ -12,7 +12,7 @@ import "highlight.js/styles/github.css";
 Vue.directive("highlight", function (el) {
   let blocks = el.querySelectorAll("pre code");
   blocks.forEach(block => {
-    hljs.highlightBlock(block);
+    hljs.highlightElement(block);
   });
 });
 // 增加组定义属性，用于在代码中预处理代码格式

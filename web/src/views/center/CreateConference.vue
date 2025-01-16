@@ -38,15 +38,16 @@
             <el-input v-model="form.location"></el-input>
           </el-form-item>
           <el-form-item
-            style="width: 600px"
+            style="width: 800px"
             label="Description"
             prop="description"
           >
-            <el-input
-              type="textarea"
-              :rows="7"
-              v-model="form.description"
-            ></el-input>
+            <div class="editor-container">
+              <div ref="editor"></div>
+              <div class="word-count">
+                Words: {{ wordCount }} / 250 (minimum: 150)
+              </div>
+            </div>
           </el-form-item>
           <el-form-item label="Category" prop="categoryTags">
             <el-tag
@@ -308,7 +309,10 @@
 </template>
 
 <script>
+import Quill from 'quill'
+import 'quill/dist/quill.snow.css'
 import { createConference, getCommitteeList } from "../../api";
+
 export default {
   data() {
     var validateWordCount = (rule, value, callback) => {
@@ -508,6 +512,22 @@ export default {
       value: [],
       inputVisible: false,
       inputValue: "",
+      editor: null,
+      wordCount: 0,
+      editorOption: {
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['clean']
+          ]
+        },
+        placeholder: 'Please input description...',
+        theme: 'snow'
+      },
     };
   },
   methods: {
@@ -729,9 +749,57 @@ export default {
         console.log(this.options, "this.options");
       });
     },
+    initEditor() {
+      this.editor = new Quill(this.$refs.editor, this.editorOption);
+      
+      // 监听内容变化
+      this.editor.on('text-change', () => {
+        // 获取纯文本内容
+        let text = this.editor.getText();
+        
+        // 移除所有换行符和多余空格
+        text = text.replace(/\n/g, ' ').trim();
+        
+        // 如果文本为空，设置字数为0
+        if (!text || text === ' ') {
+          this.wordCount = 0;
+        } else {
+          // 分别处理中文和英文
+          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+          
+          // 移除中文字符，然后按空格分割英文单词
+          const englishText = text.replace(/[\u4e00-\u9fa5]/g, '');
+          const englishWords = englishText.split(/\s+/).filter(word => word.length > 0);
+          
+          // 总字数 = 中文字符数 + 英文单词数
+          this.wordCount = chineseChars.length + englishWords.length;
+        }
+        
+        // 更新 form.description，保留HTML格式
+        this.form.description = this.editor.root.innerHTML;
+      });
+
+      // 如果有初始值，设置它
+      if (this.form.description) {
+        this.editor.root.innerHTML = this.form.description;
+        
+        // 初始化时也计算一次字数
+        let text = this.editor.getText().replace(/\n/g, ' ').trim();
+        
+        if (!text || text === ' ') {
+          this.wordCount = 0;
+        } else {
+          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+          const englishText = text.replace(/[\u4e00-\u9fa5]/g, '');
+          const englishWords = englishText.split(/\s+/).filter(word => word.length > 0);
+          this.wordCount = chineseChars.length + englishWords.length;
+        }
+      }
+    },
   },
   mounted() {
     this.getCommitteeList();
+    this.initEditor();
   },
   computed: {
     dateTimeStartFunc4() {
@@ -759,6 +827,12 @@ export default {
       };
     },
   },
+  beforeDestroy() {
+    // 清理编辑器实例
+    if (this.editor) {
+      this.editor = null;
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -774,5 +848,41 @@ export default {
 .button-container {
   display: flex;
   justify-content: flex-end;
+}
+.editor-container {
+  border-radius: 4px;
+  
+  .ql-toolbar {
+    white-space: nowrap;
+    overflow-x: auto;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .ql-container {
+    height: 200px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  .ql-editor {
+    height: 100%;
+    font-size: 14px;
+  }
+}
+
+.word-count {
+  margin-top: 5px;
+  text-align: right;
+  color: #606266;
+  font-size: 12px;
+}
+
+// 确保编辑器在较小屏幕上也能正常显示
+@media screen and (max-width: 900px) {
+  .editor-container {
+    width: 100%;
+    min-width: 300px;
+  }
 }
 </style>

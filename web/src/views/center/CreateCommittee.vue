@@ -14,15 +14,16 @@
             <el-input v-model="form.name"></el-input>
           </el-form-item>
           <el-form-item
-            style="width: 600px"
+            style="width: 800px"
             label="Description"
             prop="description"
           >
-            <el-input
-              type="textarea"
-              :rows="7"
-              v-model="form.description"
-            ></el-input>
+            <div class="editor-container">
+              <div ref="editor"></div>
+              <div class="word-count">
+                Words: {{ wordCount }} / 250 (minimum: 150)
+              </div>
+            </div>
           </el-form-item>
 
           <h3>President</h3>
@@ -224,7 +225,10 @@
 </template>
 
 <script>
+import Quill from 'quill'
+import 'quill/dist/quill.snow.css'
 import { createCommittee } from "../../api";
+
 export default {
   data() {
     var validateWordCount = (rule, value, callback) => {
@@ -236,7 +240,8 @@ export default {
       }
     };
     var validateDescriptionWordCount = (rule, value, callback) => {
-      const wordCount = value.trim().split(/\s+/).length;
+      const plainText = value.replace(/<[^>]+>/g, '').trim();
+      const wordCount = plainText.split(/\s+/).length;
       if (wordCount < 10 || wordCount > 10000) {
         callback(new Error("Should contain 10 to 10k words"));
       } else {
@@ -387,9 +392,75 @@ export default {
       flag3: true,
       options: [],
       value: [],
+      editor: null,
+      wordCount: 0,
+      editorOption: {
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['clean']
+          ]
+        },
+        placeholder: 'Please input description...',
+        theme: 'snow'
+      }
     };
   },
+  mounted() {
+    this.initEditor();
+  },
   methods: {
+    initEditor() {
+      this.editor = new Quill(this.$refs.editor, this.editorOption);
+      
+      // 监听内容变化
+      this.editor.on('text-change', () => {
+        // 获取纯文本内容
+        let text = this.editor.getText();
+        
+        // 移除所有换行符和多余空格
+        text = text.replace(/\n/g, ' ').trim();
+        
+        // 如果文本为空，设置字数为0
+        if (!text || text === ' ') {
+          this.wordCount = 0;
+        } else {
+          // 分别处理中文和英文
+          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+          
+          // 移除中文字符，然后按空格分割英文单词
+          const englishText = text.replace(/[\u4e00-\u9fa5]/g, '');
+          const englishWords = englishText.split(/\s+/).filter(word => word.length > 0);
+          
+          // 总字数 = 中文字符数 + 英文单词数
+          this.wordCount = chineseChars.length + englishWords.length;
+        }
+        
+        // 更新 form.description，保留HTML格式
+        this.form.description = this.editor.root.innerHTML;
+      });
+
+      // 如果有初始值，设置它
+      if (this.form.description) {
+        this.editor.root.innerHTML = this.form.description;
+        
+        // 初始化时也计算一次字数
+        let text = this.editor.getText().replace(/\n/g, ' ').trim();
+        
+        if (!text || text === ' ') {
+          this.wordCount = 0;
+        } else {
+          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+          const englishText = text.replace(/[\u4e00-\u9fa5]/g, '');
+          const englishWords = englishText.split(/\s+/).filter(word => word.length > 0);
+          this.wordCount = chineseChars.length + englishWords.length;
+        }
+      }
+    },
     // 表单添加一行
     add() {
       var arr = {
@@ -575,20 +646,145 @@ export default {
       });
     },
   },
+  beforeDestroy() {
+    // 清理编辑器实例
+    if (this.editor) {
+      this.editor = null;
+    }
+  }
 };
 </script>
+<style lang="less">
+.editor-container {
+  border-radius: 4px;
+  
+  .ql-toolbar.ql-snow {
+    white-space: nowrap;
+    overflow-x: auto;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 2px 4px;
+    min-height: 24px;
+    
+    .ql-formats {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 10px;
+      vertical-align: middle;
+      margin-top: 1px;
+      margin-bottom: 1px;
+      
+      button {
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0 1px;
+      }
+      
+      .ql-picker {
+        height: 20px;
+        
+        &.ql-color-picker,
+        &.ql-background {
+          width: 20px;
+          padding: 0;
+          margin: 0 1px;
+          
+          .ql-picker-label {
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+        
+        .ql-picker-label {
+          display: flex;
+          align-items: center;
+          padding: 0 3px;
+          height: 100%;
+          font-size: 12px;
+        }
+        
+        .ql-picker-options {
+          padding: 3px;
+          
+          .ql-picker-item {
+            display: flex;
+            align-items: center;
+            height: 20px;
+            padding: 3px;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+    
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+
+  .ql-container.ql-snow {
+    height: 200px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  .ql-editor {
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 12px 15px;
+  }
+}
+</style>
+
 <style lang="less" scoped>
 .box {
-  // 左右下内边距
   padding: 0px 60px 60px 60px;
-  // 取消父组件的居中
   text-align: left;
 }
+
 .el-date-editor.el-input {
   width: 155px;
 }
+
 .button-container {
   display: flex;
   justify-content: flex-end;
+}
+
+.word-count {
+  margin-top: 5px;
+  text-align: right;
+  color: #606266;
+  font-size: 12px;
+}
+
+@media screen and (max-width: 900px) {
+  .editor-container {
+    width: 100%;
+    min-width: 300px;
+  }
 }
 </style>

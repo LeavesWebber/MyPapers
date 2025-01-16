@@ -30,10 +30,30 @@ export default {
 };
 </script>
 <style>
+.el-container {
+  min-height: 100vh;
+}
+
+.el-aside {
+  position: relative;
+  z-index: 1;
+}
+
 .el-main {
-  /* background-color: #ECF5FF;
-  height: 40px !important; */
+  padding: 20px;
   line-height: 40px;
   text-align: center;
+}
+
+@media screen and (max-width: 1200px) {
+  .el-main {
+    margin-left: 260px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .el-main {
+    margin-left: 250px;
+  }
 }
 </style>

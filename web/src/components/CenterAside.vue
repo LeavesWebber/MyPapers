@@ -1,45 +1,138 @@
 <template>
-  <el-menu
-    default-active="1-4-1"
-    class="el-menu-vertical-demo"
-    @open="handleOpen"
-    @close="handleClose"
-    :collapse="isCollapse"
-     background-color="#191A23"
+  <div class="menu-wrapper">
+    <el-menu
+      default-active="1-4-1"
+      class="el-menu-vertical-demo"
+      @open="handleOpen"
+      @close="handleClose"
+      :collapse="isCollapse"
+      background-color="#191A23"
       text-color="#fff"
       active-text-color="#fff"
-  >
-  <h4>{{ isCollapse ? 'Center': 'Personal Center' }}</h4>
-    <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.title" :index="item.title">
-      <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
-      <span slot="title">{{item.name}}</span>
-    </el-menu-item>
-    <el-submenu v-for="item in hasChildren" :key="item.title" :index="item.title">
-      <template slot="title">
+    >
+      <h4>{{ isCollapse ? 'Center': 'Personal Center' }}</h4>
+      <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.title" :index="item.title">
         <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
         <span slot="title">{{item.label}}</span>
-      </template>
-      <el-menu-item-group v-for="subItem in item.children" :key="subItem.path">
-        <el-menu-item  @click="clickMenu(subItem)" :index="subItem">{{subItem.label}}</el-menu-item>
-      </el-menu-item-group>
+      </el-menu-item>
+      <el-submenu v-for="item in hasChildren" :key="item.title" :index="item.title">
+        <template slot="title">
+          <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
+          <span slot="title">{{item.label}}</span>
+        </template>
+        <el-menu-item-group v-for="subItem in item.children" :key="subItem.path">
+          <el-menu-item  @click="clickMenu(subItem)" :index="subItem">{{subItem.label}}</el-menu-item>
+        </el-menu-item-group>
       </el-submenu>
-  </el-menu>
+    </el-menu>
+  </div>
 </template>
 
 <style lang="less" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 100%;
+  width: 280px;
 }
+
 .el-menu {
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   border-right: none;
+  position: fixed;
+  width: 280px;
+  
   h4 {
     color: #fff;
     text-align: center;
-    line-height: 48px;
-    font-size: 16px;
+    height: 8vh;
+    line-height: 8vh;
+    font-size: clamp(14px, 2vh, 18px);
     font-weight: 400;
+  }
+
+  :deep(.el-submenu__title),
+  :deep(.el-menu-item) {
+    height: auto;
+    min-height: 7vh;
+    line-height: 1.5;
+    padding: 1vh 1.5vw;
+    white-space: normal;
+    word-wrap: break-word;
+    display: flex;
+    align-items: center;
+    font-size: clamp(13px, 1.8vh, 16px);
+  }
+
+  :deep(.el-submenu .el-menu-item) {
+    min-height: 6vh;
+    height: auto;
+    padding: 1vh 1.5vw 1vh 3vw;
+  }
+
+  :deep(.el-menu-item-group__title) {
+    padding: 0;
+  }
+
+  :deep(.el-submenu__icon-arrow) {
+    right: 1.5vw;
+    margin-top: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  // 图标样式
+  :deep([class^="el-icon-"]) {
+    margin-right: 1vw;
+    font-size: clamp(16px, 2vh, 20px);
+    width: 2em;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  // 文本内容样式
+  :deep(.el-submenu__title span),
+  :deep(.el-menu-item span) {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+.menu-wrapper {
+  width: 280px;
+  height: 100%;
+  min-height: 100vh;
+}
+
+// 响应式布局
+@media screen and (max-width: 1200px) {
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 260px;
+  }
+  
+  .el-menu {
+    width: 260px;
+  }
+  
+  .menu-wrapper {
+    width: 260px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 250px;
+  }
+  
+  .el-menu {
+    width: 250px;
+  }
+  
+  .menu-wrapper {
+    width: 250px;
   }
 }
 </style>
@@ -52,130 +145,131 @@ export default {
         {
           path: "/center/information",
           name: "information",
-          label: "个人信息",
+          label: "Personal Information",
           icon: "user",
           title: "1",
           url: "Center",
         },
         {
-          label: "委员会管理",
+          label: "Committee Management",
           icon: "s-custom",
           title: "2",
           children: [
             {
               path:"/center/createcommittees",
               name:"createCommittee",
-              label: "创建委员会",
+              label: "Create Committee",
             },
             {
               path: "/center/selfCommittee",
               name:"selfCommittee",
-              label: "管理委员会",
+              label: "Manage Committee",
+              icon: "el-icon-plus",
             }
           ]
         },
         {
-          label: "会议管理",
+          label: "Conference Management",
           icon: "s-marketing",
           title: "3", 
           children: [
             {
               path: "/center/createConference",
               name: "createConference",
-              label: "创建会议",
+              label: "Create Conference",
               url: "Center/CreateConference",
             },
             {
               path: "/center/selfConference", 
-              label: "管理会议",
+              label: "Manage Conference",
               name: "selfConference",
               url: "center/selfConference",
             },
             {
               path: "/center/conferenceIssues",
-              label: "会议期刊",
+              label: "Conference Issues",
               name: "conferenceIssues",
               url: "center/conferenceIssues",
             }
           ]
         },
         {
-          label: "期刊管理",
+          label: "Journal Management",
           icon: "document",
           title: "4",
           children: [
             {
               path: "/center/createJournal",
-              label: "创建期刊",
+              label: "Create Journal",
               name: "createJournal",
             },
             {
               path: "/center/selfJournal",
-              label: "管理期刊",
+              label: "Manage Journal",
               name: "selfJournal",
             },
             {
               path: "/center/journalIssues",
-              label: "期刊期次",
+              label: "Journal Issues",
               name: "journalIssues",
             }
           ]
         },
         {
-          label: "论文管理",
+          label: "Paper Management",
           icon: "document-copy",
           title: "5",
           children: [
             {
               path: "/center/papers",
-              label: "我的论文",
+              label: "My Papers",
               name:"papers",
             },
             {
               path:"/center/ReviewedPapers",
               name:"reviewedPapers",
-              label: "我的论文（已审核）",
+              label: "My Papers (Reviewed)",
             },
             {
               path:"/center/InReviewPapers",
               name:"inReviewPapers",
-              label: "我的论文（待审核）",
+              label: "My Papers (Under Review)",
             },
             {
               path: "/center/inReview",
               name:"inReview",
-              label: "审核中论文",
+              label: "Papers Under Review",
             },
             {
               path: "/center/Reviewed",
-              label: "我已审核的论文",
+              label: "Papers I Reviewed",
               name:"Reviewed",
             },
             {
               path: "/center/Reviews",
-              label: "待审核论文",
+              label: "Papers To Review",
               name:"Reviews",
             }
           ]
         },
         {
-          label: "NFT管理",
+          label: "NFT Management",
           icon: "trophy-1",
           title: "6",
           children: [
             {
               path: "/center/MyNFTs",
-              label: "我的NFT",
+              label: "My NFTs",
               name: "myNFTs",
             },
             {
               path: "/center/NFTSelling",
-              label: "NFT交易",
+              label: "NFT Trading",
               name: "nftSelling",
             },
             {
               path: "/center/Mint",
-              label: "铸造NFT",
+              label: "Mint NFT",
               name: "mint",
             }
           ]
@@ -183,7 +277,7 @@ export default {
         {
           path: "/center/Users",
           name: "users",
-          label: "用户管理",
+          label: "User Management",
           icon: "user-solid",
           title: "7"
         }
