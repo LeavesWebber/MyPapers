@@ -1,9 +1,9 @@
 package logic
 
 import (
+	"crypto/tls"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"log"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -11,6 +11,10 @@ import (
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+	gomail "gopkg.in/gomail.v2"
 )
 
 // Login 用户登录
@@ -60,20 +64,44 @@ func Register(in *request.Register) (err error) {
 	return mysql.Register(user)
 }
 
-// GetSelfInfo 获取自身信息
-func GetSelfInfo(uuid int64) (userInfo tables.User, err error) {
-	return mysql.GetSelfInfo(uuid)
+func SendMail(in *request.SendMail) (err error) {
+
+	host := "smtp.qq.com"
+	port := 25
+	userName := "2904976636@qq.com"
+	password := "gmlvjlnjgbbpdcec" // qq邮箱填授权码
+	log.Println(in.Verification + "111111111111111111111111111111111111111111111111")
+	m := gomail.NewMessage()
+	m.SetHeader("From", userName)
+	m.SetHeader("To", in.MailReceiver)      // 收件人，可以多个收件人，但必须使用相同的 SMTP 连接
+	m.SetHeader("Subject", "Varification")  // 邮件主题
+	m.SetBody("text/html", in.Verification) //验证码
+	d := gomail.NewDialer(
+		host,
+		port,
+		userName,
+		password,
+	)
+
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	if err := d.DialAndSend(m); err != nil {
+
+		panic(err)
+	}
+	return nil
 }
 
-//// GetUserTree 获取用户树
-//func GetUserTree() (users []tables.User, err error) {
-//	userTree, err := mysql.GetUserTreeMap() // 获取user的父子对应关系（此时还是乱序的）
-//	users = userTree[0]
-//	for i := 0; i < len(users); i++ {
-//		err = getUserChildrenList(&users[i], userTree) // 从根节点开始遍历整理user树（从根节点开始有序）
+// // GetUserTree 获取用户树
+//
+//	func GetUserTree() (users []tables.User, err error) {
+//		userTree, err := mysql.GetUserTreeMap() // 获取user的父子对应关系（此时还是乱序的）
+//		users = userTree[0]
+//		for i := 0; i < len(users); i++ {
+//			err = getUserChildrenList(&users[i], userTree) // 从根节点开始遍历整理user树（从根节点开始有序）
+//		}
+//		return users, err
 //	}
-//	return users, err
-//}
 
 // GetAllUser 获取所有用户
 func GetAllUser() (users []response.GetAllUser, err error) {
@@ -81,14 +109,20 @@ func GetAllUser() (users []response.GetAllUser, err error) {
 
 }
 
-//// getChildrenList 生成一颗关系树
-//func getUserChildrenList(user *tables.User, treeMap map[uint][]tables.User) (err error) {
-//	user.Children = treeMap[user.ID]
-//	for i := 0; i < len(user.Children); i++ {
-//		err = getUserChildrenList(&user.Children[i], treeMap)
+// // getChildrenList 生成一颗关系树
+//
+//	func getUserChildrenList(user *tables.User, treeMap map[uint][]tables.User) (err error) {
+//		user.Children = treeMap[user.ID]
+//		for i := 0; i < len(user.Children); i++ {
+//			err = getUserChildrenList(&user.Children[i], treeMap)
+//		}
+//		return err
 //	}
-//	return err
-//}
+//
+// GetSelfInfo 获取本用户信息
+func GetSelfInfo(uuid int64) (userInfo tables.User, err error) {
+	return mysql.GetSelfInfo(uuid)
+}
 
 // ChangePassword 修改密码
 func ChangePassword(in *request.ChangePassword, uuid int64) error {
