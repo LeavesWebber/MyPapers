@@ -113,9 +113,33 @@ export default {
       }
     },
     callWxPay(payParams) {
-      // 这里需要集成微信支付SDK
-      // 支付成功后刷新余额
-      this.fetchMPSBalance()
+      if (typeof WeixinJSBridge == "undefined") {
+        if (document.addEventListener) {
+          document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(payParams), false);
+        } else if (document.attachEvent) {
+          document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(payParams));
+          document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(payParams));
+        }
+      } else {
+        this.onBridgeReady(payParams);
+      }
+    },
+    onBridgeReady(payParams) {
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest',
+        payParams,
+        (res) => {
+          if (res.err_msg == "get_brand_wcpay_request:ok") {
+            // 支付成功
+            this.$message.success('支付成功')
+            // 轮询订单状态
+            this.pollOrderStatus(payParams.orderNo)
+          } else {
+            // 支付失败
+            this.$message.error('支付失败，请重试')
+          }
+        }
+      );
     }
   }
 }

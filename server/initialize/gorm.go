@@ -29,6 +29,8 @@ func RegisterTables(db *gorm.DB) {
 		tables.JournalIssue{},
 		tables.ConferenceIssue{},
 		tables.PaperViewers{},
+		tables.MPSRechargeOrder{},
+		tables.MPSTransaction{},
 	)
 	if err != nil {
 		global.MPS_LOG.Error("register table failed", zap.Error(err))
