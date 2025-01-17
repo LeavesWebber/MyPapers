@@ -2,7 +2,6 @@ package logic
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"image"
 	"image/draw"
@@ -209,18 +208,21 @@ func GetPaper(paperID uint) (detail *response.GetPaper, err error) {
 	// 获取投稿信息
 	detail = new(response.GetPaper)
 	if detail.Paper, err = mysql.GetPaper(paperID); err != nil {
+		global.MPS_LOG.Error("mysql.Getpaper error", zap.Error(err))
 		return
 	}
 	detail.Paper.Filepath = "http://" + global.MPS_CONFIG.Nginx.Host + ":" + global.MPS_CONFIG.Nginx.Port + "/" + detail.Paper.Filepath
 	// 获取各个审核人的审核结果
 	reviews, err := mysql.GetReviews(paperID)
 	if err != nil {
+		global.MPS_LOG.Error("mysql.getreviews error", zap.Error(err))
 		return nil, err
 	}
 	// 获取各个审核人的信息
 	for _, v := range reviews {
 		user, err := mysql.GetUserInfoByID(v.ReviewerId)
 		if err != nil {
+			global.MPS_LOG.Error("lmysql.getuserinfobyid error", zap.Error(err))
 			return nil, err
 		}
 		detail.ReviewInfos = append(detail.ReviewInfos, &response.ReviewInfo{
@@ -529,24 +531,26 @@ func contentAuthors(content *freetype.Context, authors string) {
 	authorsX := (3508 - authorsWidth) / 2
 	content.DrawString(authors, freetype.Pt(authorsX, 1200))
 }
-func contentData(content *freetype.Context, title string, conferenceOrJournalName string) error {
-	if title == "" || conferenceOrJournalName == "" {
-		return errors.New("标题或期刊/会议名称不能为空")
-	}
-
+func contentData(content *freetype.Context, title, name string) {
 	content.SetFontSize(70) // 设置字体大小
-	data := "Certificate of acceptance for the manuscrip(" + conferenceOrJournalName + ") titled: " + title + " from MyPapers."
+	data := "Certificate of acceptance for the manuscrip(" + name + ") titled: " + title + " from MyPapers."
 	dataX := 400
 	dataY := 1300
-	for i := 0; i < len(data); i += 75 {
-		end := i + 75
-		if end > len(data) {
-			end = len(data)
+	for i := 0; i < len(data); i += 90 {
+		if i == 0 {
+			content.DrawString(data[i:i+75], freetype.Pt(dataX+110, dataY))
+			dataY += 75
+			i -= 10
+			continue
 		}
-		content.DrawString(data[i:end], freetype.Pt(dataX+110, dataY))
-		dataY += 30 // 调整行间距
+		content.DrawString(data[i:i+75], freetype.Pt(dataX+110, dataY))
+		if i+90 > len(data) {
+			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
+			break
+		}
+		content.DrawString(data[i:i+85], freetype.Pt(dataX, dataY))
+		dataY += 75
 	}
-	return nil
 }
 func contentHash(content *freetype.Context, transactionAddress, blockAddress string) {
 	content.SetFontSize(50) // 设置字体大小
@@ -570,7 +574,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	if err != nil {
 		return
 	}
-	// 新建一张和模板文��一样大小的画布
+	// 新建一张和模板文件一样大小的画布
 	newTemplateImage := image.NewRGBA(templateFileImage.Bounds())
 	// 将模板图片画到新建的画布上
 	draw.Draw(newTemplateImage, templateFileImage.Bounds(), templateFileImage, templateFileImage.Bounds().Min, draw.Over)
@@ -594,10 +598,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	contentAuthors(content, paper.Authors) // 写入作者信息
 	// 根据paperId查投的是哪个会议或者期刊
 	conferenceOrJournalName, err := mysql.GetConferenceOrJournal(paper.ConferenceId, paper.JournalId)
-	err = contentData(content, paper.Title, conferenceOrJournalName)
-	if err != nil {
-		return "", fmt.Errorf("生成证书内容失败: %w", err)
-	}
+	contentData(content, paper.Title, conferenceOrJournalName)           // 写入数据信息
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentDate(content)                                                 // 写入日期信息
 
