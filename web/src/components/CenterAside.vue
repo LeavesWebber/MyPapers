@@ -151,6 +151,14 @@ export default {
           url: "Center",
         },
         {
+          path: "/center/recharge",
+          name: "recharge",
+          label: "Recharge MPS",
+          icon: "money",
+          title: "1-1",
+          url: "Center/Recharge",
+        },
+        {
           label: "Committee Management",
           icon: "s-custom",
           title: "2",

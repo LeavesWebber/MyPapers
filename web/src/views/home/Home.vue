@@ -1,167 +1,48 @@
 <template>
   <div class="box">
-    <img src="../../images/xmut.jpg" class="image" />
-
-    <div class="box1">
-      <div class="box2">
-        <h3 class="h3">The contract address used by the platform</h3>
-        <li class="li">
-          ERC20 Token Contract Address:
-          0x10A62A42D44FA1274F70E016b20B5065Db0F5327
-        </li>
-        <li class="li">
-          ERC721 NFT Contract Address:
-          0x0BF4bb730bF29115cE6D6C0cDE6A2F314fba151e
-        </li>
-        <li class="li">
-          Market Contract Address: 0x2b39296Ea695586A341D510C9EAFBECd5664bb7e
-        </li>
-        <h3 class="h1">
-          Verify the author on the consortium chain through a paper hash
-        </h3>
-        <el-row>
-          <el-col :span="10">
-            <el-input v-model="input" placeholder="Paper Hash"></el-input>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="primary" @click="callContract">Verify</el-button>
-          </el-col>
-          <el-col :span="10"> Author Address: {{ author_address }} </el-col>
-        </el-row>
-        <h3 class="h1">Verify Reviewer through Comment Content</h3>
-        <el-row>
-          <el-col :span="10">
-            <el-input v-model="title" placeholder="Paper Title"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="10">
-            <el-input v-model="comment" placeholder="Paper Comment"></el-input>
-          </el-col>
-
-          <el-col :span="4">
-            <el-input v-model="status" placeholder="Status"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2">
-            <el-button type="primary" @click="getReviewByHash"
-              >Verify</el-button
-            >
-          </el-col>
-          <el-col :span="24"> Reviewer Address: {{ reviewer_address }} </el-col>
-        </el-row>
-        <!-- <h3 class="h1">The latest from MyPapers</h3>
-        <hr class="hr" size="8px" color="#ECF5FF" width="110px" />
-        <h3 class="h3">Some recent situations</h3>
-        <li class="li">The First</li>
-        <li class="li">The Second</li> -->
-      </div>
-      <div>
-        <el-button @click="showERC20Contract">ERC20 Token Contract</el-button>
-        <el-button @click="showERC721Contract">ERC721 NFT Contract</el-button>
-        <el-button @click="showMarketContract">Market Contract</el-button>
-      </div>
-      <div v-highlight v-if="change === 0">
-        <h3 class="h1">ERC20 Token Contract</h3>
-        <pre :key="'erc20Contract'">
-          <code>
-            {{erc20Contract}}
-          </code>
-        </pre>
+    <div class="hero-section">
+      <img src="../../images/xmut.jpg" class="image" alt="厦门理工学院" />
+    </div>
+    
+    <div class="content-section">
+      <div class="link-section">
+        <h2 class="section-title">项目地址</h2>
+        <div class="link-item">
+          <div class="link-label">Gitee 仓库</div>
+          <a href="https://gitee.com/xmrchen/MyPapers" target="_blank" class="link">
+            https://gitee.com/xmrchen/MyPapers
+          </a>
+        </div>
+        <div class="link-item">
+          <div class="link-label">Github 仓库</div>
+          <a href="https://github.com/xmrchen/MyPapers" target="_blank" class="link">
+            https://github.com/xmrchen/MyPapers
+          </a>
+        </div>
       </div>
 
-      <div v-highlight v-if="change === 1">
-        <h3 class="h1">ERC721 NFT Contract</h3>
-        <pre :key="'erc721Contract'">
-          <code>
-            {{erc721Contract}}
-          </code>
-        </pre>
-      </div>
-
-      <div v-highlight v-if="change === 2">
-        <h3 class="h1">Market Contract</h3>
-        <pre :key="'marketContract'">
-          <code>
-            {{marketContract}}
-          </code>
-        </pre>
-      </div>
-
-      <!-- <div class="box3">
-        <div class="content1">
-          <h3 class="title">MyPapers Annual Election</h3>
-          <img src="../../images/1.jpg" width="90%" height="60%" />
-          <div class="text">
-            The 2023 MypPapers Election is underway. Be sure to cast your vote
-            for the leaders who will inform MypPapers's strategy for the future.
-          </div>
-          <li class="li">The First</li>
-          <li class="li">The Second</li>
-        </div>
-        <div class="content1">
-          <h3 class="title">MyPapers Annual Election</h3>
-          <img src="../../images/1.jpg" width="90%" height="60%" />
-          <div class="text">
-            The 2023 MypPapers Election is underway. Be sure to cast your vote
-            for the leaders who will inform MypPapers's strategy for the future.
-          </div>
-          <li class="li">The First</li>
-          <li class="li">The Second</li>
+      <div class="teacher-section">
+        <h2 class="section-title">指导老师</h2>
+        <div class="teacher-info">
+          <span class="school">厦门理工学院</span>
+          <span class="teacher-name">陈仁</span>
         </div>
       </div>
-      <div class="box4">
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
+
 <script>
-import {
+/* import {
   ERC20contractInstance,
   ERC20contract,
   ERC721contract,
   Marketcontract,
 } from "@/constant";
 import hljs from "highlight.js";
-
+ */
 // import { getHomeData } from "../../api";
+
 export default {
   data() {
     return {
@@ -249,90 +130,152 @@ export default {
   },
 };
 </script>
+
 <style lang="less" scoped>
 .box {
-  // width: 100%;
-  // height: 3000px;
-  // 盒子里面的内容水平居中
-  // 宽高被盒子撑开
-  display: inline-block;
-  text-align: center;
-  .image {
-    width: 80%;
-    height: 430px;
-    // 居中
-    margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .hero-section {
+    width: 100%;
+    position: relative;
+    padding: 3rem 0;
+    background: linear-gradient(to bottom, #f8f9fa, #fff);
+    display: flex;
+    justify-content: center;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to bottom, transparent, #fff);
+      pointer-events: none;
+    }
+    
+    .image {
+      width: 1200px;
+      height: 430px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
   }
-  .box1 {
-    // 取消内容水平居中
-    text-align: left;
-    width: 80%;
-    // height: 950px;
-    // background-color: #e2f1fb;
-    background-color: #ecf5ff;
-    // 水平居中
-    margin: 0 auto;
-    margin-top: 20px;
-    // 上下左右panding
-    padding: 20px 20px;
-    color: #072e5b;
-    .box2 {
-      width: 100%;
-      margin-bottom: 40px;
-      .h1 {
-        margin-bottom: 10px;
-      }
-      .h3 {
-        margin-top: 10px;
-        margin-bottom: 10px;
-      }
-      .li {
-        margin-bottom: 10px;
-      }
-    }
-    .box3 {
-      width: 100%;
-      height: 450px;
-      // background-color: #ECF5FF;
-      // margin-bottom: 10px;
-      .content1 {
-        width: 50%;
-        height: 100%;
-        // background-color: #d9eddd;
-        float: left;
-        .title {
-          // 字号
-          font-size: 15px;
-          margin-bottom: 10px;
-        }
-        .bottom {
-          margin-bottom: 10px;
-        }
-        .text {
-          margin-bottom: 10px;
-          width: 85%;
-          // 字号
-          font-size: 12px;
-        }
-        .li {
-          margin-bottom: 10px;
-          // 字号
-          font-size: 12px;
-        }
+
+  .content-section {
+    position: relative;
+    z-index: 1;
+    width: 1200px;
+    margin: -2rem auto 2rem;
+    padding: 2.5rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.06);
+
+    .section-title {
+      font-size: 1.6rem;
+      color: #2c3e50;
+      margin-bottom: 1.8rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid #3498db;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #2980b9;
       }
     }
-    .box4 {
-      width: 100%;
-      height: 300px;
-      // background-color: #ECF5FF;
-      .content2 {
-        float: left;
-        width: 25%;
-        height: 100%;
-        // background-color: #eff5f0;
-        .title {
-          // 字号
-          font-size: 8px;
+
+    .link-section {
+      margin-bottom: 3rem;
+
+      .link-item {
+        margin-bottom: 1.2rem;
+        padding: 1.2rem;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+
+        &:hover {
+          transform: translateY(-3px);
+          border-color: #e8e8e8;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        .link-label {
+          font-size: 1.1rem;
+          color: #2c3e50;
+          margin-bottom: 0.8rem;
+          font-weight: 500;
+        }
+
+        .link {
+          color: #3498db;
+          text-decoration: none;
+          font-size: 1rem;
+          display: inline-block;
+          padding: 0.3rem 0;
+          border-bottom: 1px solid transparent;
+          
+          &:hover {
+            color: #2980b9;
+            border-bottom-color: #2980b9;
+          }
+        }
+      }
+    }
+
+    .teacher-section {
+      .teacher-info {
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+
+        &:hover {
+          border-color: #e8e8e8;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        .school {
+          color: #2c3e50;
+          font-size: 1.1rem;
+          position: relative;
+          padding-right: 1.2rem;
+
+          &::after {
+            content: '·';
+            position: absolute;
+            right: 0;
+            color: #606266;
+          }
+        }
+
+        .teacher-name {
+          color: #2c3e50;
+          font-weight: 600;
+          font-size: 1.1rem;
         }
       }
     }
