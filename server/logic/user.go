@@ -39,6 +39,10 @@ func Register(in *request.Register) (err error) {
 	if _, err = mysql.UserNameExist(in.Username); err == global.ErrorUserExist {
 		return
 	}
+	//判断邮箱是否存在
+	if _, err = mysql.UserEmailExist(in.Email); err == global.ErrorUserEmailExist {
+		return
+	}
 	// 创建用户
 	user := &tables.User{
 		Sex:               in.Sex,
