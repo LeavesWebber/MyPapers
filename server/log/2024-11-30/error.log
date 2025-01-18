@@ -1,0 +1,40 @@
+[myPapers]2024/11/30 - 13:17:22.419	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:17:32.919	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:19:04.135	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:28:28.556	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:29:02.028	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:29:52.166	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:30:04.920	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:30:08.610	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:30:17.459	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:53:43.078	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:54:39.777	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:54:53.812	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:56:43.138	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:57:07.163	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 13:58:10.621	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:19:14.285	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:22:05.931	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:23:28.297	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:37:04.247	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:37:09.296	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:43:26.292	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:44:17.314	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:44:44.664	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:45:02.610	[31merror[0m	E:/vue/mypapers/mypapers/server/logic/paper.go:211	mysql.Getpaper error	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:45:02.651	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:50:25.080	[31merror[0m	E:/vue/mypapers/mypapers/server/logic/paper.go:211	mysql.Getpaper error	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:50:25.123	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:51:12.467	[31merror[0m	E:/vue/mypapers/mypapers/server/logic/paper.go:211	mysql.Getpaper error	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:51:12.508	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:73	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:56:21.537	[31merror[0m	E:/vue/mypapers/mypapers/server/logic/paper.go:211	mysql.Getpaper error	{"error": "record not found"}
+[myPapers]2024/11/30 - 14:56:21.574	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:74	logic.GetPaper failed	{"error": "record not found"}
+[myPapers]2024/11/30 - 15:02:48.513	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:02:54.193	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:04:31.827	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:06:32.968	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:28	SubmitPaper with invalid param	{"error": "Key: 'SubmitPaper.BlockAddress' Error:Field validation for 'BlockAddress' failed on the 'required' tag\nKey: 'SubmitPaper.PaperTransactionAddress' Error:Field validation for 'PaperTransactionAddress' failed on the 'required' tag"}
+[myPapers]2024/11/30 - 15:06:50.268	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:13:17.421	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:28	SubmitPaper with invalid param	{"error": "Key: 'SubmitPaper.BlockAddress' Error:Field validation for 'BlockAddress' failed on the 'required' tag\nKey: 'SubmitPaper.PaperTransactionAddress' Error:Field validation for 'PaperTransactionAddress' failed on the 'required' tag"}
+[myPapers]2024/11/30 - 15:13:55.811	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:16:31.938	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}
+[myPapers]2024/11/30 - 15:18:11.948	[31merror[0m	E:/vue/mypapers/mypapers/server/api/paper.go:48	logic.SubmitPaper failed	{"error": "用户名不存在"}

@@ -2,14 +2,15 @@ package api
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 	"server/global"
 	"server/logic"
 	"server/model/request"
 	"server/model/response"
 	"server/utils"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 )
 
 // Login 用户登录
@@ -93,6 +94,8 @@ func (u *UserApi) GetSelfInfo(c *gin.Context) {
 	ResponseSuccess(c, out)
 }
 
+//发送邮件的函数
+
 // GetUserTree 获取用户树
 //func (u *UserApi) GetUserTree(c *gin.Context) {
 //	userTree, err := logic.GetUserTree()
@@ -172,6 +175,36 @@ func (u *UserApi) ChangeHeaderImg(c *gin.Context) {
 	}
 	// 返回响应
 	ResponseSuccess(c, url)
+}
+
+// SendMail 发送邮箱验证
+func (u *UserApi) SendMail(c *gin.Context) {
+
+	in := new(request.SendMail)
+	if err := c.ShouldBindJSON(in); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam) // 非validator.ValidationErrors类型错误直接返回
+			return
+		}
+		// validator.ValidationErrors类型错误则进行翻译
+		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
+		return
+	}
+	// 逻辑处理
+	if err := logic.SendMail(in); err != nil {
+		if err == global.ErrorUserExist {
+			global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
+			ResponseError(c, CodeUserExist)
+			return
+		}
+		global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
+	// 返回响应
+	ResponseSuccess(c, nil)
 }
 
 // ResetPassword 重置用户密码
@@ -300,7 +333,7 @@ func (u *UserApi) SetSelfInfo(c *gin.Context) {
 func (u *UserApi) SetUserAuthorities(c *gin.Context) {
 	// 请求参数校验
 	in := new(request.SetUserAuthorities)
-	if err := c.ShouldBindJSON(in); err != nil {
+	if err := c.ShouldBind(in); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
 			ResponseError(c, CodeInvalidParam) // 非validator.ValidationErrors类型错误直接返回
@@ -310,6 +343,7 @@ func (u *UserApi) SetUserAuthorities(c *gin.Context) {
 		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
 		return
 	}
+
 	// 逻辑处理
 	if err := logic.SetUserAuthorities(in.ID, in.AuthorityIds); err != nil {
 		global.MPS_LOG.Error("logic.SetUserAuthorities() failed", zap.Error(err))

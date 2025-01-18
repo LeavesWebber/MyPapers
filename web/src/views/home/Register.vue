@@ -77,7 +77,9 @@
 </template>
 
 <script>
-import { register } from "../../api";
+import { register,SendMail } from "../../api";
+import { MPScontractInstance } from "@/constant";
+const contractInstance = MPScontractInstance;
 export default {
   data() {
     var checkData = (rule, value, callback) => {
@@ -113,6 +115,11 @@ export default {
         affiliation: "",
         affiliation_type: "",
       },
+      SendMails:{
+        MailReceiver:"",
+        Verification:"",
+      } ,
+      verificationCode:"",
       rules: {
         username: [
           { required: true, trigger: "blur", message: "please input username" },
@@ -135,7 +142,7 @@ export default {
           },
         ],
         email: [
-          { required: true, trigger: "blur", message: "please input email" },
+          { required: true, trigger: "blur", message: "please input email",type:'email'},
         ],
         block_chain_address: [
           {
@@ -148,9 +155,36 @@ export default {
     };
   },
   methods: {
+    async registe_gift(block_chain_address) {
+      const functionArgs = [
+          block_chain_address
+        ];
+      const functionName="registerUser"
+      const result = await contractInstance.methods[functionName](
+          ...functionArgs
+        ).send({
+          from: window.ethereum.selectedAddress,
+          gasPrice: "0",
+        });
+      
+      },
+    generateCode() {
+      const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      let code = '';
+      for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        code += charset[randomIndex];
+      }
+      this.verificationCode = code;
+      return this.verificationCode;
+    },
+ 
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.SendMails.MailReceiver=this.ruleForm.email;
+            this.SendMails.Verification=this.generateCode();
+            SendMail(this.SendMails)
           console.log(this.ruleForm);
           register(this.ruleForm).then(({ data }) => {
             console.log(data.data);
@@ -159,6 +193,7 @@ export default {
               this.$alert("Register success", {
                 confirmButtonText: "ok",
               });
+              this.registe_gift(this.ruleForm.block_chain_address)
               this.$router.push("/home");
             }
 

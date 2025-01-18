@@ -121,6 +121,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
   .text {
     color: #fff;
     font-size: 14px;
@@ -152,8 +153,7 @@ export default {
   }
   .logout {
     position: absolute;
-    // right: 180px;
-    left: 360px;
+    right: 180px;
     color: #40a2fe;
     // 鼠标悬停时显示下划线
     &:hover {
@@ -162,8 +162,7 @@ export default {
   }
   .home {
     position: absolute;
-    // right: 240px;
-    left: 300px;
+    right: 240px;
     color: #40a2fe;
     // 鼠标悬停时显示下划线
     &:hover {
