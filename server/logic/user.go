@@ -3,7 +3,6 @@ package logic
 import (
 	"crypto/tls"
 	"fmt"
-	"log"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -70,7 +69,6 @@ func SendMail(in *request.SendMail) (err error) {
 	port := 25
 	userName := "2904976636@qq.com"
 	password := "gmlvjlnjgbbpdcec" // qq邮箱填授权码
-	log.Println(in.Verification + "111111111111111111111111111111111111111111111111")
 	m := gomail.NewMessage()
 	m.SetHeader("From", userName)
 	m.SetHeader("To", in.MailReceiver)      // 收件人，可以多个收件人，但必须使用相同的 SMTP 连接

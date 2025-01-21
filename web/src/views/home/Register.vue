@@ -64,20 +64,40 @@
           <el-input v-model="ruleForm.affiliation_type"></el-input>
         </el-form-item>
         <div class="button">
-          <el-button type="primary" round @click="submitForm('ruleForm')"
-            >Register</el-button
+          <el-button type="primary" round @click="handleInput()"
+          
+          >Register</el-button
           >
+          <div class="modal" v-show="showModal">
+      <div class="modal-content">
+        <label class="input-label">验证码已发送至邮箱,请输入验证码:</label>
+        <input
+          
+          v-model="inputValue"
+          type="string"
+          placeholder="请输入数字"
+          class="number-input"
+        />
+        <div class="button-container">
+          <button class="confirm-button" round @click.prevent="VerificationEqual()">确认</button>
+          <button @click.prevent="showModal = false" class="cancel-button">取消</button>
+          <div v-show="showError" class="error-message">请输入正确验证码</div>
+        </div>
+        
+      </div>
+    </div>
           <el-button type="primary" plain round @click="resetForm('ruleForm')"
             >Reset</el-button
           >
         </div>
+        
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
-import { register,SendMail } from "../../api";
+import { register, SendMail } from "../../api";
 import { MPScontractInstance } from "@/constant";
 const contractInstance = MPScontractInstance;
 export default {
@@ -97,6 +117,9 @@ export default {
       }
     };
     return {
+      inputValue:"",
+      showModal:null,
+      showError:null,
       ruleForm: {
         id: 0,
         username: "",
@@ -168,6 +191,7 @@ export default {
         });
       
       },
+     
     generateCode() {
       const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
       let code = '';
@@ -182,10 +206,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.SendMails.MailReceiver=this.ruleForm.email;
-            this.SendMails.Verification=this.generateCode();
-            SendMail(this.SendMails)
-          console.log(this.ruleForm);
           register(this.ruleForm).then(({ data }) => {
             console.log(data.data);
             if (data.code === 1000) {
@@ -209,11 +229,37 @@ export default {
         }
       });
     },
+   
+   
+
+    VerificationEqual(){
+    if(this.inputValue==this.SendMails.Verification)
+    {
+      this.showError=false
+      this.submitForm("ruleForm")
+    }
+    else
+    {this.showError=true
+      this.showModal=true
+    }
+    }, 
+    handleInput(){
+    this.SendMails.MailReceiver=this.ruleForm.email;
+    this.SendMails.Verification=this.generateCode();
+    SendMail(this.SendMails).then(({ }) => {
+      this.$alert("Send Email Success!")
+      this.showModal=true;
+      console.log(this.SendMails.Verification)
+            return true;
+            });
+          }
+  },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-  },
-};
+  }
+  
+
 </script>
 <style lang="less" scoped>
 .image {
@@ -249,6 +295,83 @@ export default {
   background-image: url("../../images/login.jpg");
   background-size: cover;
 }
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+.modal-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+.open-modal-button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.open-modal-button:hover {
+  background-color: #0056b3;
+}
+.input-label {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+.number-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 200px;
+  margin-bottom: 20px;
+}
+.number-input:focus {
+  outline: none;
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.button-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.confirm-button,
+.cancel-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.confirm-button {
+  background-color: #28a745;
+  color: #fff;
+}
+.confirm-button:hover {
+  background-color: #218838;
+}
+.cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+.cancel-button:hover {
+  background-color: #c82333;
+}
 .box {
   // 盒子放在页面中间
   position: absolute;
@@ -269,5 +392,10 @@ export default {
     margin-left: 330px;
   }
   padding-bottom: 20px;
+}
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
 }
 </style>
