@@ -73,6 +73,11 @@ func (u *UserApi) Register(c *gin.Context) {
 			ResponseError(c, CodeUserExist)
 			return
 		}
+		if err == global.ErrorUserEmailExist {
+			global.MPS_LOG.Error("logic.Register() failed", zap.Error(err))
+			ResponseError(c, CodeUserEmailExist)
+			return
+		}
 		global.MPS_LOG.Error("logic.Register() failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
 		return

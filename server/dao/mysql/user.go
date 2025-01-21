@@ -20,6 +20,15 @@ func UserNameExist(username string) (id uint, err error) {
 	return 0, global.ErrorUserNotExist
 }
 
+// UserEmailExist 用户邮箱是否存在
+func UserEmailExist(email string) (id uint, err error) {
+	var user tables.User
+	if !errors.Is(global.MPS_DB.Where("email = ?", email).First(&user).Error, gorm.ErrRecordNotFound) {
+		return user.ID, global.ErrorUserEmailExist
+	}
+	return 0, global.ErrorUserEmailNotExist
+}
+
 // Login 用户登录
 func Login(in *request.Login) (out *response.Login, err error) {
 	out = new(response.Login)
