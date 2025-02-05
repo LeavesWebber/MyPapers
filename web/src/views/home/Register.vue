@@ -40,9 +40,15 @@
           <el-input v-model="ruleForm.department"></el-input>
         </el-form-item>
         <el-form-item label="Phone" prop="phone">
-          <el-input v-model="ruleForm.phone"></el-input>
+          <el-input v-model="ruleForm.phone">
+            <template #append>
+            <el-button @click="getVerificationCode" :disabled="isSendingCode">
+              {{ isSendingCode? countdown + 's 后重试' : '获取验证码' }}
+            </el-button>
+          </template>
+          </el-input>
         </el-form-item>
-        <el-form-item label="Address" prop="address">
+        <el-form-item label="Address" label-width="87px" prop="address">
           <el-input v-model="ruleForm.address"></el-input>
         </el-form-item>
         <el-form-item label="Education" prop="education">
@@ -120,7 +126,10 @@ export default {
       inputValue:"",
       showModal:null,
       showError:null,
+      countdown:60,
+      isSendingCode: false,
       ruleForm: {
+        
         id: 0,
         username: "",
         password: "",
@@ -149,6 +158,11 @@ export default {
         ],
         password: [
           { required: true, trigger: "blur", message: "please input password" },
+        ],
+        phone: [
+          { required: true, trigger: 'blur', message: '请输入11位手机号'},
+          { required: true, trigger: 'blur', min: 11, max: 11, message: '长度不符合'},
+          
         ],
         first_name: [
           {
@@ -202,7 +216,6 @@ export default {
       this.verificationCode = code;
       return this.verificationCode;
     },
- 
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -230,7 +243,24 @@ export default {
       });
     },
    
-   
+    getVerificationCode() {
+          // 验证手机号码格式
+          this.$refs.ruleForm.validateField('phone', (valid) => {
+            if (valid) {
+              this.isSendingCode = true;
+              const timer = setInterval(() => {
+                this.countdown--;
+                if (this.countdown === 0) {
+                  clearInterval(timer);
+                  this.isSendingCode = false;
+                  this.countdown = 60;
+                }
+              }, 1000);
+              // 这里可以添加实际发送验证码的逻辑，例如调用 API
+              console.log(`向 ${this.ruleForm.phone} 发送验证码`);
+            }
+          });
+        },
 
     VerificationEqual(){
     if(this.inputValue==this.SendMails.Verification)
@@ -398,4 +428,5 @@ export default {
   margin-top: 10px;
   font-size: 14px;
 }
+
 </style>

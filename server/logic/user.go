@@ -1,8 +1,9 @@
 package logic
 
 import (
-	"crypto/tls"
 	"fmt"
+	"log"
+	"net/smtp"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	gomail "gopkg.in/gomail.v2"
 )
 
 // Login 用户登录
@@ -39,9 +39,9 @@ func Register(in *request.Register) (err error) {
 		return
 	}
 	//判断邮箱是否存在
-	if _, err = mysql.UserEmailExist(in.Email); err == global.ErrorUserEmailExist {
-		return
-	}
+	// if _, err = mysql.UserEmailExist(in.Email); err == global.ErrorUserEmailExist {
+	// 	return
+	// }
 	// 创建用户
 	user := &tables.User{
 		Sex:               in.Sex,
@@ -68,29 +68,29 @@ func Register(in *request.Register) (err error) {
 }
 
 func SendMail(in *request.SendMail) (err error) {
+	//发送邮箱
+	from := "root@mypapers.io"
 
-	host := "smtp.qq.com"
-	port := 25
-	userName := "2904976636@qq.com"
-	password := "gmlvjlnjgbbpdcec" // qq邮箱填授权码
-	m := gomail.NewMessage()
-	m.SetHeader("From", userName)
-	m.SetHeader("To", in.MailReceiver)      // 收件人，可以多个收件人，但必须使用相同的 SMTP 连接
-	m.SetHeader("Subject", "Varification")  // 邮件主题
-	m.SetBody("text/html", in.Verification) //验证码
-	d := gomail.NewDialer(
-		host,
-		port,
-		userName,
-		password,
-	)
+	// 收件人邮箱地址
+	to := []string{in.MailReceiver}
 
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	// 邮件主题
+	subject := "Test Email"
+	// 邮件正文
+	// 构建完整邮件内容，包含主题和正文
+	msg := "Subject: " + subject + "\r\n\r\n" + in.Verification
+	// SMTP 服务器地址和端口
+	smtpServer := "107.155.56.166:25"
 
-	if err := d.DialAndSend(m); err != nil {
+	// 若服务器需要认证，可取消注释以下代码
+	auth := smtp.PlainAuth("", "root", "xmutBC2024", "107.155.56.166:25")
 
-		panic(err)
+	// 发送邮件
+	err = smtp.SendMail(smtpServer, auth, from, to, []byte(msg))
+	if err != nil {
+		log.Fatalf("Failed to send email: %v", err)
 	}
+	log.Println("Email sent successfully!")
 	return nil
 }
 

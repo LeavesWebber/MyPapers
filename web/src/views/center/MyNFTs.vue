@@ -216,7 +216,7 @@ export default {
       console.log(res.data.data);
       // data有多个图片的uri
       for (let i = 0; i < res.data.data.length; i++) {
-        this.image_urls.push(res.data.data[i].image_url);
+        this.image_urls.push(res.data.data[i].image_uri);
         this.tokenIds.push(res.data.data[i].token_id);
         this.copy_right_trading_prices.push(
           res.data.data[i].copy_right_trading_price
