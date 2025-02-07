@@ -3,6 +3,7 @@ package logic
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/smtp"
 	"path/filepath"
 	"server/dao/mysql"
@@ -11,8 +12,10 @@ import (
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
+	"time"
 
 	"github.com/gin-gonic/gin"
+
 	"go.uber.org/zap"
 )
 
@@ -67,30 +70,98 @@ func Register(in *request.Register) (err error) {
 	return mysql.Register(user)
 }
 
-func SendMail(in *request.SendMail) (err error) {
-	//发送邮箱
+func SendMail(in *request.SendMail) error {
 	from := "root@mypapers.io"
-
-	// 收件人邮箱地址
 	to := []string{in.MailReceiver}
+	smtpServer := "mail.mypapers.io:25"
 
-	// 邮件主题
-	subject := "Test Email"
-	// 邮件正文
-	// 构建完整邮件内容，包含主题和正文
-	msg := "Subject: " + subject + "\r\n\r\n" + in.Verification
-	// SMTP 服务器地址和端口
-	smtpServer := "107.155.56.166:25"
-
-	// 若服务器需要认证，可取消注释以下代码
-	auth := smtp.PlainAuth("", "root", "xmutBC2024", "107.155.56.166:25")
-
-	// 发送邮件
-	err = smtp.SendMail(smtpServer, auth, from, to, []byte(msg))
+	// 尝试解析域名
+	host, _, err := net.SplitHostPort(smtpServer)
 	if err != nil {
-		log.Fatalf("Failed to send email: %v", err)
+		log.Fatalf("Failed to split host and port: %v", err)
+		return err
 	}
-	log.Println("Email sent successfully!")
+	addrs, err := net.LookupHost(host)
+	if err != nil {
+		log.Printf("Failed to resolve domain: %v", err)
+		return err
+	}
+	log.Printf("Resolved IP addresses for %s: %v", host, addrs)
+
+	conn, err := net.DialTimeout("tcp", smtpServer, 120*time.Second)
+	if err != nil {
+		log.Printf("Failed to connect to SMTP server: %v", err)
+		return err
+	}
+	log.Printf("tcp connection is right")
+	log.Printf("conn is :%v", conn)
+
+	// 设置读写超时
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetWriteDeadline(time.Now().Add(60 * time.Second))
+
+	client, err := smtp.NewClient(conn, host)
+	log.Printf("client is %v", client)
+	if err != nil {
+		log.Fatalf("Failed to create SMTP client: %v", err)
+		return err
+	}
+	defer client.Quit()
+
+	if err = client.Mail(from); err != nil {
+		log.Printf("Failed to set sender: %v", err)
+		return err
+	}
+
+	for _, addr := range to {
+		if err = client.Rcpt(addr); err != nil {
+			log.Printf("Failed to set recipient: %v", err)
+			return err
+		}
+	}
+
+	w, err := client.Data()
+	if err != nil {
+		log.Printf("Failed to start data transfer: %v", err)
+		return err
+	}
+
+	message := []byte("From: " + from + "\r\n" +
+		"To: " + in.MailReceiver + "\r\n" +
+		"Subject: Test Email\r\n" +
+		"\r\n" +
+		"This is a test email.")
+	_, err = w.Write(message)
+	if err != nil {
+		log.Printf("Failed to write message: %v", err)
+		return err
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Printf("Failed to close data transfer: %v", err)
+		return err
+	}
+	// host := "mail.mypapers.io"
+	// port := 25
+	// userName := "root@mypapers.io"
+	// password := "xmutBC2024"
+	// m := gomail.NewMessage()
+	// m.SetHeader("From", from)
+	// m.SetHeader("To", "2904976636@qq.com")
+	// m.SetBody("text/plain", "纯文本")
+	// d := gomail.NewDialer(
+	// 	host,
+	// 	port,
+	// 	userName,
+	// 	password,
+	// )
+
+	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	// if err := d.DialAndSend(m); err != nil {
+	// 	panic(err)
+	// }
+	log.Println("Email sent successfully.")
 	return nil
 }
 

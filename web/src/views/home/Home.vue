@@ -1,6 +1,28 @@
 <template>
   <div class="box">
-    <img src="../../images/xmut.jpg" class="image" />
+    <div class="image-slider">
+      
+      <div class="image">
+        <img :src="currentImage" alt="slider - image" class="image">
+        <button @click="prevImage" v-if="imageIndex > 0" class="prev-button"><</button>
+      
+      <button @click="nextImage" v-if="imageIndex < images.length - 1" class="next-button">></button>
+      </div>
+      
+      <div class="image-indicators">
+        <span
+        v-for="(image, index) in images"
+        :key="index"
+        :class="{active: index === imageIndex}"
+        @click="switchToImage(index)"
+      >
+        {{index + 1}}
+      </span>
+      </div>
+    </div>
+    
+    
+    
 
     <div class="box1">
       <div class="box2">
@@ -165,6 +187,15 @@ import hljs from "highlight.js";
 export default {
   data() {
     return {
+      images: [
+        require('@/images/1.png'),
+        require('@/images/2.png'),
+        require('@/images/3.png'),
+        require('@/images/4.png'),
+        require('@/images/5.png'),
+        require('@/images/6.png')
+      ],
+      imageIndex: 0,
       msg: "Welcome to Your Vue.js App",
       input: "",
       author_address: "",
@@ -178,7 +209,21 @@ export default {
       change: 0,
     };
   },
+  computed: {
+    currentImage() {
+      return this.images[this.imageIndex];
+    }
+  },
   methods: {
+    prevImage() {
+      this.imageIndex--;
+    },
+    nextImage() {
+      this.imageIndex++;
+    },
+    switchToImage(index) {
+      this.imageIndex = index;
+    },
     async callContract() {
       this.author_address = await ERC20contractInstance.methods
         .getRecipientByHash(this.input)
@@ -250,6 +295,80 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.image-slider {
+  text-align: center;
+  position: relative;
+}
+
+.slider-container {
+  position: relative;
+  display: inline-block;
+}
+
+.prev-button {
+  position: absolute;
+  top: 0;
+  height: 430px;
+  width: 10%; /* 每个按钮占图片宽度的一半 */
+  background-color: rgba(0, 0, 0, 0.3); /* 半透明背景 */
+  margin-left: 18%;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.2;
+  z-index: 1;
+}
+
+.next-button {
+  position: absolute;
+  top: 0;
+  height: 430px;
+  width: 10%; 
+  background-color: rgba(0, 0, 0, 0.3); /* 半透明背景 */
+  margin-right: 18%;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.2;
+  z-index: 1;
+}
+.prev-button {
+  left: 0;
+}
+
+.next-button {
+  right: 0;
+}
+
+.prev-button:hover,
+.next-button:hover {
+  opacity: 1;
+}
+ .image-slider {
+  text-align: center;
+}
+  .image-indicators {
+  margin-top: 10px;
+}
+
+    .image-indicators span {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 50%;
+  background-color: #ccc;
+  color: white;
+  margin: 0 5px;
+  cursor: pointer;
+  }
+
+    .image-indicators span.active {
+  background-color: #4CAF50;
+  }
+
 .box {
   // width: 100%;
   // height: 3000px;
