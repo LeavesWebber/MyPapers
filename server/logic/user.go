@@ -128,9 +128,9 @@ func SendMail(in *request.SendMail) error {
 
 	message := []byte("From: " + from + "\r\n" +
 		"To: " + in.MailReceiver + "\r\n" +
-		"Subject: Test Email\r\n" +
+		"Subject: Varification\r\n" +
 		"\r\n" +
-		"This is a test email.")
+		in.Verification)
 	_, err = w.Write(message)
 	if err != nil {
 		log.Printf("Failed to write message: %v", err)
@@ -142,25 +142,6 @@ func SendMail(in *request.SendMail) error {
 		log.Printf("Failed to close data transfer: %v", err)
 		return err
 	}
-	// host := "mail.mypapers.io"
-	// port := 25
-	// userName := "root@mypapers.io"
-	// password := "xmutBC2024"
-	// m := gomail.NewMessage()
-	// m.SetHeader("From", from)
-	// m.SetHeader("To", "2904976636@qq.com")
-	// m.SetBody("text/plain", "纯文本")
-	// d := gomail.NewDialer(
-	// 	host,
-	// 	port,
-	// 	userName,
-	// 	password,
-	// )
-
-	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-	// if err := d.DialAndSend(m); err != nil {
-	// 	panic(err)
-	// }
 	log.Println("Email sent successfully.")
 	return nil
 }

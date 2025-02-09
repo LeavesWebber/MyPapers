@@ -24,7 +24,8 @@
     
     
 
-    <div class="box1">
+    <!--
+    ><div class="box1">
       <div class="box2">
         <h3 class="h3">The contract address used by the platform</h3>
         <li class="li">
@@ -77,7 +78,7 @@
         <hr class="hr" size="8px" color="#ECF5FF" width="110px" />
         <h3 class="h3">Some recent situations</h3>
         <li class="li">The First</li>
-        <li class="li">The Second</li> -->
+        <li class="li">The Second</li> 
       </div>
       <div>
         <el-button @click="showERC20Contract">ERC20 Token Contract</el-button>
@@ -109,7 +110,7 @@
             {{marketContract}}
           </code>
         </pre>
-      </div>
+      </div>-->
 
       <!-- <div class="box3">
         <div class="content1">
@@ -170,8 +171,8 @@
             communities
           </div>
         </div>
-      </div> -->
-    </div>
+      </div> 
+    </div>-->
   </div>
 </template>
 <script>
