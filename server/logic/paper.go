@@ -209,18 +209,21 @@ func GetPaper(paperID uint) (detail *response.GetPaper, err error) {
 	// 获取投稿信息
 	detail = new(response.GetPaper)
 	if detail.Paper, err = mysql.GetPaper(paperID); err != nil {
+		global.MPS_LOG.Error("mysql.Getpaper error", zap.Error(err))
 		return
 	}
 	detail.Paper.Filepath = "http://" + global.MPS_CONFIG.Nginx.Host + ":" + global.MPS_CONFIG.Nginx.Port + "/" + detail.Paper.Filepath
 	// 获取各个审核人的审核结果
 	reviews, err := mysql.GetReviews(paperID)
 	if err != nil {
+		global.MPS_LOG.Error("mysql.getreviews error", zap.Error(err))
 		return nil, err
 	}
 	// 获取各个审核人的信息
 	for _, v := range reviews {
 		user, err := mysql.GetUserInfoByID(v.ReviewerId)
 		if err != nil {
+			global.MPS_LOG.Error("lmysql.getuserinfobyid error", zap.Error(err))
 			return nil, err
 		}
 		detail.ReviewInfos = append(detail.ReviewInfos, &response.ReviewInfo{
@@ -570,7 +573,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	if err != nil {
 		return
 	}
-	// 新建一张和模板文��一样大小的画布
+	// 新建一张和模板文件一样大小的画布
 	newTemplateImage := image.NewRGBA(templateFileImage.Bounds())
 	// 将模板图片画到新建的画布上
 	draw.Draw(newTemplateImage, templateFileImage.Bounds(), templateFileImage, templateFileImage.Bounds().Min, draw.Over)

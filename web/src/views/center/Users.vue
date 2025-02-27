@@ -86,9 +86,14 @@
       </el-table-column>
       <el-table-column fixed="right" label="Options">
         <template slot-scope="scope">
-          <el-button @click="popup(scope.row)" type="primary" size="mini"
-            >Edit Rule</el-button
+          <el-button
+            @click="popup(scope.row)"
+            type="primary"
+            size="mini"
+            :disabled="!isAdmin"
           >
+            Edit Rule
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -134,51 +139,79 @@ export default {
       searchKeyword: "",
       options: [
         {
-          value: "101",
-          label: "Admin",
+          value: '102',
+          label: 'President'
         },
         {
-          value: "102",
-          label: "President",
+          value: '103',
+          label: 'Member'
         },
         {
-          value: "103",
-          label: "Member",
-        },
-        {
-          value: "104",
-          label: "User",
-        },
+          value: '104',
+          label: 'User'
+        }
       ],
-      value: "",
+      value: '',
     };
   },
   methods: {
-    edit(row) {
-      console.log(row, this.value, "row, this.value");
-      setUserInfo({
-        id: row.id,
-        authority_id: Number(this.value),
-      }).then((res) => {
-        console.log(res);
-        this.getUsers();
-      });
-      this.centerDialogVisible = false;
+    async edit(row) {
+      try {
+        console.log('Edit user data:', {
+          currentUser: this.userInfo,
+          targetUser: row,
+          newAuthority: this.value
+        });
+
+        const requestData = {
+          id: Number(row.id),
+          authority_id: Number(this.value)
+        };
+
+
+        const res = await setUserInfo(requestData);
+
+        if (res.data.code === 1000) {
+          this.$message.success('修改成功');
+          await this.getUsers();
+          this.centerDialogVisible = false;
+        } else {
+          this.$message.error(res.data.msg || '修改失败');
+        }
+      } catch (err) {
+        this.$message.error('操作失败');
+      }
     },
     popup(row) {
+      if (!this.isAdmin) {
+        this.$message.warning('只有管理员可以编辑权限');
+        return;
+      }
       this.centerDialogVisible = true;
       this.selectRow = row;
       this.value = row.authority_id.toString();
     },
-    getUsers() {
-      getUserList().then((res) => {
-        this.tableData = [];
+    async initUserInfo() {
+      try {
+        const userInfoStr = localStorage.getItem("userInfo");
+        if (!userInfoStr) return;
+        const userInfo = JSON.parse(userInfoStr);
+        if (userInfo) {
+          this.userInfo = userInfo;
+        }
+      } catch (error) {
+        this.$message.error('获取用户信息失败');
+      }
+    },
+    async getUsers() {
+      try {
+        const res = await getUserList();
         this.tableData = res.data.data;
-        console.log(this.tableData, "tableDate");
-      });
-      // 从localStorage里面获取用户信息
-      this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      console.log(this.userInfo, "userInfo");
+        await this.initUserInfo();
+      } catch (error) {
+        console.error('Failed to get users:', error);
+        this.$message.error('获取用户列表失败');
+      }
     },
     searchData() {
       // 当搜索关键字发生变化时，重置当前页码为第一页
@@ -208,6 +241,13 @@ export default {
       }
       return filteredData.slice(startIndex, endIndex);
     },
+    isAdmin() {
+      const authorityId = Number(this.userInfo?.authorityId);
+      return authorityId === 101;
+    },
+  },
+  created() {
+    this.initUserInfo();
   },
   mounted() {
     this.getUsers();
@@ -233,5 +273,9 @@ export default {
 .query {
   margin-bottom: 10px;
   text-align: right;
+}
+.el-button.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 </style>

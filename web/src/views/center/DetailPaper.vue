@@ -535,6 +535,7 @@ export default {
           this.userInfo.block_chain_address,
           this.metadata_uri,
         ];
+        console.log(this.metadata_uri)
         console.log(
           "window.ethereum.selectedAddress:",
           window.ethereum.selectedAddress
@@ -544,7 +545,7 @@ export default {
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: "0",
+          gasPrice: "1000",
         });
         
         // 添加结果检查

@@ -18,6 +18,11 @@ const (
 	CodeInsufficientPermissions
 	CodeDeleteSelf
 	ErrorArticleNoExist
+
+	//增加新的错误码，用来判断用户修改权限
+	CodeNoPermission
+	CodeCannotModifySelf
+	CodeCannotSetSuperAdmin
 )
 
 var codeMsgMap = map[ResCode]string{
@@ -37,6 +42,10 @@ var codeMsgMap = map[ResCode]string{
 	CodeInsufficientPermissions: "权限不足",
 	CodeDeleteSelf:              "不可删除自己",
 	ErrorArticleNoExist:         "文章不存在",
+
+	CodeNoPermission:        "没有操作权限",
+	CodeCannotModifySelf:    "不能修改自己的权限",
+	CodeCannotSetSuperAdmin: "不能设置其他用户为超级管理员",
 }
 
 func (c ResCode) Msg() string {

@@ -336,12 +336,12 @@ export default {
           });
           return;
         }
-
+        
         const result = await contractInstance.methods[functionName](
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: "0",
+          gasPrice: 1000,
         });
         console.log("====================================");
         // 输出结果

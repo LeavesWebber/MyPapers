@@ -238,8 +238,9 @@ export default {
             res.data.data[i].submission_end_time = res.data.data[
               i
             ].submission_end_time.substring(0, 10);
-          }
 
+          }
+          
           this.tableData = res.data.data;
           console.log(this.tableData, "tableDate");
           // 处理tableData：里面有不同的year，进行分组，得到years，yeas下面有多个issues

@@ -1,7 +1,7 @@
 <template>
   <div class="logo">
     <img src="../../images/logo.jpg" class="image" />
-    <div class="info">My Papers My Rules</div>
+    <div class="info">My Papers, My Rules</div>
   </div>
 </template>
 <script>
@@ -17,31 +17,26 @@ export default {
 .logo {
   width: 80%;
   height: 80px;
-  // 对于页面居中
   margin: 20px auto;
-  //   margin-top: 20px;
-  // 字号
-  font-size: 20px;
-  // 字体颜色
-  color: #072e5b;
-  // 字体加粗
-  font-weight: bold;
-  //   background-color: #f31c1c;
+  position: relative;
+  display: flex;
+  align-items: center;
+  
   .image {
     width: 13%;
-    // height: 90px;
     float: left;
+    margin-top: 50px;
   }
+  
   .info {
-    // 行内块
-    display: inline-block;
-    // 宽高
-    width: 80%;
-    height: 80px;
-    // 垂直居中
-    line-height: 80px;
-    // 文字居中
-    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 25px;
+    font-weight: 600;
+    color: #2c3e50;
+    letter-spacing: 1px;
+    white-space: nowrap;
   }
 }
 </style>

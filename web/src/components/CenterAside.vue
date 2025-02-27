@@ -1,42 +1,44 @@
 <template>
-  <el-menu
-    default-active="1-4-1"
-    class="el-menu-vertical-demo"
-    @open="handleOpen"
-    @close="handleClose"
-    :collapse="isCollapse"
-     background-color="#191A23"
+  <div class="menu-wrapper">
+    <el-menu
+      default-active="1-4-1"
+      class="el-menu-vertical-demo"
+      @open="handleOpen"
+      @close="handleClose"
+      :collapse="isCollapse"
+      background-color="#191A23"
       text-color="#fff"
       active-text-color="#fff"
-  >
-  <h4>{{ isCollapse ? 'Center': 'Personal Center' }}</h4>
-    <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.title" :index="item.title">
-      <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
-      <span slot="title">{{item.label}}</span>
-    </el-menu-item>
-    <el-submenu v-for="item in hasChildren" :key="item.title" :index="item.title">
-      <template slot="title">
+    >
+      <h4>{{ isCollapse ? 'Center': 'Personal Center' }}</h4>
+      <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.title" :index="item.title">
         <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
         <span slot="title">{{item.label}}</span>
-      </template>
-      <el-menu-item-group v-for="subItem in item.children" :key="subItem.path">
-        <el-menu-item  @click="clickMenu(subItem)" :index="subItem">{{subItem.label}}</el-menu-item>
-      </el-menu-item-group>
+      </el-menu-item>
+      <el-submenu v-for="item in hasChildren" :key="item.title" :index="item.title">
+        <template slot="title">
+          <i :class="`el-icon-${item.icon}`" style="color:#fff"></i>
+          <span slot="title">{{item.label}}</span>
+        </template>
+        <el-menu-item-group v-for="subItem in item.children" :key="subItem.path">
+          <el-menu-item  @click="clickMenu(subItem)" :index="subItem">{{subItem.label}}</el-menu-item>
+        </el-menu-item-group>
       </el-submenu>
-  </el-menu>
+    </el-menu>
+  </div>
 </template>
 
 <style lang="less" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 25%;
-  min-width: 280px;
-  max-width: 400px;
-  min-height: 100vh;
+  width: 280px;
 }
 
 .el-menu {
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   border-right: none;
+  position: fixed;
+  width: 280px;
   
   h4 {
     color: #fff;
@@ -99,22 +101,38 @@
   }
 }
 
+.menu-wrapper {
+  width: 280px;
+  height: 100%;
+  min-height: 100vh;
+}
+
 // 响应式布局
 @media screen and (max-width: 1200px) {
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 30%;
+    width: 260px;
   }
   
-  :deep(.el-submenu__title),
-  :deep(.el-menu-item) {
-    padding: 1vh 1vw;
+  .el-menu {
+    width: 260px;
+  }
+  
+  .menu-wrapper {
+    width: 260px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 35%;
-    min-width: 250px;
+    width: 250px;
+  }
+  
+  .el-menu {
+    width: 250px;
+  }
+  
+  .menu-wrapper {
+    width: 250px;
   }
 }
 </style>
@@ -131,6 +149,14 @@ export default {
           icon: "user",
           title: "1",
           url: "Center",
+        },
+        {
+          path: "/center/recharge",
+          name: "recharge",
+          label: "Recharge MPS",
+          icon: "money",
+          title: "1-1",
+          url: "Center/Recharge",
         },
         {
           label: "Committee Management",

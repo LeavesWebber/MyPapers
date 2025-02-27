@@ -32,7 +32,7 @@
         </el-form-item>
 
         
-        </el-form-item>
+        
         <el-form-item label="Paper Type" prop="paper_type">
           <el-select
             style="width: 200px"
@@ -322,7 +322,7 @@ export default {
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: "0",
+          gasPrice: 0,
         });
         // 输出结果
         console.log("Transaction result:", result);

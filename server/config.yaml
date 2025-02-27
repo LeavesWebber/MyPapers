@@ -33,7 +33,7 @@ captcha:
   img-height: 80 # 验证码高度
 mysql:
   path: localhost # 服务器地址:端口
-  #  path: MySQL80 # 服务器地址:端口
+#  path: MySQL80 # 服务器地址:端口
   port: "3306" # :端口
   config: charset=utf8mb4&parseTime=True&loc=Local # 高级配置
   db-name: MyPapers # 数据库名
@@ -64,10 +64,51 @@ image-path: http://localhost:8887/image/ # 传统图片路径 port是nginx监听
 ipfs:
   #host: 172.16.170.195
   #port: 5001
-  host: 107.155.56.166
+  host: 127.0.0.1
   port: 5001
   gateway-port: 8081
   gateway-path: /ipfs
 nginx:
   host: localhost
   port: 8887
+
+# 区块链相关配置
+blockchain:
+  # 以太坊节点配置
+  eth-node-url: "http://128.1.40.107:8545"  # 以太坊节点URL
+  chain-id: 8376                             # 链ID
+  gas-limit: 300000                          # Gas限制
+  
+  # 智能合约配置
+  mps-contract-address: "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0"    # MPS代币合约地址
+  erc20-contract-address: "0x3f63992C47aB0Ad8b83B0d31b23b265996264474"  # ERC20合约地址
+  erc721-contract-address: "0x813Dfc691e771bDbAD90B68ABb584457FA69D8a9" # ERC721合约地址
+  marketplace-contract-address: "0xe699ED3A02460E3AcE9bf157C5F1098CEb10C2B0" # 市场合约地址
+  
+  # 管理员配置
+  admin-private-key: "your-admin-private-key-here"  # 管理员私钥
+  admin-address: "your-admin-address-here"          # 管理员地址
+
+# 微信支付配置
+wxpay:
+  # 基础配置
+  app-id: "your-app-id-here"        # 公众号ID
+  mch-id: "your-mch-id-here"        # 商户号
+  key: "your-key-here"              # API密钥
+  
+  # 支付配置
+  trade-type: "JSAPI"               # 交易类型
+  sign-type: "MD5"                  # 签名类型
+  
+  # URL配置
+  notify-url: "http://www.mypapers.io/api/mps/wxpay/notify"  # 支付回调通知地址
+  success-url: "http://www.mypapers.io/payment/success"       # 支付成功跳转页面
+  fail-url: "http://www.mypapers.io/payment/fail"            # 支付失败跳转页面
+
+# 系统业务配置
+business:
+  mps-exchange-rate: 1.0            # MPS兑换比率（1 CNY = 1 MPS）
+  order-timeout: 1800               # 订单超时时间（秒）
+  min-recharge-amount: 1.0          # 最小充值金额
+  max-recharge-amount: 10000.0      # 最大充值金额
+

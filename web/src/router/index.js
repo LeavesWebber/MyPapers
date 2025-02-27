@@ -52,6 +52,7 @@ import Reviews from '../views/center/Reviews.vue'
 import Users from '../views/center/Users.vue'
 import CreateJournal from '../views/center/CreateJournal.vue'
 import SelfJournal from '../views/center/SelfJournal.vue'
+import Recharge from '../views/center/Recharge.vue'
 
 Vue.use(VueRouter)
 
@@ -129,7 +130,8 @@ const routes = [
             { path: '/center/users', name: 'users', component: Users, meta: { requireAuth: true } },
             { path: '/center/mint', name: 'mint', component: Mint, meta: { requireAuth: true } },
             { path: '/center/createJournal', name: 'createJournal', component: CreateJournal },
-            { path: '/center/selfJournal', name: 'selfJournal', component: SelfJournal }
+            { path: '/center/selfJournal', name: 'selfJournal', component: SelfJournal },
+            { path: '/center/recharge', name: 'recharge', component: Recharge, meta: { requireAuth: true } }
         ]
     }
 ]

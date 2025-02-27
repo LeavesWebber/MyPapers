@@ -269,3 +269,34 @@ export const getNFTInfoByTokenId = (data) => {
 export const updatePaperUserId = (data) => {
     return http.put('/paper/updatePaperUserId', data)
 }
+
+// MPS通证相关API
+// 1. 查询用户MPS余额
+export const getMPSBalance = () => {
+    return http.get('/mps/balance')
+}
+
+// 2. 获取用户通证交易记录
+export const getMPSTransactions = (data) => {
+    return http.get('/mps/transactions', { params: data })
+}
+
+// 3. 法币购买MPS
+export const buyMPSWithFiat = (data) => {
+    return http.post('/mps/buy', data)
+}
+
+// 4. MPS卖出换取法币
+export const sellMPSToFiat = (data) => {
+    return http.post('/mps/sell', data)
+}
+
+// 5. 获取当前MPS兑换率
+export const getMPSRate = () => {
+    return http.get('/mps/rate')
+}
+
+// 6. 获取用户激励记录
+export const getMPSRewards = () => {
+    return http.get('/mps/rewards')
+}

@@ -2,14 +2,16 @@ package api
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 	"server/global"
 	"server/logic"
 	"server/model/request"
 	"server/model/response"
+	"server/model/tables"
 	"server/utils"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 )
 
 // Login 用户登录
@@ -106,13 +108,48 @@ func (u *UserApi) GetSelfInfo(c *gin.Context) {
 
 // GetAllUser 获取所有用户
 func (u *UserApi) GetAllUser(c *gin.Context) {
-	allUsers, err := logic.GetAllUser()
+	// 获取当前用户信息
+	userInfo, err := utils.GetCurrentUserInfo(c)
 	if err != nil {
-		global.MPS_LOG.Error("logic.GetAllUser() failed", zap.Error(err))
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
+
+	// 打印当前用户信息
+	global.MPS_LOG.Info("current user info",
+		zap.Int64("UUID", userInfo.UUID),
+		zap.Uint("AuthorityId", userInfo.AuthorityId),
+		zap.String("Username", userInfo.Username))
+
+	// 检查是否有管理员权限
+	isAdmin := false
+	switch userInfo.AuthorityId {
+	case global.SUPER_ADMIN:
+		isAdmin = true
+		global.MPS_LOG.Info("user is admin")
+	}
+
+	// 根据权限调用不同的逻辑
+	var users []response.GetAllUser
+	if isAdmin {
+		users, err = logic.GetAllUser()
+	} else {
+		user, err := logic.GetSelfInfo(userInfo.UUID)
+		if err == nil {
+			// 将 tables.User 转换为 response.GetAllUser
+			users = []response.GetAllUser{ConvertToGetAllUser(user)}
+		}
+	}
+
+	if err != nil {
+		global.MPS_LOG.Error("get user info failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
 		return
 	}
-	ResponseSuccess(c, allUsers)
+
+	// 打印最终返回的数据
+	global.MPS_LOG.Info("response data", zap.Any("users", users))
+	ResponseSuccess(c, users)
 }
 
 // ChangePassword 用户修改密码
@@ -233,32 +270,54 @@ func (u *UserApi) DeleteUser(c *gin.Context) {
 
 // SetUserInfo 设置用户信息
 func (u *UserApi) SetUserInfo(c *gin.Context) {
-	// 请求参数校验
-	p := new(request.SetUserInfo)
+	// 1. 获取当前用户信息
+	currentUser, err := utils.GetCurrentUserInfo(c)
+	if err != nil {
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
 
-	if err := c.ShouldBindJSON(p); err != nil {
+	// 2. 验证是否为管理员
+	if currentUser.AuthorityId != global.SUPER_ADMIN {
+		ResponseError(c, CodeNoPermission)
+		return
+	}
+
+	// 3. 请求参数校验
+	in := new(request.SetUserInfo)
+	if err := c.ShouldBindJSON(in); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			ResponseError(c, CodeInvalidParam) // 非validator.ValidationErrors类型错误直接返回
+			ResponseError(c, CodeInvalidParam)
 			return
 		}
 		// validator.ValidationErrors类型错误则进行翻译
 		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
 		return
 	}
-	if err := logic.SetUserInfo(p); err != nil {
-		if err == global.ErrorUserNotExist {
-			global.MPS_LOG.Error("logic.AddUser() failed", zap.Error(err))
+
+	// 4. 不允许修改自己的权限
+	if in.ID == currentUser.ID {
+		ResponseError(c, CodeCannotModifySelf)
+		return
+	}
+
+	// 5. 不允许将其他用户设置为超级管理员
+	if in.AuthorityId == global.SUPER_ADMIN {
+		ResponseError(c, CodeCannotSetSuperAdmin)
+		return
+	}
+
+	// 6. 执行更新操作
+	if err := logic.SetUserInfo(in); err != nil {
+		switch err {
+		case global.ErrorUserNotExist:
 			ResponseError(c, CodeUserNotExist)
-			return
-		}
-		if err == global.ErrorUserExist {
-			global.MPS_LOG.Error("logic.AddUser() failed", zap.Error(err))
+		case global.ErrorUserExist:
 			ResponseError(c, CodeUserExist)
-			return
+		default:
+			ResponseError(c, CodeServerBusy)
 		}
-		global.MPS_LOG.Error("logic.SetUserInfo() failed", zap.Error(err))
-		ResponseError(c, CodeServerBusy)
 		return
 	}
 	// 返回响应
@@ -370,4 +429,19 @@ func (u *UserApi) SetUserAuthority(c *gin.Context) {
 	//	c.Header("new-token", token)
 	//	// 返回响应
 	//	ResponseSuccess(c, nil)
+}
+
+// ConvertToGetAllUser 将 tables.User 转换为 response.GetAllUser
+func ConvertToGetAllUser(user tables.User) response.GetAllUser {
+	return response.GetAllUser{
+		ID:          user.ID,
+		AuthorityId: user.AuthorityId,
+		Username:    user.Username,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		Email:       user.Email,
+		Department:  user.Department,
+		Phone:       user.Phone,
+		Address:     user.Address,
+	}
 }

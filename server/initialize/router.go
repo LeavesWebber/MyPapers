@@ -30,8 +30,7 @@ func Routers() *gin.Engine {
 		systemRouter.InitBaseRouter(PublicGroup) // 基础功能路由 不做鉴权
 	}
 	PrivateGroup := Router.Group("mypapers")
-	//PrivateGroup.Use(middleware.JWTAuthMiddleware()).Use(middleware.CasbinHandler())
-	PrivateGroup.Use(middleware.JWTAuthMiddleware())
+	PrivateGroup.Use(middleware.JWTAuth())
 	{
 		systemRouter.InitUserRouter(PrivateGroup)       // 用户功能路由
 		systemRouter.InitAuthorityRouter(PrivateGroup)  // 注册角色路由
@@ -41,6 +40,7 @@ func Routers() *gin.Engine {
 		systemRouter.InitJournalRouter(PrivateGroup)    // 期刊功能路由
 		systemRouter.InitPaperRouter(PrivateGroup)      // 投稿功能路由
 		systemRouter.InitReviewRouter(PrivateGroup)     // 评审功能路由
+		systemRouter.InitMPSRouter(PrivateGroup)        // MPS功能路由
 	}
 
 	global.MPS_LOG.Info("router register success")
