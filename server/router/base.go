@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"server/api"
+
+	"github.com/gin-gonic/gin"
 )
 
 type BaseRouter struct{}
@@ -22,6 +23,7 @@ func (b *BaseRouter) InitBaseRouter(Router *gin.RouterGroup) gin.IRoutes {
 	{
 		baseRouter.POST("register", userApi.Register) // 注册
 		baseRouter.POST("login", userApi.Login)       // 登录
+		baseRouter.POST("SendMail", userApi.SendMail) //发送邮箱验证码
 		//baseRouter.POST("captcha", userApi.Captcha)   // 生成验证码
 		committeeRouter.GET("detail", committeeApi.GetCommittee)                                              // 查看委员会详情
 		committeeRouter.GET("list", committeeApi.GetAllCommittees)                                            // 查询委员会列表

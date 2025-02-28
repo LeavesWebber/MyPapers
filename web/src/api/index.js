@@ -26,7 +26,9 @@ export const changeHeaderImg = (data) => {
 export const setSelfInfo = (data) => {
     return http.put('/user/setSelfInfo', data)
 }
-
+export const SendMail = (data) =>{
+    return http.post('/user/SendMail',data)
+}
 // 查询自己的投稿
 export const getSelfPapers = (data) => {
     return http.get('/paper/selfList', { params: data })

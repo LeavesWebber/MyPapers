@@ -2,7 +2,6 @@ package logic
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"image"
 	"image/draw"
@@ -435,9 +434,7 @@ func GetHonoraryCertificate(paperId uint) (honoraryCertificateInfo *response.Hon
 	// 生成证书
 	honoraryCertificateInfo.Url, err = createHonoraryCertificate(paper)
 	// 把图片存入ipfs并且返回cid
-	println("create success")
 	cid, err := saveToIPFS(honoraryCertificateUri)
-	println(cid)
 	if err != nil {
 		return
 	}
@@ -526,44 +523,53 @@ func loadFont(path string) (font *truetype.Font, err error) {
 }
 func contentAuthors(content *freetype.Context, authors string) {
 	content.SetFontSize(80) // 设置字体大小
-	// 一个字母大小占40宽，图片宽3508,高2427
+	// 一个字母大小占40宽，图片宽2000,高1414
 	// 计算authors所占的宽度，然后计算出居中的x坐标
 	authorsWidth := len(authors) * 40
-	authorsX := (3508 - authorsWidth) / 2
-	content.DrawString(authors, freetype.Pt(authorsX, 1200))
+	authorsX := (2000 - authorsWidth) / 2
+	content.DrawString(authors, freetype.Pt(authorsX, 520))
 }
-func contentData(content *freetype.Context, title string, conferenceOrJournalName string) error {
-	if title == "" || conferenceOrJournalName == "" {
-		return errors.New("标题或期刊/会议名称不能为空")
-	}
-
-	content.SetFontSize(70) // 设置字体大小
-	data := "Certificate of acceptance for the manuscrip(" + conferenceOrJournalName + ") titled: " + title + " from MyPapers."
-	dataX := 400
-	dataY := 1300
-	for i := 0; i < len(data); i += 75 {
-		end := i + 75
-		if end > len(data) {
-			end = len(data)
+func contentData(content *freetype.Context, title, name string) {
+	content.SetFontSize(30) // 设置字体大小
+	data := "Have Successfully Published a Paper Titled" + title + " in the " + name
+	dataX := 480
+	dataY := 720
+	for i := 0; i < len(data); i += 90 {
+		if i == 0 {
+			content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
+			dataY += 75
+			i -= 10
+			continue
 		}
-		content.DrawString(data[i:end], freetype.Pt(dataX+110, dataY))
-		dataY += 30 // 调整行间距
+		content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
+		if i+90 > len(data) {
+			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
+			break
+		}
+		content.DrawString(data[i:i+85], freetype.Pt(dataX, dataY))
+		dataY += 75
 	}
-	return nil
 }
+
+func contentIPFS(content *freetype.Context, IPFS string) {
+	content.SetFontSize(30) // 设置字体大小
+	content.DrawString("107.155.56.166:8080/ipfs/"+IPFS, freetype.Pt(430, 980))
+}
+
 func contentHash(content *freetype.Context, transactionAddress, blockAddress string) {
-	content.SetFontSize(50) // 设置字体大小
-	content.DrawString(transactionAddress, freetype.Pt(1190, 1605))
-	content.DrawString(blockAddress, freetype.Pt(1190, 1780))
+	content.SetFontSize(30) // 设置字体大小
+	content.DrawString(transactionAddress, freetype.Pt(500, 930))
+	content.DrawString(blockAddress, freetype.Pt(440, 865))
 }
+
 func contentDate(content *freetype.Context) {
 	date := time.Now().Format("2006.01.02")
-	content.SetFontSize(70) // 设置字体大小
-	content.DrawString(date, freetype.Pt(680, 1980))
+	content.SetFontSize(30) // 设置字体大小
+	content.DrawString(date, freetype.Pt(440, 1050))
 }
 func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl string, err error) {
 	// 根据路径打开模板文件
-	templateFile, err := os.Open("./image/certificate.png")
+	templateFile, err := os.Open("./image/newcertificate.png")
 	if err != nil {
 		return
 	}
@@ -602,7 +608,8 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 		return "", fmt.Errorf("生成证书内容失败: %w", err)
 	}
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
-	contentDate(content)                                                 // 写入日期信息
+	contentIPFS(content, paper.Cid)
+	contentDate(content) // 写入日期信息
 
 	// 保存图片
 	honoraryCertificateUri = "./image/" + paper.ManuscriptID + ".png"

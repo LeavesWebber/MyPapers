@@ -2,6 +2,9 @@ package logic
 
 import (
 	"fmt"
+	"log"
+	"net"
+	"net/smtp"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -9,6 +12,11 @@ import (
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
+	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -36,6 +44,10 @@ func Register(in *request.Register) (err error) {
 	if _, err = mysql.UserNameExist(in.Username); err == global.ErrorUserExist {
 		return
 	}
+	//判断邮箱是否存在
+	// if _, err = mysql.UserEmailExist(in.Email); err == global.ErrorUserEmailExist {
+	// 	return
+	// }
 	// 创建用户
 	user := &tables.User{
 		Sex:               in.Sex,
@@ -61,20 +73,92 @@ func Register(in *request.Register) (err error) {
 	return mysql.Register(user)
 }
 
-// GetSelfInfo 获取自身信息
-func GetSelfInfo(uuid int64) (userInfo tables.User, err error) {
-	return mysql.GetSelfInfo(uuid)
+func SendMail(in *request.SendMail) error {
+	from := "root@mypapers.io"
+	to := []string{in.MailReceiver}
+	smtpServer := "mail.mypapers.io:25"
+
+	// 尝试解析域名
+	host, _, err := net.SplitHostPort(smtpServer)
+	if err != nil {
+		log.Fatalf("Failed to split host and port: %v", err)
+		return err
+	}
+	addrs, err := net.LookupHost(host)
+	if err != nil {
+		log.Printf("Failed to resolve domain: %v", err)
+		return err
+	}
+	log.Printf("Resolved IP addresses for %s: %v", host, addrs)
+
+	conn, err := net.DialTimeout("tcp", smtpServer, 120*time.Second)
+	if err != nil {
+		log.Printf("Failed to connect to SMTP server: %v", err)
+		return err
+	}
+	log.Printf("tcp connection is right")
+	log.Printf("conn is :%v", conn)
+
+	// 设置读写超时
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetWriteDeadline(time.Now().Add(60 * time.Second))
+
+	client, err := smtp.NewClient(conn, host)
+	log.Printf("client is %v", client)
+	if err != nil {
+		log.Fatalf("Failed to create SMTP client: %v", err)
+		return err
+	}
+	defer client.Quit()
+
+	if err = client.Mail(from); err != nil {
+		log.Printf("Failed to set sender: %v", err)
+		return err
+	}
+
+	for _, addr := range to {
+		if err = client.Rcpt(addr); err != nil {
+			log.Printf("Failed to set recipient: %v", err)
+			return err
+		}
+	}
+
+	w, err := client.Data()
+	if err != nil {
+		log.Printf("Failed to start data transfer: %v", err)
+		return err
+	}
+
+	message := []byte("From: " + from + "\r\n" +
+		"To: " + in.MailReceiver + "\r\n" +
+		"Subject: Varification\r\n" +
+		"\r\n" +
+		in.Verification)
+	_, err = w.Write(message)
+	if err != nil {
+		log.Printf("Failed to write message: %v", err)
+		return err
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Printf("Failed to close data transfer: %v", err)
+		return err
+	}
+	log.Println("Email sent successfully.")
+	return nil
 }
 
-//// GetUserTree 获取用户树
-//func GetUserTree() (users []tables.User, err error) {
-//	userTree, err := mysql.GetUserTreeMap() // 获取user的父子对应关系（此时还是乱序的）
-//	users = userTree[0]
-//	for i := 0; i < len(users); i++ {
-//		err = getUserChildrenList(&users[i], userTree) // 从根节点开始遍历整理user树（从根节点开始有序）
+// // GetUserTree 获取用户树
+//
+//	func GetUserTree() (users []tables.User, err error) {
+//		userTree, err := mysql.GetUserTreeMap() // 获取user的父子对应关系（此时还是乱序的）
+//		users = userTree[0]
+//		for i := 0; i < len(users); i++ {
+//			err = getUserChildrenList(&users[i], userTree) // 从根节点开始遍历整理user树（从根节点开始有序）
+//		}
+//		return users, err
 //	}
-//	return users, err
-//}
 
 // GetAllUser 获取所有用户
 func GetAllUser() (users []response.GetAllUser, err error) {
@@ -82,14 +166,20 @@ func GetAllUser() (users []response.GetAllUser, err error) {
 
 }
 
-//// getChildrenList 生成一颗关系树
-//func getUserChildrenList(user *tables.User, treeMap map[uint][]tables.User) (err error) {
-//	user.Children = treeMap[user.ID]
-//	for i := 0; i < len(user.Children); i++ {
-//		err = getUserChildrenList(&user.Children[i], treeMap)
+// // getChildrenList 生成一颗关系树
+//
+//	func getUserChildrenList(user *tables.User, treeMap map[uint][]tables.User) (err error) {
+//		user.Children = treeMap[user.ID]
+//		for i := 0; i < len(user.Children); i++ {
+//			err = getUserChildrenList(&user.Children[i], treeMap)
+//		}
+//		return err
 //	}
-//	return err
-//}
+//
+// GetSelfInfo 获取本用户信息
+func GetSelfInfo(uuid int64) (userInfo tables.User, err error) {
+	return mysql.GetSelfInfo(uuid)
+}
 
 // ChangePassword 修改密码
 func ChangePassword(in *request.ChangePassword, uuid int64) error {

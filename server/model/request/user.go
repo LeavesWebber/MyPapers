@@ -74,6 +74,11 @@ type SetUserInfo struct {
 	AffiliationType   string `json:"affiliation_type"`
 }
 
+type SendMail struct {
+	MailReceiver string `json:"MailReceiver"`
+	Verification string `json:"Verification"`
+}
+
 // SetUserAuthorities 设置用户权限组
 type SetUserAuthorities struct {
 	ID           uint

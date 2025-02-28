@@ -506,7 +506,7 @@ export default {
         paper_id: this.$route.query.paper_id,
       }).then((res) => {
         console.log(res.data.data, "res.data.data");
-        this.url = res.data.data.url;
+        this.url = res.data.data.image_uri;
         this.image_uri = res.data.data.image_uri;
         this.metadata_uri = res.data.data.metadata_uri;
         this.cid = res.data.data.cid;

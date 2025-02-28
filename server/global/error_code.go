@@ -5,6 +5,8 @@ import "errors"
 var (
 	ErrorUserExist         = errors.New("用户名已存在")
 	ErrorUserNotExist      = errors.New("用户名不存在")
+	ErrorUserEmailExist    = errors.New("邮箱已存在")
+	ErrorUserEmailNotExist = errors.New("邮箱不存在")
 	ErrUserHasChild        = errors.New("此用户存在子用户不可删除")
 	ErrorAuthorityNoExist  = errors.New("角色不存在")
 	ErrorAuthorityUsing    = errors.New("此角色有用户正在使用禁止删除")
