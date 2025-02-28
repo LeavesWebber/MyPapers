@@ -26,7 +26,7 @@
         </template>
       </el-dialog>
       <!-- 隐藏的文件输入框 -->
-      <input type="file" accept="image/*" @change="handleLocalImageSelect" ref="fileInput" style="display: none">
+      
       <el-button
         @click="showImageDialog=true"
       >
