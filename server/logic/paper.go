@@ -603,10 +603,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	contentAuthors(content, paper.Authors) // 写入作者信息
 	// 根据paperId查投的是哪个会议或者期刊
 	conferenceOrJournalName, err := mysql.GetConferenceOrJournal(paper.ConferenceId, paper.JournalId)
-	err = contentData(content, paper.Title, conferenceOrJournalName)
-	if err != nil {
-		return "", fmt.Errorf("生成证书内容失败: %w", err)
-	}
+	contentData(content, paper.Title, conferenceOrJournalName)
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentIPFS(content, paper.Cid)
 	contentDate(content) // 写入日期信息
