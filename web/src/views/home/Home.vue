@@ -123,11 +123,15 @@
           <li class="li">The First</li>
           <li class="li">The Second</li>
         </div>
-        <div class="link-item">
-          <div class="link-label">Github 仓库</div>
-          <a href="https://github.com/xmrchen/MyPapers" target="_blank" class="link">
-            https://github.com/xmrchen/MyPapers
-          </a>
+        <div class="content1">
+          <h3 class="title">MyPapers Annual Election</h3>
+          <img src="../../images/1.jpg" width="90%" height="60%" />
+          <div class="text">
+            The 2023 MypPapers Election is underway. Be sure to cast your vote
+            for the leaders who will inform MypPapers's strategy for the future.
+          </div>
+          <li class="li">The First</li>
+          <li class="li">The Second</li>
         </div>
       </div>
       <div class="box4">
@@ -171,18 +175,16 @@
     </div>-->
   </div>
 </template>
-
 <script>
-/* import {
+import {
   ERC20contractInstance,
   ERC20contract,
   ERC721contract,
   Marketcontract,
 } from "@/constant";
 import hljs from "highlight.js";
- */
-// import { getHomeData } from "../../api";
 
+// import { getHomeData } from "../../api";
 export default {
   data() {
     return {
@@ -293,7 +295,6 @@ export default {
   },
 };
 </script>
-
 <style lang="less" scoped>
 .image-slider {
   text-align: center;
