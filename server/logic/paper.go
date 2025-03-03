@@ -546,7 +546,7 @@ func contentData(content *freetype.Context, title, name string) {
 			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
 			break
 		}
-		content.DrawString(data[i:i+85], freetype.Pt(dataX, dataY))
+		content.DrawString(data[i:i+56], freetype.Pt(dataX, dataY))
 		dataY += 75
 	}
 }
@@ -603,7 +603,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	contentAuthors(content, paper.Authors) // 写入作者信息
 	// 根据paperId查投的是哪个会议或者期刊
 	conferenceOrJournalName, err := mysql.GetConferenceOrJournal(paper.ConferenceId, paper.JournalId)
-	contentData(content, paper.Title, conferenceOrJournalName)
+	contentData(content, paper.Title, conferenceOrJournalName)           // 写入数据信息
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentIPFS(content, paper.Cid)
 	contentDate(content) // 写入日期信息
