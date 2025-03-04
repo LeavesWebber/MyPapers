@@ -1,14 +1,14 @@
 <template>
   <div class="box">
     <div class="image-slider">
-      
+
       <div class="image">
         <img :src="currentImage" alt="slider - image" class="image">
         <button @click="prevImage" v-if="imageIndex > 0" class="prev-button"><</button>
-      
+
       <button @click="nextImage" v-if="imageIndex < images.length - 1" class="next-button">></button>
       </div>
-      
+
       <div class="image-indicators">
         <span
         v-for="(image, index) in images"
@@ -20,9 +20,9 @@
       </span>
       </div>
     </div>
-    
-    
-    
+
+
+
 
     <!--
     ><div class="box1">
@@ -78,7 +78,7 @@
         <hr class="hr" size="8px" color="#ECF5FF" width="110px" />
         <h3 class="h3">Some recent situations</h3>
         <li class="li">The First</li>
-        <li class="li">The Second</li> 
+        <li class="li">The Second</li>
       </div>
       <div>
         <el-button @click="showERC20Contract">ERC20 Token Contract</el-button>
@@ -167,7 +167,7 @@
             communities
           </div>
         </div>
-      </div> 
+      </div>
     </div>-->
   </div>
 </template>
@@ -324,7 +324,7 @@ export default {
   position: absolute;
   top: 0;
   height: 430px;
-  width: 10%; 
+  width: 10%;
   background-color: rgba(0, 0, 0, 0.3); /* 半透明背景 */
   margin-right: 18%;
   color: white;
