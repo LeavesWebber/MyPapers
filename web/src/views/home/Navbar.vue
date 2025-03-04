@@ -65,6 +65,14 @@
           <a class="a2" href="#">History of mypapers</a>
         </p>
       </a>
+      <a class="a" href="published-papers"
+        >Published Papers
+        <p class="pr">
+          <a class="a2" href="published-papers/upload">Upload Published Paper</a>
+          <a class="a2" href="published-papers/my-papers">My Published Papers</a>
+          <a class="a2" href="published-papers">Published Papers Guide</a>
+        </p>
+      </a>
     </div>
   </div>
 </template>

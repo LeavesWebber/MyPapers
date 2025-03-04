@@ -3,10 +3,14 @@
     <div class="image-slider">
 
       <div class="image">
-        <img :src="currentImage" alt="slider - image" class="image">
-        <button @click="prevImage" v-if="imageIndex > 0" class="prev-button"><</button>
+        <div class="slider-image-container">
+          <transition name="fade">
+            <img :src="currentImage" alt="slider-image" class="slider-image" :key="imageIndex">
+          </transition>
+          <button @click="prevImage" v-if="imageIndex > 0" class="prev-button"><</button>
 
-      <button @click="nextImage" v-if="imageIndex < images.length - 1" class="next-button">></button>
+        <button @click="nextImage" v-if="imageIndex < images.length - 1" class="next-button">></button>
+        </div>
       </div>
 
       <div class="image-indicators">
@@ -20,159 +24,6 @@
       </span>
       </div>
     </div>
-
-
-
-
-    <!--
-    ><div class="box1">
-      <div class="box2">
-        <h3 class="h3">The contract address used by the platform</h3>
-        <li class="li">
-          ERC20 Token Contract Address:
-          0x10A62A42D44FA1274F70E016b20B5065Db0F5327
-        </li>
-        <li class="li">
-          ERC721 NFT Contract Address:
-          0x0BF4bb730bF29115cE6D6C0cDE6A2F314fba151e
-        </li>
-        <li class="li">
-          Market Contract Address: 0x2b39296Ea695586A341D510C9EAFBECd5664bb7e
-        </li>
-        <h3 class="h1">
-          Verify the author on the consortium chain through a paper hash
-        </h3>
-        <el-row>
-          <el-col :span="10">
-            <el-input v-model="input" placeholder="Paper Hash"></el-input>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="primary" @click="callContract">Verify</el-button>
-          </el-col>
-          <el-col :span="10"> Author Address: {{ author_address }} </el-col>
-        </el-row>
-        <h3 class="h1">Verify Reviewer through Comment Content</h3>
-        <el-row>
-          <el-col :span="10">
-            <el-input v-model="title" placeholder="Paper Title"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="10">
-            <el-input v-model="comment" placeholder="Paper Comment"></el-input>
-          </el-col>
-
-          <el-col :span="4">
-            <el-input v-model="status" placeholder="Status"></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2">
-            <el-button type="primary" @click="getReviewByHash"
-              >Verify</el-button
-            >
-          </el-col>
-          <el-col :span="24"> Reviewer Address: {{ reviewer_address }} </el-col>
-        </el-row>
-        <!-- <h3 class="h1">The latest from MyPapers</h3>
-        <hr class="hr" size="8px" color="#ECF5FF" width="110px" />
-        <h3 class="h3">Some recent situations</h3>
-        <li class="li">The First</li>
-        <li class="li">The Second</li>
-      </div>
-      <div>
-        <el-button @click="showERC20Contract">ERC20 Token Contract</el-button>
-        <el-button @click="showERC721Contract">ERC721 NFT Contract</el-button>
-        <el-button @click="showMarketContract">Market Contract</el-button>
-      </div>
-      <div v-highlight v-if="change === 0">
-        <h3 class="h1">ERC20 Token Contract</h3>
-        <pre :key="'erc20Contract'">
-          <code>
-            {{erc20Contract}}
-          </code>
-        </pre>
-      </div>
-
-      <div v-highlight v-if="change === 1">
-        <h3 class="h1">ERC721 NFT Contract</h3>
-        <pre :key="'erc721Contract'">
-          <code>
-            {{erc721Contract}}
-          </code>
-        </pre>
-      </div>
-
-      <div v-highlight v-if="change === 2">
-        <h3 class="h1">Market Contract</h3>
-        <pre :key="'marketContract'">
-          <code>
-            {{marketContract}}
-          </code>
-        </pre>
-      </div>-->
-
-      <!-- <div class="box3">
-        <div class="content1">
-          <h3 class="title">MyPapers Annual Election</h3>
-          <img src="../../images/1.jpg" width="90%" height="60%" />
-          <div class="text">
-            The 2023 MypPapers Election is underway. Be sure to cast your vote
-            for the leaders who will inform MypPapers's strategy for the future.
-          </div>
-          <li class="li">The First</li>
-          <li class="li">The Second</li>
-        </div>
-        <div class="content1">
-          <h3 class="title">MyPapers Annual Election</h3>
-          <img src="../../images/1.jpg" width="90%" height="60%" />
-          <div class="text">
-            The 2023 MypPapers Election is underway. Be sure to cast your vote
-            for the leaders who will inform MypPapers's strategy for the future.
-          </div>
-          <li class="li">The First</li>
-          <li class="li">The Second</li>
-        </div>
-      </div>
-      <div class="box4">
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-        <div class="content2">
-          <h6>Smart Cities infrastructure</h6>
-          <img src="../../images/2.jpg" width="90%" height="60%" />
-          <div class="title">
-            Smart Cities help urban environments by using moderntechnology to
-            provide sustainable, resilient, equitable,and privacy-respecting
-            communities
-          </div>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 <script>
@@ -197,6 +48,8 @@ export default {
         require('@/images/6.png')
       ],
       imageIndex: 0,
+      autoPlayTimer: null,
+      imageAspectRatio: 16/9, // 默认宽高比
       msg: "Welcome to Your Vue.js App",
       input: "",
       author_address: "",
@@ -224,6 +77,20 @@ export default {
     },
     switchToImage(index) {
       this.imageIndex = index;
+    },
+    startAutoPlay() {
+      this.autoPlayTimer = setInterval(() => {
+        if (this.imageIndex < this.images.length - 1) {
+          this.imageIndex++;
+        } else {
+          this.imageIndex = 0;
+        }
+      }, 3000); // 每3秒切换一次图片
+    },
+    stopAutoPlay() {
+      if (this.autoPlayTimer) {
+        clearInterval(this.autoPlayTimer);
+      }
     },
     async callContract() {
       this.author_address = await ERC20contractInstance.methods
@@ -288,53 +155,71 @@ export default {
     },
   },
   mounted() {
-    // getHomeData().then((res) => {
-    //   console.log(res);
-    // });
-    this.connectWallet(); // 在组件创建时尝试连接钱包
+    this.startAutoPlay();
+    this.connectWallet();
+    // 计算第一张图片的宽高比
+    const img = new Image();
+    img.src = this.images[0];
+    img.onload = () => {
+      this.imageAspectRatio = img.width / img.height;
+    };
+  },
+  beforeDestroy() {
+    this.stopAutoPlay();
   },
 };
 </script>
 <style lang="less" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .image-slider {
   text-align: center;
   position: relative;
+  width: 80%;
+  margin: 0 auto;
 }
 
-.slider-container {
+.slider-image-container {
   position: relative;
-  display: inline-block;
+  width: 100%;
+  padding-bottom: 56.25%; /* 默认16:9的宽高比 */
+  overflow: hidden;
 }
 
-.prev-button {
+.slider-image {
   position: absolute;
   top: 0;
-  height: 430px;
-  width: 10%; /* 每个按钮占图片宽度的一半 */
-  background-color: rgba(0, 0, 0, 0.3); /* 半透明背景 */
-  margin-left: 18%;
-  color: white;
-  font-size: 24px;
-  border: none;
-  cursor: pointer;
-  opacity: 0.2;
-  z-index: 1;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #f5f5f5; /* 添加背景色，使空白区域不那么突兀 */
 }
 
+.prev-button,
 .next-button {
   position: absolute;
   top: 0;
-  height: 430px;
+  height: 100%;
   width: 10%;
-  background-color: rgba(0, 0, 0, 0.3); /* 半透明背景 */
-  margin-right: 18%;
+  background-color: rgba(0, 0, 0, 0.3);
   color: white;
   font-size: 24px;
   border: none;
   cursor: pointer;
   opacity: 0.2;
   z-index: 1;
+  transition: opacity 0.3s ease;
 }
+
 .prev-button {
   left: 0;
 }
@@ -347,14 +232,14 @@ export default {
 .next-button:hover {
   opacity: 1;
 }
- .image-slider {
-  text-align: center;
-}
-  .image-indicators {
+
+.image-indicators {
   margin-top: 10px;
+  position: relative;
+  z-index: 2;
 }
 
-    .image-indicators span {
+.image-indicators span {
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -364,36 +249,26 @@ export default {
   color: white;
   margin: 0 5px;
   cursor: pointer;
-  }
+}
 
-    .image-indicators span.active {
+.image-indicators span.active {
   background-color: #4CAF50;
-  }
+}
 
 .box {
-  // width: 100%;
-  // height: 3000px;
-  // 盒子里面的内容水平居中
-  // 宽高被盒子撑开
   display: inline-block;
   text-align: center;
+  width: 100%;
   .image {
     width: 80%;
-    height: 430px;
-    // 居中
     margin: 0 auto;
   }
   .box1 {
-    // 取消内容水平居中
     text-align: left;
     width: 80%;
-    // height: 950px;
-    // background-color: #e2f1fb;
     background-color: #ecf5ff;
-    // 水平居中
     margin: 0 auto;
     margin-top: 20px;
-    // 上下左右panding
     padding: 20px 20px;
     color: #072e5b;
     .box2 {
@@ -413,15 +288,11 @@ export default {
     .box3 {
       width: 100%;
       height: 450px;
-      // background-color: #ECF5FF;
-      // margin-bottom: 10px;
       .content1 {
         width: 50%;
         height: 100%;
-        // background-color: #d9eddd;
         float: left;
         .title {
-          // 字号
           font-size: 15px;
           margin-bottom: 10px;
         }
@@ -431,12 +302,10 @@ export default {
         .text {
           margin-bottom: 10px;
           width: 85%;
-          // 字号
           font-size: 12px;
         }
         .li {
           margin-bottom: 10px;
-          // 字号
           font-size: 12px;
         }
       }
@@ -444,14 +313,11 @@ export default {
     .box4 {
       width: 100%;
       height: 300px;
-      // background-color: #ECF5FF;
       .content2 {
         float: left;
         width: 25%;
         height: 100%;
-        // background-color: #eff5f0;
         .title {
-          // 字号
           font-size: 8px;
         }
       }

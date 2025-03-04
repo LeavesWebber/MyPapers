@@ -36,9 +36,9 @@ mysql:
 #  path: MySQL80 # 服务器地址:端口
   port: "3306" # :端口
   config: charset=utf8mb4&parseTime=True&loc=Local # 高级配置
-  db-name: MyPapers # 数据库名
-  username: leaves # 数据库用户名
-  password: leaves # 数据库密码
+  db-name: my_papers # 数据库名
+  username: root # 数据库用户名
+  password: qtwwhxbhkMS520 # 数据库密码
   max-idle-conns: 10 # 空闲中的最大连接数
   max-open-conns: 100 # 打开到数据库的最大连接数
   log-mode: error # 是否开启Gorm全局日志
