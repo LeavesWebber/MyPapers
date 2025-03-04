@@ -364,6 +364,7 @@ export default {
   color: white;
   margin: 0 5px;
   cursor: pointer;
+  margin-bottom: 50px;
   }
 
     .image-indicators span.active {
