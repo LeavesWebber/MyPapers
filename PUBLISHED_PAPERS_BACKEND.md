@@ -1,6 +1,7 @@
 # 已发表论文后端开发指引
 
 ## 目录
+
 - [文档说明](#文档说明)
 - [功能概述](#功能概述)
 - [开发建议](#开发建议)
@@ -25,19 +26,18 @@
 - [注意事项](#注意事项)
 
 ## 文档说明
+
 更新日期：  2025年3月5日00:55:54  
 commit id：  `a670f8b3`  
 
 我在基本完成新功能前端部分后撰写了这篇文章，旨在帮助后端同学更高效的完成开发和协同。  
 
-
-
 ## 功能概述
 
 已发表论文（Published Papers）功能的后端开发要求。该功能允许用户上传已发表的学术论文，进行邮箱验证，并生成NFT版权证书。
 
-
 ## 开发建议
+
 1. 遵循RESTful API设计规范
 2. 错误处理机制要做好点
 3. 使用 [postman](https://www.postman.com/downloads/) 进行接口测试  
@@ -47,14 +47,17 @@ commit id：  `a670f8b3`
 ### 1. 邮箱验证相关接口
 
 #### 1.1 发送验证码
+
 - **接口**: `POST /api/published-papers/verify-email`
 - **请求体**:
+  
   ```json
   {
     "email": "string"  // 作者邮箱地址
   }
   ```
 - **响应**:
+  
   ```json
   {
     "code": 1000,      // 成功状态码
@@ -68,8 +71,10 @@ commit id：  `a670f8b3`
   - 验证码应为6位数字
 
 #### 1.2 验证验证码
+
 - **接口**: `POST /api/published-papers/verify-code`
 - **请求体**:
+  
   ```json
   {
     "email": "string",  // 作者邮箱地址
@@ -77,6 +82,7 @@ commit id：  `a670f8b3`
   }
   ```
 - **响应**:
+  
   ```json
   {
     "code": 1000,
@@ -88,8 +94,10 @@ commit id：  `a670f8b3`
 ### 2. 论文管理接口
 
 #### 2.1 上传论文
+
 - **接口**: `POST /api/published-papers/upload`
 - **请求体**: `multipart/form-data`
+  
   ```
   title: string            // 论文标题
   authors: string          // 作者列表（逗号分隔）
@@ -101,6 +109,7 @@ commit id：  `a670f8b3`
   paperFile: File         // PDF文件
   ```
 - **响应**:
+  
   ```json
   {
     "code": 1000,
@@ -119,14 +128,17 @@ commit id：  `a670f8b3`
   - 需要验证邮箱已通过验证
 
 #### 2.2 获取论文列表
+
 - **接口**: `GET /api/published-papers`
 - **参数**:
+  
   ```
   page: number          // 页码，从1开始
   pageSize: number      // 每页数量
   query: string         // 搜索关键词（可选）
   ```
 - **响应**:
+  
   ```json
   {
     "code": 1000,
@@ -151,6 +163,7 @@ commit id：  `a670f8b3`
   ```
 
 #### 2.3 下载论文
+
 - **接口**: `GET /api/published-papers/:id/download`
 - **响应**: `application/pdf`
 - **说明**:
@@ -158,8 +171,10 @@ commit id：  `a670f8b3`
   - 返回PDF文件流
 
 #### 2.4 批量下载论文
+
 - **接口**: `POST /api/published-papers/batch-download`
 - **请求体**:
+  
   ```json
   {
     "paperIds": ["string"]
@@ -171,8 +186,10 @@ commit id：  `a670f8b3`
   - 需要验证用户权限
 
 #### 2.5 查看NFT详情
+
 - **接口**: `GET /api/published-papers/:id/nft`
 - **响应**:
+  
   ```json
   {
     "code": 1000,
@@ -192,6 +209,7 @@ commit id：  `a670f8b3`
 ## 数据库设计
 
 ### 1. published_papers 表
+
 ```sql
 CREATE TABLE published_papers (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -218,6 +236,7 @@ CREATE TABLE published_papers (
 ```
 
 ### 2. email_verifications 表
+
 ```sql
 CREATE TABLE email_verifications (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -234,6 +253,7 @@ CREATE TABLE email_verifications (
 ## 业务逻辑实现
 
 ### 1. 邮箱验证流程
+
 1. 生成6位随机数字验证码
 2. 保存验证码到数据库，设置过期时间
 3. 发送验证码邮件
@@ -241,6 +261,7 @@ CREATE TABLE email_verifications (
 5. 验证成功后标记验证状态
 
 ### 2. 论文上传流程
+
 1. 验证用户登录状态和权限
 2. 验证邮箱是否已通过验证
 3. 验证并保存PDF文件
@@ -248,6 +269,7 @@ CREATE TABLE email_verifications (
 5. 触发NFT生成任务
 
 ### 3. NFT生成流程
+
 1. 创建异步任务处理NFT生成
 2. 生成NFT元数据（包含论文信息）
 3. 调用区块链接口铸造NFT
@@ -257,19 +279,23 @@ CREATE TABLE email_verifications (
 ## 安全考虑
 
 1. **用户认证**
+   
    - 实现JWT或Session based认证
    - 验证用户权限和所有权
 
 2. **文件上传安全**
+   
    - 严格限制文件类型和大小
    - 使用安全的文件存储路径
 
 3. **API访问控制**
+   
    - 实现请求频率限制
    - 验证请求来源
    - 实现CORS策略
 
 4. **数据安全**
+   
    - 加密敏感信息
 
 ## 注意事项
