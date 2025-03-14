@@ -64,7 +64,7 @@ image-path: http://localhost:8887/image/ # 传统图片路径 port是nginx监听
 ipfs:
   #host: 172.16.170.195
   #port: 5001
-  host: 107.155.56.166
+  host: localhost
   port: 5001
   gateway-port: 8081
   gateway-path: /ipfs
