@@ -1,15 +1,17 @@
 <template>
-  <div>
-    <el-container>
+  <div class="main-container">
+    <el-container class="content-wrapper">
       <el-header>
         <common-header />
       </el-header>
-      <logo />
-      <navbar />
-      <!-- 路由出口 -->
-      <!-- 路由匹配到的组件将渲染在这里 -->
-      <!-- 子路由出口 -->
-      <router-view></router-view>
+      <div class="main-content">
+        <logo />
+        <navbar />
+        <!-- 路由出口 -->
+        <!-- 路由匹配到的组件将渲染在这里 -->
+        <!-- 子路由出口 -->
+        <router-view></router-view>
+      </div>
       <el-footer><common-footer /></el-footer>
     </el-container>
   </div>
@@ -31,20 +33,37 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="less" scoped>
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .el-header {
   background-color: #ecf5ff;
   height: 40px !important;
   line-height: 40px;
   padding: 0;
 }
-/* .main {
-  height: 1000px !important;
-} */
+
 .el-footer {
   background-color: #ecf5ff;
   height: 40px !important;
   line-height: 40px;
   text-align: center;
+  margin-top: auto;
 }
 </style>

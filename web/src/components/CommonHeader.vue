@@ -29,9 +29,7 @@
       target="_blank"
       >Center</el-link
     >
-    <el-link class="mypapers" :underline="false" href="home"
-      >mypapers.io</el-link
-    >
+    <router-link class="mypapers" to="/" tag="a">mypapers.io</router-link>
   </div>
 </template>
 
@@ -83,6 +81,7 @@ export default {
     left: 100px;
     color: #40a2fe;
     // 鼠标悬停时显示下划线
+    text-decoration: none;
     &:hover {
       text-decoration: underline;
     }

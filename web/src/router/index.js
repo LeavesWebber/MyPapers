@@ -53,6 +53,9 @@ import Users from '../views/center/Users.vue'
 import CreateJournal from '../views/center/CreateJournal.vue'
 import SelfJournal from '../views/center/SelfJournal.vue'
 import Recharge from '../views/center/Recharge.vue'
+import PublishedPapers from '../views/home/PublishedPapers.vue'
+import UploadPublishedPaper from '../views/home/UploadPublishedPaper.vue'
+import MyPublishedPapers from '../views/home/MyPublishedPapers.vue'
 
 Vue.use(VueRouter)
 
@@ -78,7 +81,10 @@ const routes = [
             { path: 'publications', name: 'publications', component: Publications },
             { path: 'detailPaper', name: 'homeDetailPaper', component: HomeDetailPaper },
             { path: 'user', name: 'user', component: User },
-            { path: 'test', name: 'test', component: Test }
+            { path: 'test', name: 'test', component: Test },
+            { path: 'published-papers', name: 'publishedPapers', component: PublishedPapers },
+            { path: 'published-papers/upload', name: 'uploadPublishedPaper', component: UploadPublishedPaper, meta: { requireAuth: true } },
+            { path: 'published-papers/my-papers', name: 'myPublishedPapers', component: MyPublishedPapers, meta: { requireAuth: true } }
         ]
     },
     {

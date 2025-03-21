@@ -52,4 +52,9 @@ export default {
             })
         }
     },
+    getters: {
+        isLoggedIn: () => {
+            return !!localStorage.getItem('token')
+        }
+    }
 }

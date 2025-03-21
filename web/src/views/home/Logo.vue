@@ -1,6 +1,8 @@
 <template>
   <div class="logo">
-    <img src="../../images/logo.jpg" class="image" />
+    <router-link to="/">
+      <img src="../../images/logo.jpg" class="image" />
+    </router-link>
     <div class="info">My Papers, My Rules</div>
   </div>
 </template>
@@ -23,9 +25,8 @@ export default {
   align-items: center;
   
   .image {
-    width: 13%;
+    width: 10%;
     float: left;
-    margin-top: 50px;
   }
   
   .info {
