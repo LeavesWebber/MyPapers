@@ -24,6 +24,24 @@
       </span>
       </div>
     </div>
+    <div class="early-bird">
+      <div class="early-bird-info">
+        <div>
+        </div>
+       
+      </div>
+      <div>
+        <img src="@/images/Mypapers Early Bird Plan.png" class="early-bird-img">
+      </div>
+      
+    </div>
+    <div class="about-upload" style="margin-top: 50px;">
+      <div class="about-upload-info">
+      </div>
+      <div>
+        <img src="@/images/Upload Your Published Papers to Mypapers.png"  class="about-upload-img">
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -47,6 +65,7 @@ export default {
         require('@/images/5.png'),
         require('@/images/6.png')
       ],
+      earlybird:require('@/images/Mypapers Early Bird Plan.png'),
       imageIndex: 0,
       autoPlayTimer: null,
       imageAspectRatio: 16/9, // 默认宽高比
@@ -92,6 +111,19 @@ export default {
         clearInterval(this.autoPlayTimer);
       }
     },
+    scrollToPage(index) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            pages.forEach((page, i) => {
+                page.style.transform = `translateY(-${index * 100}vh)`;
+            });
+
+            currentPageIndex = index;
+            setTimeout(() => {
+                isAnimating = false;
+            }, 500);
+        },
     async callContract() {
       this.author_address = await ERC20contractInstance.methods
         .getRecipientByHash(this.input)
@@ -179,6 +211,65 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
+
+.early-bird{
+  margin-left: 18%;
+  margin-right: 18%;
+  position: relative;
+}
+
+.early-bird-info{
+  position: relative;
+  font-size: 1.5vw;
+
+  font-weight: bold;
+}
+
+.early-bird-info::after{
+  content: "";
+  bottom: 0%;
+  left: 30%;
+  position: absolute;
+  width: 25vw;
+  height: 3px;
+  background-color: #0047ab;
+}
+
+.early-bird-img{
+  margin-top: 1%;
+  width: 100%;
+  position: relative;
+}
+
+.about-upload{
+  margin-left: 18%;
+  margin-right: 18%;
+  position: relative;
+}
+
+.about-upload-info{
+  position: relative;
+  font-size: 1.5vw;
+
+  font-weight: bold;
+}
+
+.about-upload-info::after{
+  content: "";
+  bottom: 0%;
+  left: 17%;
+  position: absolute;
+  width: 40vw;
+  height: 3px;
+  background-color: #0047ab;
+}
+
+.about-upload-img{
+  margin-top: 1%;
+  width: 100%;
+  position: relative;
+}
+
 
 .image-slider {
   text-align: center;
