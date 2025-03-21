@@ -267,6 +267,7 @@ func (p *PaperApi) GetPaperVersions(c *gin.Context) {
 func (p *PaperApi) GetHonoraryCertificate(c *gin.Context) {
 	// 1. 获取参数和校验参数
 	paperId := c.Query("paper_id")
+	userinfo := c.Query("userInfo")
 	inId, err := strconv.Atoi(paperId)
 	id := uint(inId)
 	if err != nil {
@@ -274,7 +275,7 @@ func (p *PaperApi) GetHonoraryCertificate(c *gin.Context) {
 		return
 	}
 	// 2. 逻辑处理
-	out, err := logic.GetHonoraryCertificate(id)
+	out, err := logic.GetHonoraryCertificate(id, userinfo)
 	if err != nil {
 		global.MPS_LOG.Error("logic.GetHonoraryCertificate failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)

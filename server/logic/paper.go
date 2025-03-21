@@ -424,7 +424,7 @@ func GetPaperVersions(versionId uint) (out []*tables.Paper, err error) {
 var honoraryCertificateUri string
 
 // GetHonoraryCertificate 获取荣誉证书
-func GetHonoraryCertificate(paperId uint) (honoraryCertificateInfo *response.HonoraryCertificateInfo, err error) {
+func GetHonoraryCertificate(paperId uint, userinfo string) (honoraryCertificateInfo *response.HonoraryCertificateInfo, err error) {
 	// 根据paperId查Paper的信息
 	paper := new(tables.Paper)
 	honoraryCertificateInfo = new(response.HonoraryCertificateInfo)
@@ -432,7 +432,7 @@ func GetHonoraryCertificate(paperId uint) (honoraryCertificateInfo *response.Hon
 		return
 	}
 	// 生成证书
-	honoraryCertificateInfo.Url, err = createHonoraryCertificate(paper)
+	honoraryCertificateInfo.Url, err = createHonoraryCertificate(paper, userinfo)
 	// 把图片存入ipfs并且返回cid
 	cid, err := saveToIPFS(honoraryCertificateUri)
 	if err != nil {
@@ -532,8 +532,8 @@ func contentAuthors(content *freetype.Context, authors string) {
 func contentData(content *freetype.Context, title, name string) {
 	content.SetFontSize(30) // 设置字体大小
 	data := "Have Successfully Published a Paper Titled" + title + " in the " + name
-	dataX := 480
-	dataY := 720
+	dataX := 140
+	dataY := 640
 	for i := 0; i < len(data); i += 90 {
 		if i == 0 {
 			content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
@@ -553,13 +553,18 @@ func contentData(content *freetype.Context, title, name string) {
 
 func contentIPFS(content *freetype.Context, IPFS string) {
 	content.SetFontSize(30) // 设置字体大小
-	content.DrawString("107.155.56.166:8080/ipfs/"+IPFS, freetype.Pt(430, 980))
+	content.DrawString("107.155.56.166:8080/ipfs/"+IPFS, freetype.Pt(430, 1000))
 }
 
-func contentHash(content *freetype.Context, transactionAddress, blockAddress string) {
+func contentHash(content *freetype.Context, NFTtransactionAddress, TransactionAddress string) {
 	content.SetFontSize(30) // 设置字体大小
-	content.DrawString(transactionAddress, freetype.Pt(500, 930))
-	content.DrawString(blockAddress, freetype.Pt(440, 865))
+	content.DrawString(NFTtransactionAddress, freetype.Pt(485, 950))
+	content.DrawString(TransactionAddress, freetype.Pt(440, 885))
+}
+
+func contentBlock(content *freetype.Context, blockAddress string) {
+	content.SetFontSize(30) // 设置字体大小
+	content.DrawString(blockAddress, freetype.Pt(440, 835))
 }
 
 func contentDate(content *freetype.Context) {
@@ -567,9 +572,9 @@ func contentDate(content *freetype.Context) {
 	content.SetFontSize(30) // 设置字体大小
 	content.DrawString(date, freetype.Pt(440, 1050))
 }
-func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl string, err error) {
+func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCertificateUrl string, err error) {
 	// 根据路径打开模板文件
-	templateFile, err := os.Open("./image/newcertificate.png")
+	templateFile, err := os.Open("./image/new/certificate.png")
 	if err != nil {
 		return
 	}
@@ -603,6 +608,7 @@ func createHonoraryCertificate(paper *tables.Paper) (honoraryCertificateUrl stri
 	contentAuthors(content, paper.Authors) // 写入作者信息
 	// 根据paperId查投的是哪个会议或者期刊
 	conferenceOrJournalName, err := mysql.GetConferenceOrJournal(paper.ConferenceId, paper.JournalId)
+	contentBlock(content, userinfo)                                      //写入作者地址
 	contentData(content, paper.Title, conferenceOrJournalName)           // 写入数据信息
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentIPFS(content, paper.Cid)

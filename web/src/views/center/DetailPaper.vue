@@ -504,6 +504,7 @@ export default {
       this.dialogVisible = true;
       getHonoraryCertificate({
         paper_id: this.$route.query.paper_id,
+        userInfo:this.userInfo.block_chain_address
       }).then((res) => {
         console.log(res.data.data, "res.data.data");
         this.url = res.data.data.image_uri;
