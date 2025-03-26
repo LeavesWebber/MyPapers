@@ -22,4 +22,16 @@ type OrderStatusResp struct {
 	Status    int     `json:"status"`     // 订单状态：0-待支付 1-支付成功 2-支付失败
 	Amount    float64 `json:"amount"`     // 充值金额
 	MPSAmount float64 `json:"mps_amount"` // MPS数量
-} 
+}
+
+// SellMPSToFiatResp 卖出 MPS 换取法币响应
+type SellMPSToFiatResp struct {
+	OrderNo string `json:"order_no"` // 订单号
+	Status  int    `json:"status"`   // 处理状态
+}
+
+// BuyMPSWithFiatResp 使用法币购买虚拟币响应
+type BuyMPSWithFiatResp struct {
+	OrderNo   string      `json:"order_no"`   // 订单号
+	PayParams WxPayParams `json:"pay_params"` // 支付参数
+}

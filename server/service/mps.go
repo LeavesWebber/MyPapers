@@ -1,20 +1,22 @@
 package service
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"math/big"
+	"server/contracts"
+	"server/global"
 	"server/model/request"
 	"server/model/response"
 	"server/model/tables"
 	"server/utils/wxpay"
-	"server/global"
-	"server/contracts"
-	"github.com/ethereum/go-ethereum/ethclient"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"math/big"
-	"context"
-	"fmt"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"go.uber.org/zap"
 )
 
 type MPSService struct{}
@@ -159,8 +161,8 @@ func (s *MPSService) HandleWxPayNotify(params map[string]string) error {
 	addresses := []common.Address{common.HexToAddress(order.WalletAddr)}
 	// 将 float64 转换为 big.Int，考虑 18 位小数
 	amount := new(big.Int)
-	amount.SetString(fmt.Sprintf("%.0f", order.MPSAmount * 1e18), 10)
-	
+	amount.SetString(fmt.Sprintf("%.0f", order.MPSAmount*1e18), 10)
+
 	txn, err := mpsContract.Mint(auth, addresses, amount)
 	if err != nil {
 		tx.Rollback()
@@ -180,4 +182,141 @@ func (s *MPSService) HandleWxPayNotify(params map[string]string) error {
 	}
 
 	return tx.Commit().Error
-} 
+}
+
+// SellMPSToFiat 卖出 MPS 换取法币
+func (s *MPSService) SellMPSToFiat(userID uint, req *request.SellMPSToFiatReq) (*response.SellMPSToFiatResp, error) {
+	// 生成订单号
+	orderNo := wxpay.GenerateOrderNo()
+
+	// 创建订单记录
+	order := &tables.MPSRechargeOrder{
+		UserID:     userID,
+		OrderNo:    orderNo,
+		Amount:     req.Amount,
+		MPSAmount:  req.Amount, // 1:1 兑换
+		Status:     0,          // 待处理
+		WalletAddr: req.WalletAddr,
+	}
+
+	if err := global.MPS_DB.Create(order).Error; err != nil {
+		global.MPS_LOG.Error("Failed to create order", zap.Error(err))
+		return nil, err
+	}
+
+	// 调用智能合约销毁代币
+	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to create Ethereum client", zap.Error(err))
+		return nil, err
+	}
+
+	// 从配置获取私钥
+	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to parse private key", zap.Error(err))
+		return nil, err
+	}
+
+	chainID := big.NewInt(int64(global.MPS_CONFIG.Blockchain.ChainID))
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to create transactor", zap.Error(err))
+		return nil, err
+	}
+
+	// 设置交易参数
+	auth.GasLimit = uint64(global.MPS_CONFIG.Blockchain.GasLimit)
+	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+	if err != nil {
+		global.MPS_LOG.Error("Failed to suggest gas price", zap.Error(err))
+		return nil, err
+	}
+
+	// 创建合约实例
+	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to create contract instance", zap.Error(err))
+		return nil, err
+	}
+
+	// 销毁代币
+	addresses := []common.Address{common.HexToAddress(req.WalletAddr)}
+	// 将 float64 转换为 big.Int，考虑 18 位小数
+	amount := new(big.Int)
+	amount.SetString(fmt.Sprintf("%.0f", req.Amount*1e18), 10)
+
+	txn, err := mpsContract.BurnFrom(auth, addresses[0], amount)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to burn tokens", zap.Error(err))
+		return nil, err
+	}
+
+	// 等待交易确认
+	receipt, err := bind.WaitMined(context.Background(), client, txn)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to wait for transaction mining", zap.Error(err))
+		return nil, err
+	}
+
+	if receipt.Status == 0 {
+		global.MPS_LOG.Error("Burn transaction failed", zap.Any("receipt", receipt))
+		return nil, errors.New("burn transaction failed")
+	}
+
+	// 更新订单状态
+	if err := global.MPS_DB.Model(&order).Update("status", 1).Error; err != nil {
+		global.MPS_LOG.Error("Failed to update order status", zap.Error(err))
+		return nil, err
+	}
+
+	// 构造响应
+	resp := &response.SellMPSToFiatResp{
+		OrderNo: orderNo,
+		Status:  1, // 处理成功
+	}
+
+	return resp, nil
+}
+
+// BuyMPSWithFiat 使用法币购买虚拟币
+func (s *MPSService) BuyMPSWithFiat(userID uint, req *request.BuyMPSWithFiatReq) (*response.BuyMPSWithFiatResp, error) {
+	// 生成订单号
+	orderNo := wxpay.GenerateOrderNo()
+
+	// 创建订单记录
+	order := &tables.MPSRechargeOrder{
+		UserID:     userID,
+		OrderNo:    orderNo,
+		Amount:     req.Amount,
+		MPSAmount:  req.Amount, // 1:1 兑换
+		Status:     0,          // 待支付
+		WalletAddr: req.WalletAddr,
+	}
+
+	if err := global.MPS_DB.Create(order).Error; err != nil {
+		global.MPS_LOG.Error("Failed to create order", zap.Error(err))
+		return nil, err
+	}
+
+	// TODO: 获取用户openID
+	openID := "test_open_id"
+
+	// 生成微信支付参数
+	wxParams := wxpay.GeneratePayParams(orderNo, req.Amount, openID)
+
+	// 构造响应
+	resp := &response.BuyMPSWithFiatResp{
+		OrderNo: orderNo,
+		PayParams: response.WxPayParams{
+			AppID:     wxParams["appid"],
+			TimeStamp: wxParams["timestamp"],
+			NonceStr:  wxParams["nonce_str"],
+			Package:   "prepay_id=" + wxParams["prepay_id"],
+			SignType:  "MD5",
+			PaySign:   wxParams["sign"],
+		},
+	}
+
+	return resp, nil
+}
