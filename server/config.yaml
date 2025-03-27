@@ -38,7 +38,7 @@ mysql:
   config: charset=utf8mb4&parseTime=True&loc=Local # 高级配置
   db-name: my_papers # 数据库名
   username: root # 数据库用户名
-  password: qtwwhxbhkMS520 # 数据库密码
+  password: root # 数据库密码
   max-idle-conns: 10 # 空闲中的最大连接数
   max-open-conns: 100 # 打开到数据库的最大连接数
   log-mode: error # 是否开启Gorm全局日志
@@ -91,6 +91,7 @@ blockchain:
 
 # 微信支付配置
 wxpay:
+  wxpay-type: "wx"
   # 基础配置
   app-id: "your-app-id-here"        # 公众号ID
   mch-id: "your-mch-id-here"        # 商户号
@@ -105,6 +106,30 @@ wxpay:
   success-url: "http://www.mypapers.io/payment/success"       # 支付成功跳转页面
   fail-url: "http://www.mypapers.io/payment/fail"            # 支付失败跳转页面
 
+alipay:
+  ali-pay-type: "alipay"
+  # 基础配置
+  app-id: "your-app-id-here"        # 公众号ID
+  private-key: "your-key-here"              # API密钥
+  charset: "utf-8"                         # 请求使用的编码格式
+  format: "json"                   # 请求格式
+
+  # 证书配置      
+  public-cert: "" # 应用公钥证书
+  paypublic-cert: "" # 支付宝公钥证书
+  payroot-cert: "" # 支付宝根证书
+
+  # 支付配置
+  trade-type: "JSAPI"               # 交易类型
+  qrpay-mode: "0"                  # PC扫码方式
+  qrcode_width: "100"                  # 自定义二维码宽度,qr_pay_mode=4时该参数有效
+  sign-type: "RSA2"                  # 签名类型
+  product-code: "FAST_INSTANT_TRADE_PAY"               #产品码
+  is-sandbox: false
+  # URL配置
+  notify-url: "http://www.mypapers.io/api/mps/alipay/notify"  # 支付回调通知地址
+  success-url: "http://www.mypapers.io/payment/success"       # 支付成功跳转页面
+  fail-url: "http://www.mypapers.io/payment/fail"            # 支付失败跳转页面
 # 系统业务配置
 business:
   mps-exchange-rate: 1.0            # MPS兑换比率（1 CNY = 1 MPS）

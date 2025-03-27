@@ -12,6 +12,8 @@ require (
 	github.com/ethereum/go-ethereum v1.14.12
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-pay/gopay v1.5.110
+	github.com/go-pay/xlog v0.0.3
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.14.1
@@ -22,9 +24,14 @@ require (
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/spf13/viper v1.16.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/crypto v0.22.0
+	golang.org/x/crypto v0.33.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
+)
+
+require (
+	github.com/go-pay/crypto v0.0.1 // indirect
+	github.com/go-pay/xtime v0.0.2 // indirect
 )
 
 require (
@@ -119,9 +126,9 @@ require (
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b // indirect
 	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
