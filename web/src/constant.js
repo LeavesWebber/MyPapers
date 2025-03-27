@@ -646,7 +646,7 @@ const ERC721contractABI = [
         "type": "function"
     }
 ];
-export const ERC721contractAddress = "0x813Dfc691e771bDbAD90B68ABb584457FA69D8a9";
+export const ERC721contractAddress = "0xCf3150B891e5176545c9EC8BfD2321bf13168848";
 const web3 = new Web3(window.ethereum);
 export const ERC721contractInstance = new web3.eth.Contract(
     ERC721contractABI,
@@ -1659,7 +1659,7 @@ const ERC20contractABI = [
         "type": "function"
     }
 ]
-const ERC20contractAddress = "0x08173FD8A3C5D869461A2b64D2F8C6010b3D6A1E";
+const ERC20contractAddress = "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F2434";
 export const ERC20contractInstance = new web3.eth.Contract(
     ERC20contractABI,
     ERC20contractAddress

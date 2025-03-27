@@ -3,6 +3,13 @@
     <div class="container">
       <h1>Upload Published Paper</h1>
       <el-form :model="paperForm" :rules="rules" ref="paperForm" label-width="180px">
+        <el-form-item label="Paper Type" prop="paperType">
+          <el-radio-group v-model="paperForm.paperType">
+            <el-radio label="journal">Journal Paper</el-radio>
+            <el-radio label="conference">Conference Paper</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item label="Paper Title" prop="title">
           <el-input v-model="paperForm.title" placeholder="Enter the full title of your paper"></el-input>
         </el-form-item>
@@ -16,13 +23,55 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="Abstract" prop="abstract">
-          <el-input
-            type="textarea"
-            v-model="paperForm.abstract"
-            placeholder="Enter paper abstract"
-            :rows="4"
-          ></el-input>
+        <template v-if="paperForm.paperType === 'journal'">
+          <el-form-item label="Journal Name" prop="journalName">
+            <el-input v-model="paperForm.journalName" placeholder="Enter journal name"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Volume & Issue" prop="volumeAndIssue">
+            <el-input v-model="paperForm.volumeAndIssue" placeholder="e.g., Volume: 34, Issue: 6"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Date of Publication" prop="publicationDate">
+            <el-date-picker
+              v-model="paperForm.publicationDate"
+              type="date"
+              placeholder="Select publication date">
+            </el-date-picker>
+          </el-form-item>
+        </template>
+
+        <template v-if="paperForm.paperType === 'conference'">
+          <el-form-item label="Conference Name" prop="conferenceName">
+            <el-input v-model="paperForm.conferenceName" placeholder="Enter conference name"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Conference Date" prop="conferenceDate">
+            <el-date-picker
+              v-model="paperForm.conferenceDate"
+              type="daterange"
+              range-separator="to"
+              start-placeholder="Start date"
+              end-placeholder="End date"
+              class="conference-date-picker">
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="Conference Location" prop="conferenceLocation">
+            <el-input v-model="paperForm.conferenceLocation" placeholder="Enter conference location"></el-input>
+          </el-form-item>
+        </template>
+
+        <el-form-item label="Pages" prop="pages">
+          <el-input v-model="paperForm.pages" placeholder="e.g., 266-271"></el-input>
+        </el-form-item>
+
+        <el-form-item label="ISSN" prop="issn">
+          <el-input v-model="paperForm.issn" placeholder="Enter ISSN number"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Paper Link" prop="paperLink">
+          <el-input v-model="paperForm.paperLink" placeholder="Enter paper URL"></el-input>
         </el-form-item>
 
         <el-form-item label="Corresponding Author Email" prop="correspondingEmail">
@@ -69,26 +118,6 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="Publication Venue" prop="venue">
-          <el-select v-model="paperForm.venueType" placeholder="Select venue type" style="width: 150px; margin-right: 10px">
-            <el-option label="Journal" value="journal"></el-option>
-            <el-option label="Conference" value="conference"></el-option>
-          </el-select>
-          <el-input 
-            v-model="paperForm.venueName" 
-            placeholder="Enter journal/conference name"
-            style="width: calc(100% - 160px)"
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="Publication Date" prop="publicationDate">
-          <el-date-picker
-            v-model="paperForm.publicationDate"
-            type="date"
-            placeholder="Select publication date">
-          </el-date-picker>
-        </el-form-item>
-
         <el-form-item label="Paper File" prop="paperFile">
           <el-upload
             class="upload-demo"
@@ -130,24 +159,60 @@ export default {
 
     return {
       paperForm: {
+        paperType: 'journal',
         title: '',
         authors: '',
-        abstract: '',
+        journalName: '',
+        volumeAndIssue: '',
+        publicationDate: '',
+        conferenceName: '',
+        conferenceDate: '',
+        conferenceLocation: '',
+        pages: '',
+        issn: '',
+        paperLink: '',
         correspondingEmail: '',
         venueType: '',
         venueName: '',
-        publicationDate: '',
         paperFile: null
       },
       rules: {
+        paperType: [
+          { required: true, message: 'Please select paper type', trigger: 'change' }
+        ],
         title: [
           { required: true, message: 'Please enter paper title', trigger: 'blur' }
         ],
         authors: [
           { required: true, message: 'Please enter authors', trigger: 'blur' }
         ],
-        abstract: [
-          { required: true, message: 'Please enter abstract', trigger: 'blur' }
+        journalName: [
+          { required: true, message: 'Please enter journal name', trigger: 'blur' }
+        ],
+        volumeAndIssue: [
+          { required: true, message: 'Please enter volume and issue', trigger: 'blur' }
+        ],
+        publicationDate: [
+          { required: true, message: 'Please select publication date', trigger: 'change' }
+        ],
+        conferenceName: [
+          { required: true, message: 'Please enter conference name', trigger: 'blur' }
+        ],
+        conferenceDate: [
+          { required: true, message: 'Please select conference date', trigger: 'change' },
+          { type: 'array', message: 'Please select start and end dates', trigger: 'change' }
+        ],
+        conferenceLocation: [
+          { required: true, message: 'Please enter conference location', trigger: 'blur' }
+        ],
+        pages: [
+          { required: false }
+        ],
+        issn: [
+          { required: false }
+        ],
+        paperLink: [
+          { required: false, type: 'url', message: 'Please enter a valid URL', trigger: 'blur' }
         ],
         correspondingEmail: [
           { required: true, message: 'Please enter corresponding author email', trigger: 'blur' },
@@ -155,15 +220,6 @@ export default {
         ],
         verificationCode: [
           { validator: validateVerificationCode, trigger: 'blur' }
-        ],
-        venueType: [
-          { required: true, message: 'Please select venue type', trigger: 'change' }
-        ],
-        venueName: [
-          { required: true, message: 'Please enter venue name', trigger: 'blur' }
-        ],
-        publicationDate: [
-          { required: true, message: 'Please select publication date', trigger: 'change' }
         ],
         paperFile: [
           { required: true, message: 'Please upload paper file', trigger: 'change' }
@@ -234,7 +290,7 @@ export default {
       }
     },
     handleVerificationCodeInput(value) {
-      // 只允许输入数字
+      // Only allow numbers
       this.verificationCode = value.replace(/[^\d]/g, '')
     },
     validateEmail(email) {
@@ -363,23 +419,43 @@ export default {
       });
     },
     submitPaper() {
-      // 显示加载状态
+      // Show loading state
       this.loading = true;
 
-      // 构建表单数据
+      // Build form data
       const formData = new FormData();
       formData.append('title', this.paperForm.title);
       formData.append('authors', this.paperForm.authors);
-      formData.append('abstract', this.paperForm.abstract);
       formData.append('correspondingEmail', this.paperForm.correspondingEmail);
-      formData.append('venueType', this.paperForm.venueType);
-      formData.append('venueName', this.paperForm.venueName);
-      formData.append('publicationDate', this.paperForm.publicationDate);
+      formData.append('paperType', this.paperForm.paperType);
+      
+      // Add paper type specific fields
+      if (this.paperForm.paperType === 'journal') {
+        formData.append('journalName', this.paperForm.journalName);
+        formData.append('volumeAndIssue', this.paperForm.volumeAndIssue);
+        formData.append('publicationDate', this.paperForm.publicationDate);
+      } else {
+        formData.append('conferenceName', this.paperForm.conferenceName);
+        formData.append('conferenceDate', this.paperForm.conferenceDate);
+        formData.append('conferenceLocation', this.paperForm.conferenceLocation);
+      }
+      
+      // Add optional fields
+      if (this.paperForm.pages) {
+        formData.append('pages', this.paperForm.pages);
+      }
+      if (this.paperForm.issn) {
+        formData.append('issn', this.paperForm.issn);
+      }
+      if (this.paperForm.paperLink) {
+        formData.append('paperLink', this.paperForm.paperLink);
+      }
+
       if (this.paperForm.paperFile) {
         formData.append('paperFile', this.paperForm.paperFile.raw);
       }
 
-      // 调用后端API提交论文
+      // Call backend API to submit paper
       this.$http.post('/api/published-papers/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -476,6 +552,18 @@ export default {
 
   .el-upload-dragger {
     width: 100%;
+  }
+
+  .conference-date-picker {
+    :deep(.el-range-separator) {
+      padding: 0 8px;  // 增加分隔符两侧的间距
+      width: auto !important;  // 允许分隔符宽度自适应
+    }
+    
+    :deep(.el-range-input) {
+      // 调整输入框的宽度，确保有足够空间显示占位符
+      width: 130px !important;
+    }
   }
 }
 </style> 

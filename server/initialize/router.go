@@ -30,6 +30,7 @@ func Routers() *gin.Engine {
 		systemRouter.InitBaseRouter(PublicGroup) // 基础功能路由 不做鉴权
 	}
 	PrivateGroup := Router.Group("mypapers")
+	//PrivateGroup.Use(middleware.JWTAuthMiddleware()).Use(middleware.CasbinHandler())
 	PrivateGroup.Use(middleware.JWTAuth())
 	{
 		systemRouter.InitUserRouter(PrivateGroup)       // 用户功能路由

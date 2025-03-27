@@ -19,12 +19,10 @@ func GetCurrentUserInfo(c *gin.Context) (mc BaseClaims, err error) {
 		err = ErrorUserNotLogin
 		return
 	}
-	
-	if claims, ok := myClime.(*CustomClaims); ok {
-		mc = claims.BaseClaims
+	mc, ok = myClime.(BaseClaims)
+	if !ok {
+		err = ErrorUserNotLogin
 		return
 	}
-	
-	err = ErrorUserNotLogin
 	return
 }

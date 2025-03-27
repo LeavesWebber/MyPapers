@@ -108,7 +108,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 
 
 | Column Name    | Data Type |
-| -------------- | --------- |
+|----------------|-----------|
 | created_at     | datetime  |
 | updated_at     | datetime  |
 | deleted_at     | datetime  |
@@ -119,14 +119,14 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 2. authority_menus
 
 | Column Name            | Data Type |
-| ---------------------- | --------- |
+|------------------------|-----------|
 | base_menu_id           | bigint    |
 | authority_authority_id | bigint    |
 
 ### 3. base_menus
 
 | Column Name | Data Type |
-| ----------- | --------- |
+|-------------|-----------|
 | id          | bigint    |
 | created_at  | datetime  |
 | updated_at  | datetime  |
@@ -142,7 +142,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 4. committees
 
 | Column Name | Data Type |
-| ----------- | --------- |
+|-------------|-----------|
 | id          | bigint    |
 | created_at  | datetime  |
 | updated_at  | datetime  |
@@ -154,7 +154,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 5. conference_issues
 
 | Column Name           | Data Type |
-| --------------------- | --------- |
+|-----------------------|-----------|
 | id                    | bigint    |
 | created_at            | datetime  |
 | updated_at            | datetime  |
@@ -170,7 +170,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 6. conferences
 
 | Column Name  | Data Type |
-| ------------ | --------- |
+|--------------|-----------|
 | id           | bigint    |
 | created_at   | datetime  |
 | updated_at   | datetime  |
@@ -187,7 +187,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 7. journal_issues
 
 | Column Name           | Data Type |
-| --------------------- | --------- |
+|-----------------------|-----------|
 | id                    | bigint    |
 | created_at            | datetime  |
 | updated_at            | datetime  |
@@ -203,7 +203,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 8. journals
 
 | Column Name  | Data Type |
-| ------------ | --------- |
+|--------------|-----------|
 | id           | bigint    |
 | created_at   | datetime  |
 | updated_at   | datetime  |
@@ -217,7 +217,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 9. paper_viewers
 
 | Column Name | Data Type |
-| ----------- | --------- |
+|-------------|-----------|
 | id          | bigint    |
 | created_at  | datetime  |
 | updated_at  | datetime  |
@@ -228,7 +228,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 10. papers
 
 | Column Name             | Data Type |
-| ----------------------- | --------- |
+|-------------------------|-----------|
 | id                      | bigint    |
 | created_at              | datetime  |
 | updated_at              | datetime  |
@@ -266,7 +266,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 11. reviews
 
 | Column Name | Data Type |
-| ----------- | --------- |
+|-------------|-----------|
 | id          | bigint    |
 | created_at  | datetime  |
 | updated_at  | datetime  |
@@ -280,14 +280,14 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 12. user_authority
 
 | Column Name            | Data Type |
-| ---------------------- | --------- |
+|------------------------|-----------|
 | user_id                | bigint    |
 | authority_authority_id | bigint    |
 
 ### 13. user_committee
 
 | Column Name  | Data Type |
-| ------------ | --------- |
+|--------------|-----------|
 | user_id      | bigint    |
 | committee_id | bigint    |
 | start_time   | datetime  |
@@ -298,7 +298,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 14. user_conference
 
 | Column Name   | Data Type |
-| ------------- | --------- |
+|---------------|-----------|
 | user_id       | bigint    |
 | conference_id | bigint    |
 | start_time    | datetime  |
@@ -309,7 +309,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 15. user_journal
 
 | Column Name | Data Type |
-| ----------- | --------- |
+|-------------|-----------|
 | user_id     | bigint    |
 | journal_id  | bigint    |
 | start_time  | datetime  |
@@ -320,7 +320,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 16. user_paper
 
 | Column Name | Data Type |
-| ----------- | --------- |
+|-------------|-----------|
 | user_id     | bigint    |
 | paper_id    | bigint    |
 | old_version | tinyint   |
@@ -328,7 +328,7 @@ Programming Languages: Solidity ^0.8.0; JavaScript; CSS; HTML; Go 1.20.2
 ### 17. users
 
 | Column Name         | Data Type |
-| ------------------- | --------- |
+|---------------------|-----------|
 | id                  | bigint    |
 | created_at          | datetime  |
 | updated_at          | datetime  |

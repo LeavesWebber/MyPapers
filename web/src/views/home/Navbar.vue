@@ -65,14 +65,14 @@
           <a class="a2" href="#">History of mypapers</a>
         </p>
       </a>
-      <a class="a" href="published-papers"
+      <router-link class="a" to="/published-papers"
         >Published Papers
         <p class="pr">
-          <a class="a2" href="published-papers/upload">Upload Published Paper</a>
-          <a class="a2" href="published-papers/my-papers">My Published Papers</a>
-          <a class="a2" href="published-papers">Published Papers Guide</a>
+          <router-link class="a2" to="/published-papers/upload">Upload Published Paper</router-link>
+          <router-link class="a2" to="/published-papers/my-papers">My Published Papers</router-link>
+          <router-link class="a2" to="/published-papers">Published Papers Guide</router-link>
         </p>
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
