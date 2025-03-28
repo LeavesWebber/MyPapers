@@ -35,6 +35,7 @@ type OrderStatusResp struct {
 	MPSAmount float64 `json:"mps_amount"` // MPS数量
 }
 
+<<<<<<< HEAD
 // MPSBalanceResp 订单状态响应
 type MPSBalanceResp struct {
 	Balance string `json:"balance"`
@@ -43,4 +44,16 @@ type MPSBalanceResp struct {
 // TXHashs 订单状态响应
 type TxList struct {
 	TxList []types.Transaction `json:"tx_list"`
+=======
+// SellMPSToFiatResp 卖出 MPS 换取法币响应
+type SellMPSToFiatResp struct {
+	OrderNo string `json:"order_no"` // 订单号
+	Status  int    `json:"status"`   // 处理状态
+}
+
+// BuyMPSWithFiatResp 使用法币购买虚拟币响应
+type BuyMPSWithFiatResp struct {
+	OrderNo   string      `json:"order_no"`   // 订单号
+	PayParams WxPayParams `json:"pay_params"` // 支付参数
+>>>>>>> 2f2fc5568856c67644fbada0a6a60a301279d468
 }
