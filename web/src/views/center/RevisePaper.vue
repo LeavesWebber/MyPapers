@@ -344,7 +344,7 @@ export default {
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: "0",
+          gasPrice: "0x1",
         });
         console.log("====================================");
         // 输出结果

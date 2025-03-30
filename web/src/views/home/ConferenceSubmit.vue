@@ -275,6 +275,41 @@ export default {
   },
 
   methods: {
+    // 添加检查MetaMask连接状态的函数
+    async checkMetaMaskConnection() {
+      if (!window.ethereum) {
+        this.$message.error("请安装MetaMask钱包插件");
+        return false;
+      }
+      
+      try {
+        // 请求账户授权
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        
+        if (accounts.length === 0) {
+          this.$message.error("请连接MetaMask钱包");
+          return false;
+        }
+        
+        // 检查网络ID
+        const chainId = await window.ethereum.request({
+          method: "eth_chainId",
+        });
+        
+        if (chainId !== "0x198") { // 408的十六进制
+          this.$message.warning("请切换到Papers Chain网络 (ID: 408)");
+          return false;
+        }
+        
+        return true;
+      } catch (error) {
+        console.error("MetaMask连接检查失败:", error);
+        this.$message.error(`MetaMask连接错误: ${error.message}`);
+        return false;
+      }
+    },
     handleExceed(files, fileList) {
       this.$message.warning(`Only one file can be selected`);
     },
@@ -295,6 +330,13 @@ export default {
     },
     // 合约函数
     async callSmartContract(fileHash) {
+      // 检查MetaMask连接
+      const isConnected = await this.checkMetaMaskConnection();
+      if (!isConnected) {
+        this.fileList = [];
+        return;
+      }
+      
       try {
         // 调用智能合约函数
         const functionName = "storeHash";
@@ -318,12 +360,27 @@ export default {
           return;
         }
 
+        // 获取当前网络的gas价格
+        const gasPrice = await window.ethereum.request({
+          method: 'eth_gasPrice'
+        });
+        
+        console.log("当前gas价格:", gasPrice);
+        
+        // 向上调整gas价格以确保交易能被确认
+        const adjustedGasPrice = parseInt(gasPrice, 16) * 1.1;
+        const hexGasPrice = '0x' + Math.floor(adjustedGasPrice).toString(16);
+        
+        console.log("调整后gas价格:", hexGasPrice);
+
         const result = await contractInstance.methods[functionName](
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: 0,
+          gas: "0x186A0", // 100000 in hex
+          gasPrice: hexGasPrice,
         });
+        
         // 输出结果
         console.log("Transaction result:", result);
         this.form.block_address = result.blockHash;
@@ -331,11 +388,22 @@ export default {
       } catch (error) {
         this.fileList = [];
         this.$message({
-          message: "Upload to blockchain failed",
+          message: `上传区块链失败: ${error.message}`,
           type: "error",
         });
         // 处理错误
-        console.error("Error:", error);
+        console.error("详细错误信息:", error);
+        if (error.code) {
+          console.error("错误代码:", error.code);
+        }
+        // 检查是否是RPC错误
+        if (error.message.includes("Internal JSON-RPC error")) {
+          console.error("区块链节点RPC错误，请检查节点状态或联系管理员");
+          this.$message({
+            message: "区块链节点连接问题，请检查网络连接或联系管理员",
+            type: "error",
+          });
+        }
       }
     },
     validateForm() {

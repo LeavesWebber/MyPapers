@@ -9,7 +9,7 @@
 - **服务器**：UCloud  
 - **操作系统**：Ubuntu  
 - **平台账号密码**：  
-  - 2904976636@qq.com@aliyun.com
+  - 2904976636@qq.com
   - xmut_block_5922
 - **服务器账号密码**：  
   - ubuntu 
