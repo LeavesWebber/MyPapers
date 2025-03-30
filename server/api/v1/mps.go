@@ -3,14 +3,14 @@ package v1
 import (
 	"encoding/xml"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
+	"server/global"
 	"server/model/request"
 	"server/model/response"
 	"server/service"
 	"server/utils"
-
-	"github.com/gin-gonic/gin"
 )
 
 type MPSApi struct{}
@@ -155,12 +155,52 @@ func (m *MPSApi) WxPayNotify(c *gin.Context) {
 func (m *MPSApi) AliPayNotify(c *gin.Context) {
 	// 处理回调
 	// 尝试处理支付宝的通知，如果发生错误，则响应支付宝服务器表示处理失败。
+	global.MPS_LOG.Info("处理回调")
 	if err := mpsService.HandleAliPayNotify(c); err != nil {
-		c.XML(http.StatusOK, gin.H{"return_code": "FAIL", "return_msg": err.Error()})
+		c.String(http.StatusOK, "%s", "fail")
 		return
 	}
 	//输出 success 表示消息获取成功，支付宝就会停止发送异步
 	//如果输出 fail，表示消息获取失败，支付宝会重新发送消息到异步地址
 	// 如果通知处理成功，则响应支付宝服务器表示处理成功。
-	c.XML(http.StatusOK, gin.H{"return_code": "SUCCESS", "return_msg": "OK"})
+	global.MPS_LOG.Info("回调成功")
+	c.String(http.StatusOK, "%s", "success")
+}
+func (m *MPSApi) BuyMPSWithFiat(c *gin.Context) {
+	var req request.BuyMPSWithFiatReq
+	// 绑定请求参数并进行错误处理
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	// 获取当前用户ID并校验
+	userID := utils.GetUserID(c)
+	// 调用服务并处理错误
+	resp, err := mpsService.Pay(userID, &req)
+	if err != nil {
+		response.FailWithMessage("支付服务调用失败: "+err.Error(), c)
+		return
+	}
+	// 返回成功结果
+	response.OkWithData(resp, c)
+}
+
+func (m *MPSApi) sellMPSToFiat(c *gin.Context) {
+	// 解析请求体，获取钱包地址
+	req := new(request.GetMPSTransactionsReq)
+	if err := c.ShouldBindJSON(req); err != nil {
+		// 如果请求数据解析失败，则返回错误信息
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	// 调用服务层方法，根据钱包地址获取MPS余额
+	resp, err := mpsService.GetMPSTransactions(req.UserId)
+	if err != nil {
+		// 如果获取余额失败，则返回错误信息
+		response.FailWithMessage("获取余额失败: "+err.Error(), c)
+		return
+	}
+
+	// 如果获取余额成功，则返回余额信息
+	response.OkWithData(resp, c)
 }

@@ -58,27 +58,24 @@ type AliPay struct {
 	//支付标识
 	AliPayType string `mapstructure:"ali-pay-type"`
 	// 基础配置
-	AppID      string `mapstructure:"app-id"`  // 公众号ID
-	PrivateKey string `mapstructure:"key"`     // API密钥
-	Charset    string `mapstructure:"charset"` // 请求使用的编码格式
-	Format     string `mapstructure:"format"`  // 请求格式
+	AppID      string `mapstructure:"app-id"`      // 公众号ID
+	PrivateKey string `mapstructure:"private-key"` // API密钥
+	Charset    string `mapstructure:"charset"`     // 请求使用的编码格式
+	Format     string `mapstructure:"format"`      // 请求格式
 	//证书配置
 	PublicCert    string `mapstructure:"public-cert"`    // 应用公钥证书
 	PayPublicCert string `mapstructure:"paypublic-cert"` //支付宝公钥证书
 	PayRootCert   string `mapstructure:"payroot-cert"`   //支付宝根证书
 
 	// 支付配置
-	TradeType   string `mapstructure:"trade-type"`   // 交易类型
 	SignType    string `mapstructure:"sign-type"`    // 签名类型
 	QrPayMode   string `mapstructure:"qrpay-mode"`   // PC扫码方式
 	QrcodeWidth string `mapstructure:"qrcode_width"` // 自定义二维码宽度,qr_pay_mode=4时该参数有效
 	ProductCode string `mapstructure:"product-code"` //产品码
-	IsSandbox   bool   `mapstructure:"is-sandbox"`   //是否是正式环境
+	IsProd      bool   `mapstructure:"is-prod"`      //是否是正式环境
 
 	// URL配置
-	NotifyURL  string `mapstructure:"notify-url"`  // 支付回调通知地址
-	SuccessURL string `mapstructure:"success-url"` // 支付成功跳转页面
-	FailURL    string `mapstructure:"fail-url"`    // 支付失败跳转页面
+	NotifyURL string `mapstructure:"notify-url"` // 支付回调通知地址
 }
 
 // Business 系统业务配置

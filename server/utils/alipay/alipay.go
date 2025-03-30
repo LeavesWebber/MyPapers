@@ -1,8 +1,7 @@
-package wxpay
+package Alipay
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-pay/gopay"
 	"go.uber.org/zap"
@@ -11,54 +10,15 @@ import (
 	"github.com/go-pay/gopay/alipay"
 )
 
-// Config 支付宝支付配置
-type Config struct {
-	AppID              string // 公众号ID
-	PrivateKey         string // 应用私钥
-	NotifyURL          string // 回调通知地址
-	PublicCert         string // 应用公钥证书
-	PayPublicCert      string //支付宝公钥证书
-	PayRootCert        string //支付宝根证书
-	TradeType          string // 交易类型
-	SignType           string // 签名类型
-	Charset            string // 请求使用的编码格式
-	Format             string //请求格式
-	QrPayMode          string // PC扫码方式
-	QrcodeWidth        string // 自定义二维码宽度,qr_pay_mode=4时该参数有效
-	ProductCode        string // 销售产品码,目前仅支持FAST_INSTANT_TRADE_PAY
-	isSandbox          bool   //是否是正式环境
-	EthNodeURL         string // 以太坊节点URL
-	MPSContractAddress string // MPS合约地址
-	AdminPrivateKey    string // 管理员私钥
-}
-
-var AlipayConfig = &Config{
-	AppID:         global.MPS_CONFIG.AliPay.AppID,
-	PrivateKey:    global.MPS_CONFIG.AliPay.PrivateKey,
-	NotifyURL:     global.MPS_CONFIG.AliPay.NotifyURL,
-	PublicCert:    global.MPS_CONFIG.AliPay.PublicCert,
-	PayPublicCert: global.MPS_CONFIG.AliPay.PayPublicCert,
-	PayRootCert:   global.MPS_CONFIG.AliPay.PayRootCert,
-	//TradeType:          global.MPS_CONFIG.WxPay.TradeType,
-	SignType:           global.MPS_CONFIG.AliPay.SignType,
-	Charset:            global.MPS_CONFIG.AliPay.Charset,
-	Format:             global.MPS_CONFIG.AliPay.Format,
-	QrPayMode:          global.MPS_CONFIG.AliPay.QrPayMode,
-	QrcodeWidth:        global.MPS_CONFIG.AliPay.QrcodeWidth,
-	ProductCode:        global.MPS_CONFIG.AliPay.ProductCode,
-	isSandbox:          global.MPS_CONFIG.AliPay.IsSandbox,
-	EthNodeURL:         global.MPS_CONFIG.Blockchain.EthNodeURL,
-	MPSContractAddress: global.MPS_CONFIG.Blockchain.MPSContractAddress,
-	AdminPrivateKey:    global.MPS_CONFIG.Blockchain.AdminPrivateKey,
-}
-
 // GeneratePayParams 生成支付参数
-func GeneratePayParams(orderNo string, amount float64, openID string) gopay.BodyMap {
+func GeneratePayParams(orderNo string, amount float64) gopay.BodyMap {
 	params := make(gopay.BodyMap)
-	params["appid"] = AlipayConfig.AppID
-	params["subject"] = "MPS充值"
-	params["out_trade_no"] = orderNo
-	params["total_amount"] = fmt.Sprintf("%.0f", amount*100) // 转换为分
+	params.Set("subject", "MPS充值").
+		Set("out_trade_no", orderNo).
+		Set("total_amount", amount).
+		Set("product_code", global.MPS_CONFIG.AliPay.ProductCode).
+		Set("qr_pay_mode", global.MPS_CONFIG.AliPay.QrPayMode).
+		Set("qrcode_width", global.MPS_CONFIG.AliPay.QrcodeWidth)
 	//todo
 	//switch payType {
 	// case constants.PayTypeAlipayWap:
@@ -68,18 +28,17 @@ func GeneratePayParams(orderNo string, amount float64, openID string) gopay.Body
 	// case constants.PayTypeAlipayMini:
 	// 	m["buyer_id"] = buyerId
 	// }
-	params["product_code"] = AlipayConfig.ProductCode
 	return params
 }
 
 // initAliPayCliny 初始化支付宝客户端。
 // 该函数使用支付宝的AppID、私钥以及是否是沙箱环境来创建一个新的支付宝客户端。
 // 如果初始化过程中遇到错误，会记录错误日志并返回nil。
-func initAliPayCliny() *alipay.Client {
+func InitAliPayClient() *alipay.Client {
 	// 创建支付宝客户端
-	client, err := alipay.NewClient(AlipayConfig.AppID, AlipayConfig.PrivateKey, AlipayConfig.isSandbox)
+	client, err := alipay.NewClient(global.MPS_CONFIG.AliPay.AppID, global.MPS_CONFIG.AliPay.PrivateKey, global.MPS_CONFIG.AliPay.IsProd)
 	if err != nil {
-		global.MPS_LOG.Error("initAliPayCliny error", zap.Error(err))
+		global.MPS_LOG.Error("initAliPayClint error", zap.Error(err))
 		return nil
 	}
 
@@ -87,10 +46,9 @@ func initAliPayCliny() *alipay.Client {
 	client.SetLocation(alipay.LocationShanghai). // 设置时区，不设置或出错均为默认服务器时间
 							SetCharset(alipay.UTF8).  // 设置字符编码，不设置默认 utf-8
 							SetSignType(alipay.RSA2). // 设置签名类型，不设置默认 RSA2
-							SetNotifyUrl(AlipayConfig.NotifyURL)
-
+							SetNotifyUrl(global.MPS_CONFIG.AliPay.NotifyURL)
 	// 加载证书
-	CRTerr := client.SetCertSnByPath("appPublicCert.crt", "alipayRootCert.crt", "alipayPublicCert.crt")
+	CRTerr := client.SetCertSnByPath(global.MPS_CONFIG.AliPay.PublicCert, global.MPS_CONFIG.AliPay.PayRootCert, global.MPS_CONFIG.AliPay.PayPublicCert)
 	if CRTerr != nil {
 		global.MPS_LOG.Error("SetCertSnByPath error", zap.Error(CRTerr))
 		return nil
@@ -109,7 +67,7 @@ func VerifySign(c *gin.Context) (gopay.BodyMap, bool) {
 		return nil, false
 	}
 	// 验证签名
-	ok, err := alipay.VerifySignWithCert("alipayPublicCert.crt", notifyReq)
+	ok, err := alipay.VerifySignWithCert(global.MPS_CONFIG.AliPay.PayPublicCert, notifyReq)
 	if err != nil {
 		global.MPS_LOG.Error("支付宝异步通知签名出错", zap.Error(err))
 		return nil, false
@@ -124,31 +82,29 @@ func VerifySign(c *gin.Context) (gopay.BodyMap, bool) {
 	return notifyReq, true
 }
 
-// QRCodePay 二维码支付功能
-// 该函数初始化支付宝客户端，生成支付参数，并调用支付宝接口进行交易预创建
+// FastInstantTradePay 快捷即时交易支付函数
+// 该函数初始化支付宝客户端，生成支付参数，并调用支付宝交易预创建接口完成支付过程
 // 参数:
 //
-//	orderNo - 订单编号
-//	amount - 支付金额
-//	openID - 用户在支付宝的唯一标识
+//	orderNo: 订单号
+//	amount: 支付金额
 //
 // 返回值:
 //
-//	*alipay.TradePrecreateResponse - 支付宝交易预创建响应对象，包含二维码信息等
-//	error - 错误对象，如果执行过程中发生错误
-func QRCodePay(orderNo string, amount float64, openID string) (*alipay.TradePrecreateResponse, error) {
+//	成功时返回支付宝响应参数，错误时返回错误信息
+func FastInstantTradePay(orderNo string, amount float64) (string, error) {
 	// 初始化支付宝客户端
-	client := initAliPayCliny()
+	client := InitAliPayClient()
 	// 生成支付参数
-	params := GeneratePayParams(orderNo, amount, openID)
+	params := GeneratePayParams(orderNo, amount)
 	// 调用支付宝交易预创建接口
-	aliRsp, err := client.TradePrecreate(context.Background(), params)
+	aliRsp, err := client.TradePagePay(context.Background(), params)
 	if err != nil {
 		// 判断是否为业务逻辑错误
 		if bizErr, ok := alipay.IsBizError(err); ok {
 			global.MPS_LOG.Error("业务逻辑出错:", zap.Error(bizErr))
 			// do something
-			return nil, err
+			return "", err
 		}
 		global.MPS_LOG.Error("交易预创建出错:", zap.Error(err))
 	}

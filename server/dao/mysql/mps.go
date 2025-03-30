@@ -28,3 +28,9 @@ func GetTXHashList(userid string) ([]string, error) {
 	}
 	return hashsList, nil
 }
+
+func CreateMPSRechargeOrder(order *tables.MPSRechargeOrder) error {
+
+	return global.MPS_DB.Create(order).Error
+
+}

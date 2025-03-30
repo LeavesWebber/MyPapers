@@ -4,54 +4,50 @@ import (
 	"context"
 	"errors"
 	"fmt"
-<<<<<<< HEAD
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"math/big"
 	"server/contracts"
 	"server/global"
 	"server/logic"
-=======
-	"math/big"
-	"server/contracts"
-	"server/global"
->>>>>>> 2f2fc5568856c67644fbada0a6a60a301279d468
 	"server/model/request"
 	"server/model/response"
 	"server/model/tables"
 	Alipay "server/utils/alipay"
 	"server/utils/wxpay"
-<<<<<<< HEAD
+	"strconv"
 	"sync"
-=======
-
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"go.uber.org/zap"
->>>>>>> 2f2fc5568856c67644fbada0a6a60a301279d468
+	"time"
 )
 
 type MPSService struct{}
 
+const (
+	AliPay_TRADE_SUCCESS  = "TRADE_SUCCESS"  //交易支付成功
+	AliPay_TRADE_CLOSED   = "TRADE_CLOSED"   //交易结束，不可退款
+	AliPay_TRADE_FINISHED = "TRADE_FINISHED" //未付款交易超时关闭，或支付完成后全额退款。
+	AliPay_WAIT_BUYER_PAY = "WAIT_BUYER_PAY" //交易创建，等待买家付款
+)
+
 // CreateRechargeOrder  根据类型创建充值订单
 func (s *MPSService) CreateRechargeOrder(userID uint, req *request.CreateRechargeOrderReq) (*response.CreateRechargeOrderResp, error) {
 	// 生成订单号
-	orderNo := wxpay.GenerateOrderNo()
-
+	orderNo := GenerateOrderNo()
+	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
+	mpsAmount := int64(mpstoFiatRate * req.Amount)
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
 		UserID:     userID,
 		OrderNo:    orderNo,
 		Amount:     req.Amount,
-		MPSAmount:  req.Amount, // 1:1 兑换
-		Status:     0,          // 待支付
+		MPSAmount:  mpsAmount, // 1:1 兑换
+		Status:     0,         // 待支付
 		WalletAddr: req.WalletAddr,
 	}
 
@@ -64,7 +60,7 @@ func (s *MPSService) CreateRechargeOrder(userID uint, req *request.CreateRecharg
 	var resp *response.CreateRechargeOrderResp
 	switch req.PayType {
 	case global.MPS_CONFIG.AliPay.AliPayType:
-		aliParams := Alipay.GeneratePayParams(orderNo, req.Amount, openID)
+		aliParams := Alipay.GeneratePayParams(orderNo, req.Amount)
 		resp = &response.CreateRechargeOrderResp{
 			OrderNo: orderNo,
 			AliPayParams: response.AliPayParams{
@@ -212,55 +208,61 @@ func (s *MPSService) HandleWxPayNotify(params map[string]string) error {
 }
 func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	// 验证签名
+
+	global.MPS_LOG.Info("支付宝异步通知验证开始")
 	notifyReq, ok := Alipay.VerifySign(c)
 	if !ok {
-		return errors.New("invalid signature")
+		return errors.New("非法签名")
 	}
-
+	status := notifyReq.Get("trade_status")
+	var statusID int
+	switch status {
+	case AliPay_TRADE_SUCCESS:
+		statusID = 1
+	default:
+		return errors.New("支付宝交易状态非法")
+	}
 	orderNo := notifyReq.Get("out_trade_no")
+	totalAmountStr := notifyReq.Get("total_amount")
+	totalAmount, err := strconv.ParseFloat(totalAmountStr, 64)
+	if err != nil {
+		return err
+	}
+	appId := notifyReq.Get("app_id")
 	var order tables.MPSRechargeOrder
 	if err := global.MPS_DB.Where("order_no = ?", orderNo).First(&order).Error; err != nil {
 		return err
 	}
-
+	if totalAmount != order.Amount || appId != global.MPS_CONFIG.AliPay.AppID {
+		return errors.New("支付宝交易信息非法")
+	}
 	// 检查订单状态
 	if order.Status != 0 {
 		return nil // 订单已处理
 	}
 
-	// 开启事务
-	tx := global.MPS_DB.Begin()
-
 	// 更新订单状态
-	if err := tx.Model(&order).Updates(map[string]interface{}{
-		"status":       1, // 支付成功
+	if err := global.MPS_DB.Model(&order).Updates(map[string]interface{}{
+		"status":       statusID, // 支付成功
 		"ali_trade_no": notifyReq.Get("trade_no"),
 	}).Error; err != nil {
-		tx.Rollback()
 		return err
 	}
-
-	// 记录交易
-	transaction := &tables.MPSTransaction{
-		UserID:      order.UserID,
-		Type:        1, // 充值
-		Amount:      order.MPSAmount,
-		OrderNo:     orderNo,
-		Description: "支付宝支付充值",
-	}
-
-	if err := tx.Create(transaction).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
+	// 开启事务
+	tx := global.MPS_DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			global.MPS_LOG.Error("事务回滚", zap.Any("reason", r))
+		}
+	}()
 	// 调用智能合约发放代币
 	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
-
+	defer client.Close()
 	// 从配置获取私钥
 	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
 	if err != nil {
@@ -268,7 +270,7 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 		return err
 	}
 
-	chainID := big.NewInt(int64(global.MPS_CONFIG.Blockchain.ChainID))
+	chainID := big.NewInt(global.MPS_CONFIG.Blockchain.ChainID)
 	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
 	if err != nil {
 		tx.Rollback()
@@ -276,8 +278,9 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	}
 
 	// 设置交易参数
-	auth.GasLimit = uint64(global.MPS_CONFIG.Blockchain.GasLimit)
+	auth.GasLimit = global.MPS_CONFIG.Blockchain.GasLimit
 	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+	auth.Value = big.NewInt(0)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -286,6 +289,7 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	// 创建合约实例
 	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
 	if err != nil {
+		global.MPS_LOG.Error("创建合约实例失败: ", zap.Error(err))
 		tx.Rollback()
 		return err
 	}
@@ -294,10 +298,11 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	addresses := []common.Address{common.HexToAddress(order.WalletAddr)}
 	// 将 float64 转换为 big.Int，考虑 18 位小数
 	amount := new(big.Int)
-	amount.SetString(fmt.Sprintf("%.0f", order.MPSAmount*1e18), 10)
+	amount.SetInt64(order.MPSAmount)
 
 	txn, err := mpsContract.Mint(auth, addresses, amount)
 	if err != nil {
+		global.MPS_LOG.Error("调用智能合约发放代币失败: ", zap.Error(err))
 		tx.Rollback()
 		return err
 	}
@@ -305,26 +310,46 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	// 等待交易确认
 	receipt, err := bind.WaitMined(context.Background(), client, txn)
 	if err != nil {
+		global.MPS_LOG.Error("等待交易确认失败: ", zap.Error(err))
 		tx.Rollback()
 		return err
 	}
 
 	if receipt.Status == 0 {
+		global.MPS_LOG.Error("mint transaction failed", zap.Error(err))
 		tx.Rollback()
 		return errors.New("mint transaction failed")
 	}
-
+	// 记录交易
+	transaction := &tables.MPSTransaction{
+		UserID:      order.UserID,
+		Type:        1, // 充值
+		Amount:      order.MPSAmount,
+		OrderNo:     orderNo,
+		TxHash:      receipt.TxHash.Hex(),
+		Description: "支付宝充值",
+	}
+	if err := tx.Create(transaction).Error; err != nil {
+		global.MPS_LOG.Error("记录交易失败: ", zap.Error(err))
+		tx.Rollback()
+		return err
+	}
+	global.MPS_LOG.Info("支付宝异步通知验证结束")
 	return tx.Commit().Error
 }
 
-<<<<<<< HEAD
 func (s *MPSService) GetMPSBalance(address common.Address) (*response.MPSBalanceResp, error) {
 	var resp *response.MPSBalanceResp
 	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
 	if err != nil {
 		global.MPS_LOG.Error("连接以太坊节点失败: ", zap.Error(err))
 	}
-	balance, err := client.BalanceAt(context.Background(), address, nil)
+	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
+	if err != nil {
+		global.MPS_LOG.Error("创建合约实例失败: ", zap.Error(err))
+		return nil, err
+	}
+	balance, err := mpsContract.BalanceOf(nil, address)
 	if err != nil {
 		global.MPS_LOG.Error("查询余额失败: ", zap.Error(err))
 	}
@@ -408,19 +433,23 @@ func (s *MPSService) GetMPSTransactions(id string) (interface{}, error) {
 
 	if len(errs) > 0 {
 		return nil, fmt.Errorf("发生错误: %v", errs)
-=======
+	}
+	return resp, nil
+}
+
 // SellMPSToFiat 卖出 MPS 换取法币
 func (s *MPSService) SellMPSToFiat(userID uint, req *request.SellMPSToFiatReq) (*response.SellMPSToFiatResp, error) {
 	// 生成订单号
-	orderNo := wxpay.GenerateOrderNo()
-
+	orderNo := GenerateOrderNo()
+	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
+	mpsAmount := int64(mpstoFiatRate * req.Amount)
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
 		UserID:     userID,
 		OrderNo:    orderNo,
 		Amount:     req.Amount,
-		MPSAmount:  req.Amount, // 1:1 兑换
-		Status:     0,          // 待处理
+		MPSAmount:  mpsAmount, // 1:1 兑换
+		Status:     0,         // 待处理
 		WalletAddr: req.WalletAddr,
 	}
 
@@ -507,15 +536,16 @@ func (s *MPSService) SellMPSToFiat(userID uint, req *request.SellMPSToFiatReq) (
 // BuyMPSWithFiat 使用法币购买虚拟币
 func (s *MPSService) BuyMPSWithFiat(userID uint, req *request.BuyMPSWithFiatReq) (*response.BuyMPSWithFiatResp, error) {
 	// 生成订单号
-	orderNo := wxpay.GenerateOrderNo()
-
+	orderNo := GenerateOrderNo()
+	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
+	mpsAmount := int64(mpstoFiatRate * req.Amount)
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
 		UserID:     userID,
 		OrderNo:    orderNo,
 		Amount:     req.Amount,
-		MPSAmount:  req.Amount, // 1:1 兑换
-		Status:     0,          // 待支付
+		MPSAmount:  mpsAmount, // 1:1 兑换
+		Status:     0,         // 待支付
 		WalletAddr: req.WalletAddr,
 	}
 
@@ -541,8 +571,42 @@ func (s *MPSService) BuyMPSWithFiat(userID uint, req *request.BuyMPSWithFiatReq)
 			SignType:  "MD5",
 			PaySign:   wxParams["sign"],
 		},
->>>>>>> 2f2fc5568856c67644fbada0a6a60a301279d468
 	}
 
+	return resp, nil
+}
+
+// GenerateOrderNo 生成订单号
+func GenerateOrderNo() string {
+	return fmt.Sprintf("MPS%s%s",
+		time.Now().Format("20060102150405"),
+		uuid.New().String()[:8])
+}
+func (s *MPSService) Pay(userID uint, req *request.BuyMPSWithFiatReq) (interface{}, error) {
+	orderNo := GenerateOrderNo()
+
+	// 处理支付逻辑
+	var resp interface{}
+	var payErr error
+	switch req.PayType {
+	case global.MPS_CONFIG.AliPay.AliPayType:
+		resp, payErr = Alipay.FastInstantTradePay(orderNo, req.Amount)
+		if payErr != nil {
+			global.MPS_LOG.Error("Alipay QRCodePay failed for order "+orderNo, zap.Error(payErr))
+		}
+	default:
+		payErr = errors.New("unsupported payment type")
+		global.MPS_LOG.Error("Alipay QRCodePay failed for order "+orderNo, zap.Error(payErr))
+	}
+	// 返回结果
+	if payErr != nil {
+		return nil, payErr
+	}
+	// 插入数据库
+	err := logic.CreateMPSRechargeOrder(req, userID, orderNo)
+	if err != nil {
+		global.MPS_LOG.Error("Failed to CreateMPSRechargeOrder to DataBase", zap.Error(err))
+		return nil, err
+	}
 	return resp, nil
 }

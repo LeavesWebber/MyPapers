@@ -32,8 +32,8 @@ func UserEmailExist(email string) (id uint, err error) {
 // Login 用户登录
 func Login(in *request.Login) (out *response.Login, err error) {
 	out = new(response.Login)
-	if err = global.MPS_DB.Where("username = ?", in.Username).
-		Preload("Authorities").Preload("Authority").First(&out.UserInfo).Error; err == nil {
+	if err = global.MPS_DB.Where("username = ?", in.Username).Preload("Authorities").Preload("Authority").
+		First(&out.UserInfo).Error; err == nil {
 		//if ok := utils.BcryptCheck(u.Password, user.UserInfo.Password); !ok {
 		//	return nil, global.ErrorInvalidPassword
 		//}
