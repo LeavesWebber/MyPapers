@@ -240,10 +240,23 @@ export default {
       }
     };
     var validateDescriptionWordCount = (rule, value, callback) => {
+      // 从HTML中提取纯文本
       const plainText = value.replace(/<[^>]+>/g, '').trim();
-      const wordCount = plainText.split(/\s+/).length;
-      if (wordCount < 10 || wordCount > 10000) {
-        callback(new Error("Should contain 10 to 10k words"));
+      if (!plainText) {
+        callback(new Error("Description cannot be empty"));
+        return;
+      }
+      
+      // 使用与编辑器相同的字数计算逻辑
+      const textWithSpaces = plainText.replace(/[\u4e00-\u9fa5]+/g, match => {
+        return match.split('').join(' ') + ' ';
+      });
+      
+      const words = textWithSpaces.split(/\s+/).filter(word => word.length > 0);
+      const wordCount = words.length;
+      
+      if (wordCount < 150 || wordCount > 250) {
+        callback(new Error("Should contain 150 to 250 words"));
       } else {
         callback();
       }
@@ -429,15 +442,19 @@ export default {
         if (!text || text === ' ') {
           this.wordCount = 0;
         } else {
-          // 分别处理中文和英文
-          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+          // 改进的中英文字数计算方法
+          // 对于连续的中文字符，我们将它们视为独立的词
+          // 先将连续的中文字符用空格隔开
+          const textWithSpaces = text.replace(/[\u4e00-\u9fa5]+/g, match => {
+            // 将连续的中文字符分割开，每个字符之间加空格
+            return match.split('').join(' ') + ' ';
+          });
           
-          // 移除中文字符，然后按空格分割英文单词
-          const englishText = text.replace(/[\u4e00-\u9fa5]/g, '');
-          const englishWords = englishText.split(/\s+/).filter(word => word.length > 0);
+          // 然后按空格分割所有单词并过滤空字符串
+          const words = textWithSpaces.split(/\s+/).filter(word => word.length > 0);
           
-          // 总字数 = 中文字符数 + 英文单词数
-          this.wordCount = chineseChars.length + englishWords.length;
+          // 总字数就是所有单词的数量
+          this.wordCount = words.length;
         }
         
         // 更新 form.description，保留HTML格式
@@ -454,10 +471,13 @@ export default {
         if (!text || text === ' ') {
           this.wordCount = 0;
         } else {
-          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
-          const englishText = text.replace(/[\u4e00-\u9fa5]/g, '');
-          const englishWords = englishText.split(/\s+/).filter(word => word.length > 0);
-          this.wordCount = chineseChars.length + englishWords.length;
+          // 改进的中英文字数计算方法
+          const textWithSpaces = text.replace(/[\u4e00-\u9fa5]+/g, match => {
+            return match.split('').join(' ') + ' ';
+          });
+          
+          const words = textWithSpaces.split(/\s+/).filter(word => word.length > 0);
+          this.wordCount = words.length;
         }
       }
     },
