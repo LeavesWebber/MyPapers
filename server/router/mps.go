@@ -17,8 +17,8 @@ func (r *MPSRouter) InitMPSRouter(Router *gin.RouterGroup) {
 		mpsRouter.GET("balance", mpsApi.GetMPSBalance)            // 查询用户MPS余额
 		mpsRouter.GET("transactions", mpsApi.GetMPSTransactions)  // 获取用户通证交易记录
 		mpsRouter.POST("buy", mpsApi.BuyMPSWithFiat)              // 法币购买MPS
-		mpsRouter.POST("sell", mpsApi.GetOrderStatus)             // MPS卖出换取法币
-		mpsRouter.GET("rate", mpsApi.GetOrderStatus)              // 获取当前MPS兑换率
+		mpsRouter.POST("sell", mpsApi.SellMPSToFiat)              // MPS卖出换取法币
+		mpsRouter.GET("rate", mpsApi.GetMPSRate)                  // 获取当前MPS兑换率
 		mpsRouter.GET("rewards", mpsApi.GetOrderStatus)           // 获取用户激励记录
 	}
 

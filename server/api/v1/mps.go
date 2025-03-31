@@ -114,6 +114,9 @@ func (m *MPSApi) GetMPSTransactions(c *gin.Context) {
 	// 如果获取余额成功，则返回余额信息
 	response.OkWithData(resp, c)
 }
+func (m *MPSApi) GetMPSRate(c *gin.Context) {
+	response.OkWithData(global.MPS_CONFIG.Business.MPSExchangeRate, c)
+}
 
 // WxPayNotify 微信支付回调
 // @Tags MPS
@@ -166,41 +169,52 @@ func (m *MPSApi) AliPayNotify(c *gin.Context) {
 	global.MPS_LOG.Info("回调成功")
 	c.String(http.StatusOK, "%s", "success")
 }
+
+// BuyMPSWithFiat 处理用户使用法定货币购买MPS的请求
+// 参数: c *gin.Context - Gin框架的上下文，用于处理HTTP请求和响应
 func (m *MPSApi) BuyMPSWithFiat(c *gin.Context) {
+	// 解析并验证请求体
 	var req request.BuyMPSWithFiatReq
 	// 绑定请求参数并进行错误处理
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
 	// 获取当前用户ID并校验
 	userID := utils.GetUserID(c)
+
 	// 调用服务并处理错误
 	resp, err := mpsService.Pay(userID, &req)
 	if err != nil {
 		response.FailWithMessage("支付服务调用失败: "+err.Error(), c)
 		return
 	}
+
 	// 返回成功结果
 	response.OkWithData(resp, c)
 }
 
-func (m *MPSApi) sellMPSToFiat(c *gin.Context) {
+// SellMPSToFiat 处理将MPS币兑换为法定货币的请求
+// 该函数接收一个gin.Context参数，用于处理HTTP请求和响应
+// 它从请求中提取兑换信息，验证用户身份，并调用服务层逻辑进行余额查询
+func (m *MPSApi) SellMPSToFiat(c *gin.Context) {
 	// 解析请求体，获取钱包地址
-	req := new(request.GetMPSTransactionsReq)
+	req := new(request.SellMPSToFiatReq)
 	if err := c.ShouldBindJSON(req); err != nil {
 		// 如果请求数据解析失败，则返回错误信息
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	// 获取当前用户ID并校验
+	userID := utils.GetUserID(c)
 	// 调用服务层方法，根据钱包地址获取MPS余额
-	resp, err := mpsService.GetMPSTransactions(req.UserId)
+	resp, err := mpsService.Sell(userID, req)
 	if err != nil {
 		// 如果获取余额失败，则返回错误信息
 		response.FailWithMessage("获取余额失败: "+err.Error(), c)
 		return
 	}
-
 	// 如果获取余额成功，则返回余额信息
 	response.OkWithData(resp, c)
 }

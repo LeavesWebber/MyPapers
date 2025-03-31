@@ -71,7 +71,6 @@ type AliPay struct {
 	SignType    string `mapstructure:"sign-type"`    // 签名类型
 	QrPayMode   string `mapstructure:"qrpay-mode"`   // PC扫码方式
 	QrcodeWidth string `mapstructure:"qrcode_width"` // 自定义二维码宽度,qr_pay_mode=4时该参数有效
-	ProductCode string `mapstructure:"product-code"` //产品码
 	IsProd      bool   `mapstructure:"is-prod"`      //是否是正式环境
 
 	// URL配置
@@ -84,4 +83,6 @@ type Business struct {
 	OrderTimeout      int     `mapstructure:"order-timeout"`       // 订单超时时间（秒）
 	MinRechargeAmount float64 `mapstructure:"min-recharge-amount"` // 最小充值金额
 	MaxRechargeAmount float64 `mapstructure:"max-recharge-amount"` // 最大充值金额
+	AccountType       int8    `mapstructure:"account-type"`
+	InstName          string  `mapstructure:"inst-name"`
 }

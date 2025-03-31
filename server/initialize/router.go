@@ -1,7 +1,6 @@
 package initialize
 
 import (
-	v1 "server/api/v1"
 	"server/global"
 	"server/middleware"
 	"server/router"
@@ -20,12 +19,6 @@ func Routers() *gin.Engine {
 	Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求
 	global.MPS_LOG.Info("use middleware cors")
 
-	NotifyGroup := Router.Group("mypapers")
-	{
-		NotifyGroup.POST("/wxpay/notify", v1.ApiGroupApp.MPSApi.WxPayNotify)
-		NotifyGroup.POST("/alipay/notify", v1.ApiGroupApp.MPSApi.AliPayNotify)
-
-	}
 	PublicGroup := Router.Group("mypapers")
 	{
 		// 健康监测

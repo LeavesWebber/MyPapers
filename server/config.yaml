@@ -77,18 +77,18 @@ nginx:
 # 区块链相关配置
 blockchain:
   # 以太坊节点配置
-  eth-node-url: "http://128.1.40.107:8485"
-  chain-id: 8376
+  eth-node-url: "https://rpc.paperschain.io"
+  chain-id: 408
   gas-limit: 300000                          # Gas限制
   
   # 智能合约配置
-  mps-contract-address: "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0"    # MPS代币合约地址
+  mps-contract-address: "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F2434"    # MPS代币合约地址
   erc20-contract-address: "0x3f63992C47aB0Ad8b83B0d31b23b265996264474"  # ERC20合约地址
   erc721-contract-address: "0x813Dfc691e771bDbAD90B68ABb584457FA69D8a9" # ERC721合约地址
   marketplace-contract-address: "0xe699ED3A02460E3AcE9bf157C5F1098CEb10C2B0" # 市场合约地址
   
   # 管理员配置
-  admin-private-key: "your-admin-private-key-here"  # 管理员私钥
+  admin-private-key: ""  # 管理员私钥
   admin-address: "your-admin-address-here"          # 管理员地址
 
 # 微信支付配置
@@ -115,8 +115,8 @@ wxpay:
 alipay:
   ali-pay-type: "alipay"
   # 基础配置
-  app-id: "your-app-id"        # APPID
-  private-key: "your-private-key"
+  app-id: "2021000147656637"        # APPID
+  private-key: ""
   charset: "utf-8"                         # 请求使用的编码格式
   format: "json"                   # 请求格式
 
@@ -126,18 +126,18 @@ alipay:
   payroot-cert: "utils/alipay/cert/alipayRootCert.crt" # 支付宝根证书
 
   # 支付配置
-  qrpay-mode: "1"                 # PC扫码方式
-  qrcode_width: "100"                  # 自定义二维码宽度,qr_pay_mode=4时该参数有效
+  qrpay-mode: "2"                 # PC扫码方式
+  qrcode_width: "100"              # 自定义二维码宽度,qr_pay_mode=4时该参数有效
   sign-type: "RSA2"                  # 签名类型
-  product-code: "FAST_INSTANT_TRADE_PAY"               #产品码
   is-prod: false
   # URL配置
   #notify-url: "http://www.mypapers.io/api/mps/alipay/notify"  # 支付回调通知地址
-  notify-url: "http://r7e5wz.natappfree.cc/mypapers/alipay/notify"  # 支付回调通知地址
+  notify-url: "http://viqdhz.natappfree.cc/mypapers/notify/alipay/notify"  # 支付回调通知地址
 # 系统业务配置
 business:
-  mps-exchange-rate: 100000000.0            # MPS兑换比率（1 CNY = 1 MPS） 1MPS = 100000000 MPSWei
+  mps-exchange-rate: 100000000000000000          # MPS兑换比率（1 CNY = 1 MPS） 1MPS = 1e18 wei
   order-timeout: 1800               # 订单超时时间（秒）
   min-recharge-amount: 1.0          # 最小充值金额
   max-recharge-amount: 10000.0      # 最大充值金额
-
+  account-type: 1  #收款账户类型。 1：对公（在金融机构开设的公司账户） 2：对私（在金融机构开设的个人账户）
+  inst-name: "11"  #银行卡卡开户银行

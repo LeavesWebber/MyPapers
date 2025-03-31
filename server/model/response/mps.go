@@ -1,6 +1,9 @@
 package response
 
-import "github.com/ethereum/go-ethereum/core/types"
+import (
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/go-pay/gopay/alipay"
+)
 
 // AliPayParams 支付宝支付参数
 type AliPayParams struct {
@@ -47,12 +50,15 @@ type TxList struct {
 
 // SellMPSToFiatResp 卖出 MPS 换取法币响应
 type SellMPSToFiatResp struct {
-	OrderNo string `json:"order_no"` // 订单号
-	Status  int    `json:"status"`   // 处理状态
+	AlipayResp alipay.TransUniTransfer
+	IsBurnMPS  bool //是否销毁代币
 }
 
 // BuyMPSWithFiatResp 使用法币购买虚拟币响应
 type BuyMPSWithFiatResp struct {
-	OrderNo   string      `json:"order_no"`   // 订单号
-	PayParams WxPayParams `json:"pay_params"` // 支付参数
+	PayType      string       `json:"pay_type"`
+	OrderNo      string       `json:"order_no"`       // 订单号
+	WxPayParams  WxPayParams  `json:"wx_pay_params"`  // 支付参数
+	AliPayParams AliPayParams `json:"ali_pay_params"` // 支付参数
+	PayUrl       string       `json:"pay_url"`
 }

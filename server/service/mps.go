@@ -28,19 +28,12 @@ import (
 
 type MPSService struct{}
 
-const (
-	AliPay_TRADE_SUCCESS  = "TRADE_SUCCESS"  //交易支付成功
-	AliPay_TRADE_CLOSED   = "TRADE_CLOSED"   //交易结束，不可退款
-	AliPay_TRADE_FINISHED = "TRADE_FINISHED" //未付款交易超时关闭，或支付完成后全额退款。
-	AliPay_WAIT_BUYER_PAY = "WAIT_BUYER_PAY" //交易创建，等待买家付款
-)
-
 // CreateRechargeOrder  根据类型创建充值订单
 func (s *MPSService) CreateRechargeOrder(userID uint, req *request.CreateRechargeOrderReq) (*response.CreateRechargeOrderResp, error) {
 	// 生成订单号
 	orderNo := GenerateOrderNo()
-	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
-	mpsAmount := int64(mpstoFiatRate * req.Amount)
+	mpsToFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
+	mpsAmount := int64(mpsToFiatRate * req.Amount)
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
 		UserID:     userID,
@@ -146,7 +139,11 @@ func (s *MPSService) HandleWxPayNotify(params map[string]string) error {
 		return err
 	}
 
-	chainID := big.NewInt(int64(global.MPS_CONFIG.Blockchain.ChainID))
+	chainID, err := client.ChainID(context.Background())
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
 	if err != nil {
 		tx.Rollback()
@@ -195,7 +192,7 @@ func (s *MPSService) HandleWxPayNotify(params map[string]string) error {
 	transaction := &tables.MPSTransaction{
 		UserID:      order.UserID,
 		Type:        1, // 充值
-		Amount:      order.MPSAmount,
+		MpsAmount:   order.MPSAmount,
 		OrderNo:     orderNo,
 		TxHash:      receipt.TxHash.Hex(),
 		Description: "微信支付充值",
@@ -217,7 +214,7 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	status := notifyReq.Get("trade_status")
 	var statusID int
 	switch status {
-	case AliPay_TRADE_SUCCESS:
+	case Alipay.ALIPAY_TRADE_SUCCESS:
 		statusID = 1
 	default:
 		return errors.New("支付宝交易状态非法")
@@ -248,94 +245,10 @@ func (s *MPSService) HandleAliPayNotify(c *gin.Context) error {
 	}).Error; err != nil {
 		return err
 	}
-	// 开启事务
-	tx := global.MPS_DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-			global.MPS_LOG.Error("事务回滚", zap.Any("reason", r))
-		}
-	}()
-	// 调用智能合约发放代币
-	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-	defer client.Close()
-	// 从配置获取私钥
-	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	chainID := big.NewInt(global.MPS_CONFIG.Blockchain.ChainID)
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	// 设置交易参数
-	auth.GasLimit = global.MPS_CONFIG.Blockchain.GasLimit
-	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
-	auth.Value = big.NewInt(0)
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	// 创建合约实例
-	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
-	if err != nil {
-		global.MPS_LOG.Error("创建合约实例失败: ", zap.Error(err))
-		tx.Rollback()
-		return err
-	}
-
-	// 发放代币
-	addresses := []common.Address{common.HexToAddress(order.WalletAddr)}
-	// 将 float64 转换为 big.Int，考虑 18 位小数
-	amount := new(big.Int)
-	amount.SetInt64(order.MPSAmount)
-
-	txn, err := mpsContract.Mint(auth, addresses, amount)
-	if err != nil {
-		global.MPS_LOG.Error("调用智能合约发放代币失败: ", zap.Error(err))
-		tx.Rollback()
-		return err
-	}
-
-	// 等待交易确认
-	receipt, err := bind.WaitMined(context.Background(), client, txn)
-	if err != nil {
-		global.MPS_LOG.Error("等待交易确认失败: ", zap.Error(err))
-		tx.Rollback()
-		return err
-	}
-
-	if receipt.Status == 0 {
-		global.MPS_LOG.Error("mint transaction failed", zap.Error(err))
-		tx.Rollback()
-		return errors.New("mint transaction failed")
-	}
-	// 记录交易
-	transaction := &tables.MPSTransaction{
-		UserID:      order.UserID,
-		Type:        1, // 充值
-		Amount:      order.MPSAmount,
-		OrderNo:     orderNo,
-		TxHash:      receipt.TxHash.Hex(),
-		Description: "支付宝充值",
-	}
-	if err := tx.Create(transaction).Error; err != nil {
-		global.MPS_LOG.Error("记录交易失败: ", zap.Error(err))
-		tx.Rollback()
-		return err
-	}
-	global.MPS_LOG.Info("支付宝异步通知验证结束")
-	return tx.Commit().Error
+	var transMpsError error
+	transMpsError = TransMpsToWallet(order.UserID, order.WalletAddr, order.MPSAmount, order.OrderNo)
+	global.MPS_LOG.Info("支付宝异步通知结束")
+	return transMpsError
 }
 
 func (s *MPSService) GetMPSBalance(address common.Address) (*response.MPSBalanceResp, error) {
@@ -438,100 +351,104 @@ func (s *MPSService) GetMPSTransactions(id string) (interface{}, error) {
 }
 
 // SellMPSToFiat 卖出 MPS 换取法币
-func (s *MPSService) SellMPSToFiat(userID uint, req *request.SellMPSToFiatReq) (*response.SellMPSToFiatResp, error) {
-	// 生成订单号
-	orderNo := GenerateOrderNo()
-	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
-	mpsAmount := int64(mpstoFiatRate * req.Amount)
-	// 创建订单记录
-	order := &tables.MPSRechargeOrder{
-		UserID:     userID,
-		OrderNo:    orderNo,
-		Amount:     req.Amount,
-		MPSAmount:  mpsAmount, // 1:1 兑换
-		Status:     0,         // 待处理
-		WalletAddr: req.WalletAddr,
-	}
-
-	if err := global.MPS_DB.Create(order).Error; err != nil {
-		global.MPS_LOG.Error("Failed to create order", zap.Error(err))
-		return nil, err
-	}
-
-	// 调用智能合约销毁代币
-	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
-	if err != nil {
-		global.MPS_LOG.Error("Failed to create Ethereum client", zap.Error(err))
-		return nil, err
-	}
-
-	// 从配置获取私钥
-	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
-	if err != nil {
-		global.MPS_LOG.Error("Failed to parse private key", zap.Error(err))
-		return nil, err
-	}
-
-	chainID := big.NewInt(int64(global.MPS_CONFIG.Blockchain.ChainID))
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
-	if err != nil {
-		global.MPS_LOG.Error("Failed to create transactor", zap.Error(err))
-		return nil, err
-	}
-
-	// 设置交易参数
-	auth.GasLimit = uint64(global.MPS_CONFIG.Blockchain.GasLimit)
-	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
-	if err != nil {
-		global.MPS_LOG.Error("Failed to suggest gas price", zap.Error(err))
-		return nil, err
-	}
-
-	// 创建合约实例
-	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
-	if err != nil {
-		global.MPS_LOG.Error("Failed to create contract instance", zap.Error(err))
-		return nil, err
-	}
-
-	// 销毁代币
-	addresses := []common.Address{common.HexToAddress(req.WalletAddr)}
-	// 将 float64 转换为 big.Int，考虑 18 位小数
-	amount := new(big.Int)
-	amount.SetString(fmt.Sprintf("%.0f", req.Amount*1e18), 10)
-
-	txn, err := mpsContract.BurnFrom(auth, addresses[0], amount)
-	if err != nil {
-		global.MPS_LOG.Error("Failed to burn tokens", zap.Error(err))
-		return nil, err
-	}
-
-	// 等待交易确认
-	receipt, err := bind.WaitMined(context.Background(), client, txn)
-	if err != nil {
-		global.MPS_LOG.Error("Failed to wait for transaction mining", zap.Error(err))
-		return nil, err
-	}
-
-	if receipt.Status == 0 {
-		global.MPS_LOG.Error("Burn transaction failed", zap.Any("receipt", receipt))
-		return nil, errors.New("burn transaction failed")
-	}
-
-	// 更新订单状态
-	if err := global.MPS_DB.Model(&order).Update("status", 1).Error; err != nil {
-		global.MPS_LOG.Error("Failed to update order status", zap.Error(err))
-		return nil, err
-	}
-
-	// 构造响应
-	resp := &response.SellMPSToFiatResp{
-		OrderNo: orderNo,
-		Status:  1, // 处理成功
-	}
-
-	return resp, nil
-}
+//func (s *MPSService) SellMPSToFiat(userID uint, req *request.SellMPSToFiatReq) (*response.SellMPSToFiatResp, error) {
+//	// 生成订单号
+//	orderNo := GenerateOrderNo()
+//	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
+//	mpsAmount := int64(mpstoFiatRate * req.Amount)
+//	// 创建订单记录
+//	order := &tables.MPSRechargeOrder{
+//		UserID:     userID,
+//		OrderNo:    orderNo,
+//		Amount:     req.Amount,
+//		MPSAmount:  mpsAmount, // 1:1 兑换
+//		Status:     0,         // 待处理
+//		WalletAddr: req.WalletAddr,
+//	}
+//
+//	if err := global.MPS_DB.Create(order).Error; err != nil {
+//		global.MPS_LOG.Error("Failed to create order", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 调用智能合约销毁代币
+//	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to create Ethereum client", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 从配置获取私钥
+//	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to parse private key", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	chainID, err := client.ChainID(context.Background())
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to get chainID", zap.Error(err))
+//		return nil, err
+//	}
+//	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to create transactor", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 设置交易参数
+//	auth.GasLimit = uint64(global.MPS_CONFIG.Blockchain.GasLimit)
+//	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to suggest gas price", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 创建合约实例
+//	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to create contract instance", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 销毁代币
+//	addresses := []common.Address{common.HexToAddress(req.WalletAddr)}
+//	// 将 float64 转换为 big.Int，考虑 18 位小数
+//	amount := new(big.Int)
+//	amount.SetString(fmt.Sprintf("%.0f", req.Amount*1e18), 10)
+//
+//	txn, err := mpsContract.BurnFrom(auth, addresses[0], amount)
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to burn tokens", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 等待交易确认
+//	receipt, err := bind.WaitMined(context.Background(), client, txn)
+//	if err != nil {
+//		global.MPS_LOG.Error("Failed to wait for transaction mining", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	if receipt.Status == 0 {
+//		global.MPS_LOG.Error("Burn transaction failed", zap.Any("receipt", receipt))
+//		return nil, errors.New("burn transaction failed")
+//	}
+//
+//	// 更新订单状态
+//	if err := global.MPS_DB.Model(&order).Update("status", 1).Error; err != nil {
+//		global.MPS_LOG.Error("Failed to update order status", zap.Error(err))
+//		return nil, err
+//	}
+//
+//	// 构造响应
+//	resp := &response.SellMPSToFiatResp{
+//		OrderNo: orderNo,
+//		Status:  1, // 处理成功
+//	}
+//
+//	return resp, nil
+//}
 
 // BuyMPSWithFiat 使用法币购买虚拟币
 func (s *MPSService) BuyMPSWithFiat(userID uint, req *request.BuyMPSWithFiatReq) (*response.BuyMPSWithFiatResp, error) {
@@ -563,7 +480,7 @@ func (s *MPSService) BuyMPSWithFiat(userID uint, req *request.BuyMPSWithFiatReq)
 	// 构造响应
 	resp := &response.BuyMPSWithFiatResp{
 		OrderNo: orderNo,
-		PayParams: response.WxPayParams{
+		WxPayParams: response.WxPayParams{
 			AppID:     wxParams["appid"],
 			TimeStamp: wxParams["timestamp"],
 			NonceStr:  wxParams["nonce_str"],
@@ -582,11 +499,11 @@ func GenerateOrderNo() string {
 		time.Now().Format("20060102150405"),
 		uuid.New().String()[:8])
 }
-func (s *MPSService) Pay(userID uint, req *request.BuyMPSWithFiatReq) (interface{}, error) {
+func (s *MPSService) Pay(userID uint, req *request.BuyMPSWithFiatReq) (*response.BuyMPSWithFiatResp, error) {
 	orderNo := GenerateOrderNo()
 
 	// 处理支付逻辑
-	var resp interface{}
+	var resp *response.BuyMPSWithFiatResp
 	var payErr error
 	switch req.PayType {
 	case global.MPS_CONFIG.AliPay.AliPayType:
@@ -598,6 +515,8 @@ func (s *MPSService) Pay(userID uint, req *request.BuyMPSWithFiatReq) (interface
 		payErr = errors.New("unsupported payment type")
 		global.MPS_LOG.Error("Alipay QRCodePay failed for order "+orderNo, zap.Error(payErr))
 	}
+	resp.PayType = req.PayType
+
 	// 返回结果
 	if payErr != nil {
 		return nil, payErr
@@ -608,5 +527,247 @@ func (s *MPSService) Pay(userID uint, req *request.BuyMPSWithFiatReq) (interface
 		global.MPS_LOG.Error("Failed to CreateMPSRechargeOrder to DataBase", zap.Error(err))
 		return nil, err
 	}
+
 	return resp, nil
+}
+func (s *MPSService) Sell(userID uint, req *request.SellMPSToFiatReq) (*response.SellMPSToFiatResp, error) {
+	orderNo := GenerateOrderNo()
+	// 处理支付逻辑
+	var resp *response.SellMPSToFiatResp
+	var transferErr error
+	switch req.PayType {
+	case global.MPS_CONFIG.AliPay.AliPayType:
+		resp, transferErr = Alipay.FundTransUniTransfer(req, orderNo)
+		if transferErr != nil {
+			global.MPS_LOG.Error("支付宝转账失败, 订单号: "+orderNo, zap.Error(transferErr))
+		}
+	default:
+		transferErr = errors.New("不支持的支付方式")
+		global.MPS_LOG.Error("支付宝转账失败, 订单号: "+orderNo, zap.Error(transferErr))
+	}
+	// 返回结果
+	if transferErr != nil {
+		return nil, transferErr
+	}
+	// 插入数据库
+	err := logic.CreateMPSBusinessTransferOrder(req, resp, userID, orderNo)
+	if err != nil {
+		global.MPS_LOG.Error("创建CreateMPSRechargeOrder表失败", zap.Error(err))
+		return nil, err
+	}
+	status := resp.AlipayResp.Status
+	var isBurnMps bool
+	var burnMpsErr error
+	switch status {
+	case Alipay.SUCCESS:
+		isBurnMps, burnMpsErr = BurnMPSFromWallet(req.WalletAddr, req.MpsAmount, userID, orderNo)
+	case Alipay.FAIL:
+		//todo
+	}
+	resp.IsBurnMPS = isBurnMps
+	return resp, burnMpsErr
+}
+
+// BurnMPSFromWallet 从指定钱包地址销毁MPS代币
+// 参数:
+//
+//	walletAddr - 钱包地址
+//	faitAmount - 要销毁的代币金额（法定货币金额）
+//	userId - 用户ID
+//	orderNo - 订单号
+//
+// 返回值:
+//
+//	bool - 销毁是否成功
+//	error - 错误信息（如果有）
+func BurnMPSFromWallet(walletAddr string, MpsAmount int64, userId uint, orderNo string) (bool, error) {
+	// 开启事务
+	tx := global.MPS_DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			global.MPS_LOG.Error("事务回滚", zap.Any("reason", r))
+		}
+	}()
+	// 调用智能合约发放代币
+	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+	defer client.Close()
+	// 从配置获取私钥
+	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+
+	chainID := big.NewInt(global.MPS_CONFIG.Blockchain.ChainID)
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+
+	// 设置交易参数
+	auth.GasLimit = global.MPS_CONFIG.Blockchain.GasLimit
+	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+	auth.Value = big.NewInt(0)
+	if err != nil {
+		global.MPS_LOG.Error("设置GasPrice失败: ", zap.Error(err))
+		tx.Rollback()
+		return false, err
+	}
+
+	// 创建合约实例
+	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
+	if err != nil {
+		global.MPS_LOG.Error("创建合约实例失败: ", zap.Error(err))
+		tx.Rollback()
+		return false, err
+	}
+
+	// 发放代币
+	addresses := common.HexToAddress(walletAddr)
+
+	txn, err := mpsContract.BurnFrom(auth, addresses, big.NewInt(MpsAmount))
+	if err != nil {
+		global.MPS_LOG.Error("调用智能合约销毁代币失败: ", zap.Error(err))
+		tx.Rollback()
+		return false, err
+	}
+
+	// 等待交易确认
+	receipt, err := bind.WaitMined(context.Background(), client, txn)
+	if err != nil {
+		global.MPS_LOG.Error("等待交易确认失败: ", zap.Error(err))
+		tx.Rollback()
+		return false, err
+	}
+
+	if receipt.Status == 0 {
+		global.MPS_LOG.Error("交易确认失败", zap.Error(err))
+		tx.Rollback()
+		return false, errors.New("交易确认失败")
+	}
+	// 记录交易
+	transaction := &tables.MPSTransaction{
+		UserID:      userId,
+		Type:        4, // 出售
+		MpsAmount:   MpsAmount,
+		OrderNo:     orderNo,
+		TxHash:      receipt.TxHash.Hex(),
+		Description: "MPS转法币",
+	}
+	if err := tx.Create(transaction).Error; err != nil {
+		global.MPS_LOG.Error("记录交易失败: ", zap.Error(err))
+		tx.Rollback()
+		return false, err
+	}
+	return true, tx.Commit().Error
+}
+
+// TransMpsToWallet 将MPS代币转移到用户钱包中。
+// 参数:
+//
+//	userID - 接收代币的用户ID。
+//	walletAddr - 接收代币的钱包地址。
+//	mpsAmount - 转移的代币数量。
+//	orderNo - 关联的订单号。
+//
+// 返回值:
+//
+//	如果操作成功，返回nil；否则返回错误。
+func TransMpsToWallet(userID uint, walletAddr string, mpsAmount int64, orderNo string) error {
+	// 开启事务
+	tx := global.MPS_DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			global.MPS_LOG.Error("事务回滚", zap.Any("reason", r))
+		}
+	}()
+
+	// 调用智能合约发放代币
+	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	defer client.Close()
+
+	// 从配置获取私钥
+	privateKey, err := crypto.HexToECDSA(global.MPS_CONFIG.Blockchain.AdminPrivateKey)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	chainID := big.NewInt(global.MPS_CONFIG.Blockchain.ChainID)
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// 设置交易参数
+	auth.GasLimit = global.MPS_CONFIG.Blockchain.GasLimit
+	auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+	auth.Value = big.NewInt(0)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// 创建合约实例
+	mpsContract, err := contracts.NewMPS(common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress), client)
+	if err != nil {
+		global.MPS_LOG.Error("创建合约实例失败: ", zap.Error(err))
+		tx.Rollback()
+		return err
+	}
+
+	// 发放代币
+	addresses := []common.Address{common.HexToAddress(walletAddr)}
+	// 将 float64 转换为 big.Int，考虑 18 位小数
+	amount := new(big.Int)
+	amount.SetInt64(mpsAmount)
+
+	txn, err := mpsContract.Mint(auth, addresses, amount)
+	if err != nil {
+		global.MPS_LOG.Error("调用智能合约发放代币失败: ", zap.Error(err))
+		tx.Rollback()
+		return err
+	}
+
+	// 等待交易确认
+	receipt, err := bind.WaitMined(context.Background(), client, txn)
+	if err != nil {
+		global.MPS_LOG.Error("等待交易确认失败: ", zap.Error(err))
+		tx.Rollback()
+		return err
+	}
+
+	if receipt.Status == 0 {
+		global.MPS_LOG.Error("交易确认失败", zap.Error(err))
+		tx.Rollback()
+		return errors.New("交易确认失败")
+	}
+
+	// 记录交易
+	transaction := &tables.MPSTransaction{
+		UserID:      userID,
+		Type:        1, // 充值
+		MpsAmount:   mpsAmount,
+		OrderNo:     orderNo,
+		TxHash:      receipt.TxHash.Hex(),
+		Description: "支付宝充值",
+	}
+	if err := tx.Create(transaction).Error; err != nil {
+		global.MPS_LOG.Error("记录交易失败: ", zap.Error(err))
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }

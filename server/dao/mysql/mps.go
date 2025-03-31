@@ -34,3 +34,7 @@ func CreateMPSRechargeOrder(order *tables.MPSRechargeOrder) error {
 	return global.MPS_DB.Create(order).Error
 
 }
+
+func CreateMPSBusinessTransferOrder(order *tables.MPSBusinessTransferOrder) error {
+	return global.MPS_DB.Create(order).Error
+}
