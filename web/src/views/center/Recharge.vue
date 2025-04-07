@@ -22,8 +22,14 @@
         <el-form-item label="获得MPS">
           <span class="mps-amount">{{ rechargeForm.amount }} MPS</span>
         </el-form-item>
+        <el-form-item label="支付方式">
+          <el-radio-group v-model="rechargeForm.pay_type">
+            <el-radio label="alipay">支付宝支付</el-radio>
+            <el-radio label="wxpay">微信支付</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleRecharge" :loading="loading">微信支付充值</el-button>
+          <el-button type="primary" @click="handleRecharge" :loading="loading">立即充值</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -42,7 +48,8 @@ export default {
       mpsBalance: '0',
       loading: false,
       rechargeForm: {
-        amount: 100
+        amount: 100,
+        pay_type: 'alipay'
       },
       rules: {
         amount: [
@@ -86,28 +93,77 @@ export default {
     handleAmountChange(value) {
       this.rechargeForm.amount = value
     },
+    // 调用智能合约发放代币
+    async mintMPS(toAddress, amount) {
+      try {
+        // 获取代币精度
+        const decimals = await MPScontractInstance.methods.decimals().call()
+        // 将金额转换为代币的最小单位
+        const tokenAmount = Web3.utils.toWei(amount.toString(), 'ether')
+        
+        // 调用智能合约的 mint 函数
+        const result = await MPScontractInstance.methods.mint([toAddress], tokenAmount).send({
+          from: window.ethereum.selectedAddress,
+          gasPrice: "0",
+        })
+        
+        console.log('代币发放成功:', result)
+        return true
+      } catch (error) {
+        console.error('代币发放失败:', error)
+        this.$message.error('代币发放失败: ' + (error.message || '未知错误'))
+        return false
+      }
+    },
     async handleRecharge() {
       try {
         this.$refs.rechargeForm.validate(async (valid) => {
           if (valid) {
             this.loading = true
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+            if (!accounts || accounts.length === 0) {
+              this.$message.error('请先连接 MetaMask 钱包')
+              this.loading = false
+              return
+            }
+
             const res = await buyMPSWithFiat({
-              amount: this.rechargeForm.amount
+              amount: this.rechargeForm.amount,
+              wallet_address: accounts[0],
+              pay_type: this.rechargeForm.pay_type
             })
             
-            if (res.data.code === 1000) {
-              // 假设后端返回微信支付所需的参数
-              const payParams = res.data.data
-              // 调用微信支付
-              this.callWxPay(payParams)
+            if (res.code === 0) {
+              if (this.rechargeForm.pay_type === 'alipay') {
+                // 支付宝支付
+                if (res.data && res.data.pay_url) {
+                  // 保存订单号和钱包地址到本地存储
+                  localStorage.setItem('current_order_no', res.data.order_no)
+                  localStorage.setItem('current_wallet_address', accounts[0])
+                  localStorage.setItem('current_mps_amount', this.rechargeForm.amount)
+                  
+                  // 直接使用后端返回的支付URL，不要修改
+                  console.log('跳转到支付页面:', res.data.pay_url)
+                  window.location.href = res.data.pay_url
+                } else {
+                  this.$message.error('获取支付链接失败')
+                }
+              } else {
+                // 微信支付
+                if (res.data && res.data.wx_pay_params) {
+                  this.callWxPay(res.data.wx_pay_params)
+                } else {
+                  this.$message.error('获取微信支付参数失败')
+                }
+              }
             } else {
-              this.$message.error(res.data.msg || '充值失败，请重试')
+              this.$message.error(res.msg || '充值失败，请重试')
             }
           }
         })
       } catch (error) {
         console.error('充值失败:', error)
-        this.$message.error('充值失败，请稍后重试')
+        this.$message.error('充值失败: ' + (error.message || '未知错误'))
       } finally {
         this.loading = false
       }

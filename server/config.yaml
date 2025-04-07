@@ -64,7 +64,7 @@ image-path: http://localhost:8887/image/ # 传统图片路径 port是nginx监听
 ipfs:
   #host: 172.16.170.195
   #port: 5001
-  host: localhost
+  host: 127.0.0.1
   port: 5001
   gateway-port: 8081
   gateway-path: /ipfs
@@ -105,10 +105,36 @@ wxpay:
   success-url: "http://www.mypapers.io/payment/success"       # 支付成功跳转页面
   fail-url: "http://www.mypapers.io/payment/fail"            # 支付失败跳转页面
 
+
+
+# 支付宝支付配置
+alipay:
+  ali-pay-type: "alipay"
+  # 基础配置
+  app-id: "2021000147681612"        # APPID
+  private-key: "utils/alipay/cert/appPrivateKey.key" # 应用私钥文件路径
+  charset: "utf-8"                         # 请求使用的编码格式
+  format: "json"                   # 请求格式
+
+  # 证书配置
+  public-cert: "utils/alipay/cert/appPublicCert.crt" # 应用公钥证书
+  paypublic-cert: "utils/alipay/cert/alipayPublicCert.crt" # 支付宝公钥证书
+  payroot-cert: "utils/alipay/cert/alipayRootCert.crt" # 支付宝根证书
+
+  # 支付配置
+  qrpay-mode: "2"                 # PC扫码方式
+  qrcode_width: "100"              # 自定义二维码宽度,qr_pay_mode=4时该参数有效
+  sign-type: "RSA2"                  # 签名类型
+  is-prod: false
+  # URL配置
+  #notify-url: "http://www.mypapers.io/api/mps/alipay/notify"  # 支付回调通知地址
+  notify-url: "https://af24-112-48-61-178.ngrok-free.app/mypapers/notify/alipay/notify"  # 支付回调通知地址
+
 # 系统业务配置
 business:
   mps-exchange-rate: 1.0            # MPS兑换比率（1 CNY = 1 MPS）
   order-timeout: 1800               # 订单超时时间（秒）
   min-recharge-amount: 1.0          # 最小充值金额
   max-recharge-amount: 10000.0      # 最大充值金额
-
+  account-type: 1  #收款账户类型。 1：对公（在金融机构开设的公司账户） 2：对私（在金融机构开设的个人账户）
+  inst-name: "11"  #银行卡卡开户银行

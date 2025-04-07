@@ -31,6 +31,7 @@ func RegisterTables(db *gorm.DB) {
 		tables.PaperViewers{},
 		tables.MPSRechargeOrder{},
 		tables.MPSTransaction{},
+		tables.MPSBusinessTransferOrder{},
 	)
 	if err != nil {
 		global.MPS_LOG.Error("register table failed", zap.Error(err))

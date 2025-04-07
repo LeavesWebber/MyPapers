@@ -4,35 +4,33 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"github.com/google/uuid"
 	"server/global"
 	"sort"
 	"strings"
-	"time"
-
-	"github.com/google/uuid"
 )
 
 // Config 微信支付配置
 type Config struct {
-	AppID             string // 公众号ID
-	MchID             string // 商户号
-	Key               string // API密钥
-	NotifyURL         string // 回调通知地址
-	TradeType         string // 交易类型
-	SignType          string // 签名类型
-	EthNodeURL        string // 以太坊节点URL
+	AppID              string // 公众号ID
+	MchID              string // 商户号
+	Key                string // API密钥
+	NotifyURL          string // 回调通知地址
+	TradeType          string // 交易类型
+	SignType           string // 签名类型
+	EthNodeURL         string // 以太坊节点URL
 	MPSContractAddress string // MPS合约地址
 	AdminPrivateKey    string // 管理员私钥
 }
 
 var WxConfig = &Config{
-	AppID:             global.MPS_CONFIG.WxPay.AppID,
-	MchID:             global.MPS_CONFIG.WxPay.MchID,
-	Key:               global.MPS_CONFIG.WxPay.Key,
-	NotifyURL:         global.MPS_CONFIG.WxPay.NotifyURL,
-	TradeType:         global.MPS_CONFIG.WxPay.TradeType,
-	SignType:          global.MPS_CONFIG.WxPay.SignType,
-	EthNodeURL:        global.MPS_CONFIG.Blockchain.EthNodeURL,
+	AppID:              global.MPS_CONFIG.WxPay.AppID,
+	MchID:              global.MPS_CONFIG.WxPay.MchID,
+	Key:                global.MPS_CONFIG.WxPay.Key,
+	NotifyURL:          global.MPS_CONFIG.WxPay.NotifyURL,
+	TradeType:          global.MPS_CONFIG.WxPay.TradeType,
+	SignType:           global.MPS_CONFIG.WxPay.SignType,
+	EthNodeURL:         global.MPS_CONFIG.Blockchain.EthNodeURL,
 	MPSContractAddress: global.MPS_CONFIG.Blockchain.MPSContractAddress,
 	AdminPrivateKey:    global.MPS_CONFIG.Blockchain.AdminPrivateKey,
 }
@@ -91,10 +89,3 @@ func generateSign(params map[string]string) string {
 func VerifySign(params map[string]string, sign string) bool {
 	return generateSign(params) == sign
 }
-
-// GenerateOrderNo 生成订单号
-func GenerateOrderNo() string {
-	return fmt.Sprintf("MPS%s%s",
-		time.Now().Format("20060102150405"),
-		uuid.New().String()[:8])
-} 
