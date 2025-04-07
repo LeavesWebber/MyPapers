@@ -88,7 +88,7 @@ blockchain:
   marketplace-contract-address: "0xe699ED3A02460E3AcE9bf157C5F1098CEb10C2B0" # 市场合约地址
   
   # 管理员配置
-  admin-private-key: "da1d8271758c4117cf40f66e9c135329581d694dc122f64856c1099050fa2e0d"  # 管理员私钥
+  admin-private-key: ""  # 管理员私钥
   admin-address: "your-admin-address-here"          # 管理员地址
 
 # 微信支付配置
@@ -109,12 +109,14 @@ wxpay:
   success-url: "http://www.mypapers.io/payment/success"       # 支付成功跳转页面
   fail-url: "http://www.mypapers.io/payment/fail"            # 支付失败跳转页面
 
+
+
 # 支付宝支付配置
 alipay:
   ali-pay-type: "alipay"
   # 基础配置
   app-id: "2021000147656637"        # APPID
-  private-key: "MIIEowIBAAKCAQEAg2atrU9Rn7lSGKMFtWFVH17y7pDXJ14K7XmHu2jac4Qyot0uN53pwqxnVBHrA4KTqFdn2Fm1WzqNiTdDaTAZR4Dow5XIzRJyVdKd9v6cQLALdJEOIzO7/IjUNjYSS15+aNdf5KzPynKPukMZJSOTAvol2q87QZ463nltC+kF2B9mlUa8l6rKl9Np5esx1Dv6sdSxQi7BryfQfoFuELcQ4+xsEZqd6l4qS51ak7Ch1+BkuaJWaML6DJ2HfBlVGBXZiWxfSwT6DjYwjp/Arpn5gASO8qaQqYZODU9nPVzstiCpF/iCutuiX1waZMvqEhaXduL3/789AQsYBOYA/UNaYwIDAQABAoIBABnDGs/82iL3oYnlBGyATcEdy4FMcnJsdLYEesEamKHHTGoz9SjAVCFvzb5k2O/SPQLnSBvZ0r21KCS76gKIhJxJQNl/12OldzcuWPwhBR+FpGlROzVZokSryvdp+IJAX4ZMm6do3kBx344EM7zdUahmxN8wNezyidYudlu8bwHlNjkZ3W7ZcCsBgIAtf57xbS7/802AMcLaeDJtkBa8GOhuCMnlcNlWBJ8W4AUbb60vkfKm1UVaZFGyDouimcLhNGL5UF0YWNh7joWzGTFpW4UVhXFFFfrQSoGBXfqZqWMb1czrCcJcvWscFLQFC7ki0cAmIzw88s3d8KQDScX9s1kCgYEAumd+NYATwnhagnJRUnr/QZCFd4RCJXbL8YNTgQgf7Mq1t+YIq+O/8h2/A6ZGOT/qycl83fDYLEC6l/g4VikHyKkC2FwRtqy0JguAt4x9pSFQKsDqDGkNe2Tq6TpXTFCPs9YfiaZVR0Rp3nZRAOcj8iXUGTdSAbi/xtRNTlattycCgYEAtHX8Mv/xbONop/sfTkFT6W/JT+hzlpnIBBni+4MeHIlx+PfdCwPAbelNEs77qChmyg2jSlx4EdWP2U5rrVEPeabl++CmmQ5rAlaegoSzxW2liaexu580Mv45/DqyL6xATv+k6y9zpuDRmk7qfSM/GGqpjOio3MmvGuDxXNqEKGUCgYEAmUTFmroABVQun7ndsiMeRUvO4nHmbaWbla7091C1517aQiasFKIEztC0ogyTCznKFTdOK7OAHArxIkngEMBV/SEzDLHPgtPIoMuuf73OBfw5TZ4oFCJBCqf1G+Zzp3VKY4V5kxYoYpwXLOs+Oa7UeKOwHTfGf1HoplUkZ3iQB9sCgYBe2XybGac9QjGpyPXlXbTLBzRaSaUnTOCyNyD0bTAQc7Vx1GVb+rbTjkIyVpQzCDkujgh7dyqsxQD8iJlT2T03BZ/vyV4HKGraKcjadQFADadqOLfUE5OOEc1MY1VwdSq/2uJFswUoexXv8vaQm0v4e2duZoMKuP7OM9joovm/eQKBgCmEYOKS37tu9iAKLMgRMI5hCs8aVw7ivwTp7heUggojaOjbmrIV8B/NQgOIG/0DuvBhEbGDMb+ZTHUANW35k9r0GwiGfQyU1dI2X3iponW9voQsZ0GflEXgt6BfIx89BLSRMS25rkjC3PP+oLBQrsXDaohTGm/j43J2ru3PsjeZ"
+  private-key: ""
   charset: "utf-8"                         # 请求使用的编码格式
   format: "json"                   # 请求格式
 
@@ -130,7 +132,7 @@ alipay:
   is-prod: false
   # URL配置
   #notify-url: "http://www.mypapers.io/api/mps/alipay/notify"  # 支付回调通知地址
-  notify-url: "http://agb2c3.natappfree.cc/mypapers/notify/alipay/notify"  # 支付回调通知地址
+  notify-url: "http://viqdhz.natappfree.cc/mypapers/notify/alipay/notify"  # 支付回调通知地址
 # 系统业务配置
 business:
   mps-exchange-rate: 100000000000000000          # MPS兑换比率（1 CNY = 1 MPS） 1MPS = 1e18 wei
@@ -139,16 +141,3 @@ business:
   max-recharge-amount: 10000.0      # 最大充值金额
   account-type: 1  #收款账户类型。 1：对公（在金融机构开设的公司账户） 2：对私（在金融机构开设的个人账户）
   inst-name: "11"  #银行卡卡开户银行
-
-#邮箱配置 qq邮箱
-smtp:
-  host: smtp.qq.com
-  port: 587
-  username: 1195561085@qq.com
-  password: alkytadzquragcej
-
-#redis 配置
-redis:
-  addr: "localhost:6379"
-  password: ""
-  db: 0

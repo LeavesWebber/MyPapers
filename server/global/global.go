@@ -1,7 +1,6 @@
 package global
 
 import (
-	"github.com/redis/go-redis/v9"
 	"server/config"
 	"time"
 
@@ -19,7 +18,6 @@ var (
 	MPS_LOG    *zap.Logger
 	MPS_DB     *gorm.DB
 	MPS_TRAN   ut.Translator
-	MPS_REDIS  *redis.Client
 )
 
 type MPS_MODEL struct {
@@ -34,12 +32,4 @@ const (
 	CREATOR_ADMIN = 102 // 创建者管理员
 	MEMBER        = 103 // 成员
 	USER          = 104 // 普通用户
-)
-const (
-	REDIS_PREFIX      = "mps:"
-	REDIS_SMTP_PREFIX = REDIS_PREFIX + "smtp:"
-)
-const (
-	SMTP_EXPIRED_TIME = time.Minute * 10
-	SMTP_RETRY_TIME   = time.Minute
 )

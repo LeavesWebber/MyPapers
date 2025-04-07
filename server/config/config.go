@@ -16,8 +16,6 @@ type Server struct {
 	WxPay         WxPay      `mapstructure:"wxpay"`
 	AliPay        AliPay     `mapstructure:"alipay"`
 	Business      Business   `mapstructure:"business"`
-	Smtp          Smtp       `mapstructure:"smtp"`
-	Redis         Redis      `mapstructure:"redis"`
 }
 
 // Blockchain 区块链配置

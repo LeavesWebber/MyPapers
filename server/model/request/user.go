@@ -75,11 +75,8 @@ type SetUserInfo struct {
 }
 
 type SendMail struct {
-	Email string `json:"email"`
-}
-type VerifyMail struct {
-	Email string `json:"email"`
-	Code  string `json:"code"`
+	MailReceiver string `json:"MailReceiver"`
+	Verification string `json:"Verification"`
 }
 
 // SetUserAuthorities 设置用户权限组
