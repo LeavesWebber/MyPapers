@@ -234,12 +234,32 @@ func (u *UserApi) SendMail(c *gin.Context) {
 	}
 	// 逻辑处理
 	if err := logic.SendMail(in); err != nil {
-		if err == global.ErrorUserExist {
-			global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
-			ResponseError(c, CodeUserExist)
+		global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
+	// 返回响应
+	ResponseSuccess(c, nil)
+}
+
+// VerifyMail 邮箱验证
+func (u *UserApi) VerifyMail(c *gin.Context) {
+
+	in := new(request.VerifyMail)
+	if err := c.ShouldBindJSON(in); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam) // 非validator.ValidationErrors类型错误直接返回
 			return
 		}
-		global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
+		// validator.ValidationErrors类型错误则进行翻译
+		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
+		return
+	}
+	// 逻辑处理
+	if err := logic.VerifyMail(in); err != nil {
+		global.MPS_LOG.Error("logic.VerifyMail() failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
 		return
 	}
