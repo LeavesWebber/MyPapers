@@ -49,6 +49,7 @@ commit id：  `a670f8b3`
 #### 1.1 发送验证码
 
 - **接口**: `POST /api/published-papers/verify-email`
+
 - **请求体**:
   
   ```json
@@ -56,6 +57,7 @@ commit id：  `a670f8b3`
     "email": "string"  // 作者邮箱地址
   }
   ```
+
 - **响应**:
   
   ```json
@@ -65,7 +67,9 @@ commit id：  `a670f8b3`
     "data": null
   }
   ```
+
 - **说明**:
+  
   - 验证码有效期建议设置为10分钟
   - 同一邮箱60秒内只能请求一次验证码
   - 验证码应为6位数字
@@ -73,6 +77,7 @@ commit id：  `a670f8b3`
 #### 1.2 验证验证码
 
 - **接口**: `POST /api/published-papers/verify-code`
+
 - **请求体**:
   
   ```json
@@ -81,6 +86,7 @@ commit id：  `a670f8b3`
     "code": "string"    // 6位验证码
   }
   ```
+
 - **响应**:
   
   ```json
@@ -96,6 +102,7 @@ commit id：  `a670f8b3`
 #### 2.1 上传论文
 
 - **接口**: `POST /api/published-papers/upload`
+
 - **请求体**: `multipart/form-data`
   
   ```
@@ -106,8 +113,9 @@ commit id：  `a670f8b3`
   venueType: string       // 发表类型（journal/conference）
   venueName: string       // 期刊/会议名称
   publicationDate: string // 发表日期
-  paperFile: File         // PDF文件
+  
   ```
+
 - **响应**:
   
   ```json
@@ -121,7 +129,9 @@ commit id：  `a670f8b3`
     }
   }
   ```
+
 - **说明**:
+  
   - 文件大小限制：50MB
   - 仅支持PDF格式
   - 需要验证用户登录状态
@@ -130,6 +140,7 @@ commit id：  `a670f8b3`
 #### 2.2 获取论文列表
 
 - **接口**: `GET /api/published-papers`
+
 - **参数**:
   
   ```
@@ -137,6 +148,7 @@ commit id：  `a670f8b3`
   pageSize: number      // 每页数量
   query: string         // 搜索关键词（可选）
   ```
+
 - **响应**:
   
   ```json
@@ -173,6 +185,7 @@ commit id：  `a670f8b3`
 #### 2.4 批量下载论文
 
 - **接口**: `POST /api/published-papers/batch-download`
+
 - **请求体**:
   
   ```json
@@ -180,14 +193,18 @@ commit id：  `a670f8b3`
     "paperIds": ["string"]
   }
   ```
+
 - **响应**: `application/zip`
+
 - **说明**:
+  
   - 将多个PDF打包成zip文件返回
   - 需要验证用户权限
 
 #### 2.5 查看NFT详情
 
 - **接口**: `GET /api/published-papers/:id/nft`
+
 - **响应**:
   
   ```json
