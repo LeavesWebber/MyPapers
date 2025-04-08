@@ -196,7 +196,7 @@ func FundTransUniTransfer(req *request.SellMPSToFiatReq, orderNo string) (*respo
 //	返回一个填充了转账参数的BodyMap对象。
 func GenerateTransferParams(req *request.SellMPSToFiatReq, orderNo string) gopay.BodyMap {
 	// 将请求中的金额转换为大浮点数，以确保精度。
-	amount := big.NewFloat(0).SetInt64(req.MpsAmount)
+	amount := big.NewFloat(req.MpsAmount)
 	// 获取MPS到法定货币的汇率，并将其转换为大浮点数。
 	mpsTOFiatRate := big.NewFloat(global.MPS_CONFIG.Business.MPSExchangeRate)
 	// 计算转账金额，通过请求金额除以汇率得到。

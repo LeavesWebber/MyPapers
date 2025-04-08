@@ -27,7 +27,7 @@ type GetMPSTransactionsReq struct {
 
 // SellMPSToFiatReq 卖出 MPS 换取法币请求
 type SellMPSToFiatReq struct {
-	MpsAmount  int64            `json:"amount" binding:"required,gt=0"`    // 卖出mps金额
+	MpsAmount  float64          `json:"amount" binding:"required,gt=0"`    // 卖出mps金额
 	WalletAddr string           `json:"wallet_address" binding:"required"` // 钱包地址
 	PayeeInfo  alipay.PayeeInfo `json:"payee_info" binding:"required"`
 	PayType    string           `json:"pay_type" binding:"required"`

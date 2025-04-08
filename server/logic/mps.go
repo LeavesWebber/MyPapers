@@ -28,7 +28,10 @@ func CreateMPSRechargeOrder(req *request.BuyMPSWithFiatReq, userID uint, orderNo
 		return errors.New("invalid MPS to fiat exchange rate")
 	}
 	// 计算 MPS 金额
-	mpsAmount := int64(req.Amount * mpsTOFiatRate)
+	BigAmount := big.NewFloat(req.Amount)
+	BigmpsTOFiatRate := big.NewFloat(mpsTOFiatRate)
+	mpsAmount, _ := BigAmount.Mul(BigAmount, BigmpsTOFiatRate).Float64()
+
 	// 生成订单号
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
@@ -57,7 +60,7 @@ func CreateMPSRechargeOrder(req *request.BuyMPSWithFiatReq, userID uint, orderNo
 func CreateMPSBusinessTransferOrder(req *request.SellMPSToFiatReq, resp *response.SellMPSToFiatResp, id uint, no string) error {
 	// 金额
 
-	amount := big.NewFloat(0).SetInt64(req.MpsAmount)
+	amount := big.NewFloat(req.MpsAmount)
 	mpsTOFiatRate := big.NewFloat(global.MPS_CONFIG.Business.MPSExchangeRate)
 	transferAmount, _ := amount.Quo(amount, mpsTOFiatRate).Float64()
 
