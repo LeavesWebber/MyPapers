@@ -1,6 +1,8 @@
 package request
 
-import "mime/multipart"
+import (
+	"mime/multipart"
+)
 
 // Login 登录
 type Login struct {
@@ -75,11 +77,11 @@ type SetUserInfo struct {
 }
 
 type SendMail struct {
-	Email string `json:"email"`
+	Email string `json:"email" binding:"required,email" `
 }
 type VerifyMail struct {
-	Email string `json:"email"`
-	Code  string `json:"code"`
+	Email string `json:"email" binding:"required,email"`
+	Code  string `json:"code"  binding:"required"`
 }
 
 // SetUserAuthorities 设置用户权限组

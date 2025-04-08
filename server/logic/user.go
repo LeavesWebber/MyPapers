@@ -86,7 +86,7 @@ func SendMail(in *request.SendMail) error {
 	ttl, ok := time.(int64)
 	if ok && ttl > 0 { // 键不存在
 		if int64(global.SMTP_EXPIRED_TIME.Seconds())-ttl <= int64(global.SMTP_RETRY_TIME.Seconds()) {
-			return global.ErrorInvalidEmailReSend
+			return global.ErrorInvalidEmailReSend{}
 		}
 	}
 	// 生成6位数字验证码
@@ -127,7 +127,7 @@ func VerifyMail(in *request.VerifyMail) error {
 	if code, err := search.Result(); err == nil && code == in.Code {
 		return nil
 	} else {
-		return global.ErrorInvalidEmailCode
+		return global.ErrorInvalidEmailCode{}
 	}
 }
 

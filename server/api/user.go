@@ -235,7 +235,15 @@ func (u *UserApi) SendMail(c *gin.Context) {
 	// 逻辑处理
 	if err := logic.SendMail(in); err != nil {
 		global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
-		ResponseError(c, CodeCaptchaFailed)
+		if _, ok := err.(global.ErrorInvalidEmailReSend); ok {
+			ResponseError(c, CodeInvalidEmailTime)
+			return
+		}
+		if _, ok := err.(global.ErrorInvalidEmailCode); ok {
+			ResponseError(c, CodeInvalidEmailCode)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInnerError, err.Error())
 		return
 	}
 
@@ -260,7 +268,11 @@ func (u *UserApi) VerifyMail(c *gin.Context) {
 	// 逻辑处理
 	if err := logic.VerifyMail(in); err != nil {
 		global.MPS_LOG.Error("logic.VerifyMail() failed", zap.Error(err))
-		ResponseError(c, CodeInvalidCaptcha)
+		if _, ok := err.(global.ErrorInvalidEmailCode); ok {
+			ResponseError(c, CodeInvalidEmailCode)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInnerError, err.Error())
 		return
 	}
 
