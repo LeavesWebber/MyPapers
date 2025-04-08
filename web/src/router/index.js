@@ -139,7 +139,8 @@ const routes = [
             { path: '/center/createJournal', name: 'createJournal', component: CreateJournal },
             { path: '/center/selfJournal', name: 'selfJournal', component: SelfJournal },
             { path: '/center/recharge', name: 'recharge', component: Recharge, meta: { requireAuth: true } },
-            { path: '/center/payment-result', name: 'PaymentResult', component: PaymentResult, meta: { title: '支付结果', requireAuth: true } }
+            { path: '/center/payment-result', name: 'PaymentResult', component: PaymentResult, meta: { title: '支付结果', requireAuth: true } },
+            { path: '/center/publishedPaperSubmit', name: 'PublishedPaperSubmit', component: () => import('@/views/center/PublishedPaperSubmit.vue'), meta: { title: '已出版论文上传' } }
         ]
     }
 ]
