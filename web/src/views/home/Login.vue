@@ -74,45 +74,84 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.ruleForm);
-          login(this.ruleForm).then(({ data }) => {
-            console.log(data.data, "dddddd");
-            console.log(data.code, "cccccc");
-            if (data.code === 1000) {
+          console.log('Form data:', this.ruleForm);
+          login(this.ruleForm).then((response) => {
+            console.log('Login response:', response);
+            if (response && response.code === 1000 && response.data) {
+              // 存储用户信息
               localStorage.setItem(
                 "userInfo",
-                JSON.stringify(data.data.userInfo)
-              ); // 用localStorage缓存用户信息
-              localStorage.setItem("token", data.data.token); // 用localStorage缓存token值
-              getMenu().then(({ data }) => {
-                console.log(data, "mmmmm");
-                // 获取菜单的数据，存入store中
-                // 用localStorage缓存token值
-                localStorage.setItem("menu", JSON.stringify(data.data));
-                this.$store.commit("setMenu", data.data);
+                JSON.stringify(response.data.userInfo)
+              );
+              // 存储token
+              localStorage.setItem("token", response.data.token);
+              
+              // 获取菜单数据
+              getMenu().then((menuResponse) => {
+                console.log('Menu response:', menuResponse);
+                if (menuResponse && menuResponse.code === 1000) {
+                  // 即使菜单数据为空，也存储一个空数组
+                  const menuData = menuResponse.data || [];
+                  localStorage.setItem("menu", JSON.stringify(menuData));
+                  this.$store.commit("setMenu", menuData);
+                  this.$store.commit("addMenu", this.$router);
+                  
+                  // 登录成功提示
+                  this.$notify({
+                    title: "登录成功！",
+                    type: "success",
+                    position: "bottom-right",
+                  });
+                  
+                  // 跳转到首页
+                  this.$router.push("/home");
+                } else {
+                  console.error('获取菜单失败:', menuResponse);
+                  // 菜单获取失败也允许登录，使用空菜单
+                  localStorage.setItem("menu", JSON.stringify([]));
+                  this.$store.commit("setMenu", []);
+                  this.$store.commit("addMenu", this.$router);
+                  
+                  this.$notify({
+                    title: "登录成功！",
+                    message: "但获取菜单失败，部分功能可能受限",
+                    type: "warning",
+                    position: "bottom-right",
+                  });
+                  
+                  this.$router.push("/home");
+                }
+              }).catch(error => {
+                console.error('获取菜单错误:', error);
+                // 菜单获取出错也允许登录，使用空菜单
+                localStorage.setItem("menu", JSON.stringify([]));
+                this.$store.commit("setMenu", []);
                 this.$store.commit("addMenu", this.$router);
-                console.log("----------------------------------------");
-                // console.log(this.$router);
-                // 跳转至首页
-                // this.$router.push("/userinfo");
+                
+                this.$notify({
+                  title: "登录成功！",
+                  message: "但获取菜单失败，部分功能可能受限",
+                  type: "warning",
+                  position: "bottom-right",
+                });
+                
+                this.$router.push("/home");
               });
-              this.$notify({
-                title: "Login Success!",
-                type: "success",
-                position: "bottom-right",
+            } else if (response && response.code === 1005) {
+              this.$alert("用户名或密码错误", {
+                confirmButtonText: "确定",
               });
-              this.$router.push("/home");
+            } else {
+              this.$alert(response?.msg || "登录失败，请重试", {
+                confirmButtonText: "确定",
+              });
             }
-
-            if (data.code === 1005) {
-              // this.$alert("User Not Exist!", {
-              this.$alert("UserName Or Password False", {
-                confirmButtonText: "ok",
-              });
-            }
+          }).catch(error => {
+            console.error('登录请求错误:', error);
+            this.$message.error('登录请求失败，请重试');
           });
         } else {
-          console.log("error submit!!");
+          console.log("表单验证失败");
           return false;
         }
       });

@@ -412,7 +412,8 @@ export default {
           ...functionArgs
         ).send({
           from: window.ethereum.selectedAddress,
-          gasPrice: "0",
+          gasPrice: "10", // 1 Gwei
+          gas: 300000 // 设置合理的 gas limit
         });
 
         // 输出结果

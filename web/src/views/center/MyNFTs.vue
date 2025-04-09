@@ -159,52 +159,61 @@ export default {
         });
         return;
       }
-      // 拿到当前token_id，当前用户的地址，交易合约地址，交易价格
-      // token_id
-      const token_id = this.tokenIds[this.index];
-      // 从狐狸钱包中获取当前用户的地址
-      const user_address = window.ethereum.selectedAddress;
-      console.log(this.copy_right_trading_prices[this.index], "this.index");
-      // 交易价格
-      const trading_price =
-        this.copy_right_trading_prices[this.index] * 10 ** 18;
-      console.log(trading_price, "trading_price");
-      // 转为0x开头的16进制,像这样0x0000000000000000000000000000000000000000000000000001c6bf52634000
-      // 将输入转换为十六进制，并移除0x前缀
-      // const hexString = web3.utils.toHex(trading_price).substr(2);
-      // // 使用web3.js提供的padLeft方法添加左填充
-      // const paddedString = web3.utils.padLeft(hexString, 64);
-      // // 加上0x前缀
-      // console.log("paddedString:", paddedString);
-
-      // const resultWithPrefix = "0x" + paddedString;
-      // console.log("resultWithPrefix :", resultWithPrefix);
-
-      // 将交易价格转换为 BigNumber 对象
-      const bigNum = new BigNumber(trading_price.toString());
-      // 转换为十六进制字符串
-      const resultWithPrefix = "0x" + bigNum.toString(16).padStart(64, "0");
-
-      console.log(resultWithPrefix, "trading_price_hex");
-
-      const functionArgs = [
-        user_address,
-        contractAddress,
-        token_id,
-        resultWithPrefix,
-      ];
-      console.log(
-        "window.ethereum.selectedAddress:",
-        window.ethereum.selectedAddress
-      );
-      const result = contractInstance.methods["safeTransferFrom"](
-        ...functionArgs
-      ).send({
-        from: window.ethereum.selectedAddress,
-        gasPrice: "0",
-      });
-      console.log("result:", result);
-      this.issueDialogVisible2 = false;
+      
+      try {
+        // 拿到当前token_id，当前用户的地址，交易合约地址，交易价格
+        const token_id = this.tokenIds[this.index];
+        const user_address = window.ethereum.selectedAddress;
+        
+        // 交易价格（转换为wei单位）
+        const trading_price = this.copy_right_trading_prices[this.index] * 10 ** 18;
+        console.log("交易价格:", trading_price);
+        
+        // 按照合约要求，我们需要将价格数据正确编码
+        // 合约中使用了onERC721Received方法来处理通过safeTransferFrom接收的NFT
+        // 价格数据需要以字节形式传递
+        const priceData = web3.eth.abi.encodeParameter('uint256', trading_price);
+        console.log("编码后的价格数据:", priceData);
+        
+        // safeTransferFrom函数的最后一个参数应该是bytes类型的数据
+        const functionArgs = [
+          user_address,          // from地址
+          contractAddress,       // to地址（合约地址）
+          token_id,              // tokenId
+          priceData              // 数据（价格）
+        ];
+        
+        console.log("调用参数:", functionArgs);
+        console.log("调用地址:", window.ethereum.selectedAddress);
+        
+        // 调用合约方法
+        const result = contractInstance.methods["safeTransferFrom"](
+          ...functionArgs
+        ).send({
+          from: window.ethereum.selectedAddress
+        });
+        
+        // 处理Promise返回结果
+        result.then(tx => {
+          console.log("交易成功:", tx);
+          this.$message({
+            message: "NFT已成功挂单出售",
+            type: "success"
+          });
+          // 延迟关闭对话框
+          setTimeout(() => {
+            this.issueDialogVisible2 = false;
+            // 刷新数据
+            this.$router.go(0);
+          }, 1000);
+        }).catch(error => {
+          console.error("交易失败:", error);
+          this.$message.error("NFT出售失败: " + error.message);
+        });
+      } catch (error) {
+        console.error("准备交易时出错:", error);
+        this.$message.error("准备NFT出售失败: " + error.message);
+      }
     },
   },
   mounted() {

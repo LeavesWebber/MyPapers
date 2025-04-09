@@ -67,7 +67,7 @@ ipfs:
   host: 127.0.0.1
   port: 5001
   gateway-port: 8081
-  gateway-path: /ipfs
+  gateway-path: /ipfs/
 nginx:
   host: localhost
   port: 8887
@@ -128,7 +128,7 @@ alipay:
   is-prod: false
   # URL配置
   #notify-url: "http://www.mypapers.io/api/mps/alipay/notify"  # 支付回调通知地址
-  notify-url: "https://af24-112-48-61-178.ngrok-free.app/mypapers/notify/alipay/notify"  # 支付回调通知地址
+  notify-url: "https://9038-112-48-63-231.ngrok-free.app/mypapers/notify/alipay/notify"  # 支付回调通知地址
 
 # 系统业务配置
 business:

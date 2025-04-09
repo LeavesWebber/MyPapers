@@ -31,33 +31,33 @@
         @click="showImageDialog=true"
       >
         <img
-          v-if="userForm.headerImg"
+          v-if="userForm && userForm.headerImg"
           :src="userForm.headerImg"
           class="avatar"
         />
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-button>
     </el-col>
-      <el-col :span="12"> UserName: {{ userForm.username }} </el-col>
+      <el-col :span="12"> UserName: {{ userForm?.username || '' }} </el-col>
 
-      <el-col :span="12"> First Name: {{ userForm.first_name }} </el-col>
-      <el-col :span="12"> Last Name: {{ userForm.last_name }} </el-col>
+      <el-col :span="12"> First Name: {{ userForm?.first_name || '' }} </el-col>
+      <el-col :span="12"> Last Name: {{ userForm?.last_name || '' }} </el-col>
       <el-col :span="19">
-        Blockchain Address: {{ userForm.block_chain_address }}
+        Blockchain Address: {{ userForm?.block_chain_address || '' }}
       </el-col>
       <el-button type="primary" plain @click="update">Update</el-button>
       </el-col>
 
-    <el-col :span="12"> Email: {{ userForm.email }} </el-col>
-    <el-col :span="12"> Department: {{ userForm.department }} </el-col>
-    <el-col :span="12"> Phone: {{ userForm.phone }} </el-col>
-    <el-col :span="12"> Address: {{ userForm.address }} </el-col>
-    <el-col :span="12"> Education: {{ userForm.education }} </el-col>
-    <el-col :span="12"> Title: {{ userForm.title }} </el-col>
-    <el-col :span="12"> Research: {{ userForm.research }} </el-col>
+    <el-col :span="12"> Email: {{ userForm?.email || '' }} </el-col>
+    <el-col :span="12"> Department: {{ userForm?.department || '' }} </el-col>
+    <el-col :span="12"> Phone: {{ userForm?.phone || '' }} </el-col>
+    <el-col :span="12"> Address: {{ userForm?.address || '' }} </el-col>
+    <el-col :span="12"> Education: {{ userForm?.education || '' }} </el-col>
+    <el-col :span="12"> Title: {{ userForm?.title || '' }} </el-col>
+    <el-col :span="12"> Research: {{ userForm?.research || '' }} </el-col>
 
-    <el-col :span="12"> Affiliation: {{ userForm.affiliation }} </el-col>
-    <el-col :span="12"> Affiliation Type: {{ userForm.affiliation_type }}</el-col>
+    <el-col :span="12"> Affiliation: {{ userForm?.affiliation || '' }} </el-col>
+    <el-col :span="12"> Affiliation Type: {{ userForm?.affiliation_type || '' }}</el-col>
     
       
   </el-row>
@@ -117,24 +117,7 @@ export default {
       selectedFile: null,
       headers: {},
       uploadUrl: 'http://localhost:8887/mypapers/user/changeHeaderImg',
-      userForm: {
-        id: 0,
-        username: "",
-        first_name: "",
-        last_name: "",
-        sex: "",
-        email: "",
-        departmentd: "",
-        phone: "",
-        address: "",
-        education: "",
-        title: "",
-        research: "",
-        block_chain_address: "",
-        affiliations: "",
-        affiliation_type: "",
-        headerImg: "",
-      },
+      userForm: null,
     };
   },
   methods: {
@@ -211,8 +194,70 @@ export default {
   },
   mounted() {
     getSelfInfo().then((res) => {
-      this.userForm = res.data.data;
-      console.log(res.data);
+      console.log('用户信息响应:', res);
+      if (res && res.code === 1000 && res.data) {
+        const userData = res.data;
+        this.userForm = {
+          id: userData.ID || 0,
+          username: userData.username || '',
+          first_name: userData.first_name || '',
+          last_name: userData.last_name || '',
+          sex: userData.sex || '',
+          email: userData.email || '',
+          department: userData.department || '',
+          phone: userData.phone || '',
+          address: userData.address || '',
+          education: userData.education || '',
+          title: userData.title || '',
+          research: userData.research || '',
+          block_chain_address: userData.block_chain_address || '',
+          affiliation: userData.affiliation || '',
+          affiliation_type: userData.affiliation_type || '',
+          headerImg: userData.headerImg || '',
+        };
+      } else {
+        console.error('获取用户信息失败:', res);
+        this.$message.error('获取用户信息失败');
+        this.userForm = {
+          id: 0,
+          username: '',
+          first_name: '',
+          last_name: '',
+          sex: '',
+          email: '',
+          department: '',
+          phone: '',
+          address: '',
+          education: '',
+          title: '',
+          research: '',
+          block_chain_address: '',
+          affiliation: '',
+          affiliation_type: '',
+          headerImg: '',
+        };
+      }
+    }).catch(error => {
+      console.error('获取用户信息出错:', error);
+      this.$message.error('获取用户信息失败');
+      this.userForm = {
+        id: 0,
+        username: '',
+        first_name: '',
+        last_name: '',
+        sex: '',
+        email: '',
+        department: '',
+        phone: '',
+        address: '',
+        education: '',
+        title: '',
+        research: '',
+        block_chain_address: '',
+        affiliation: '',
+        affiliation_type: '',
+        headerImg: '',
+      };
     });
   },
 };

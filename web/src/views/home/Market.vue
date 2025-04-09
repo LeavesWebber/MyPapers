@@ -149,57 +149,143 @@ export default {
         // 把this.userInfo.block_chain_address中的大小字母转换成小写
         this.userInfo.block_chain_address =
           this.userInfo.block_chain_address.toLowerCase();
-        const result = await contractInstance.methods
-          .getAllNFTs()
-          .call({ from: window.ethereum.selectedAddress });
-
-        console.log("Transaction result:", result);
-        // 拿到tokenId
-        for (let i = 0; i < result.length; i++) {
-          this.token_ids += result[i].tokenId.toString() + ",";
+        
+        // 检查网络连接
+        const networkId = await window.ethereum.request({ method: 'eth_chainId' });
+        console.log("Current network ID:", networkId);
+        
+        if (networkId !== '0x198') {
+          this.$message({
+            message: "请切换到Papers Chain网络 (chainId: 0x198)",
+            type: "warning"
+          });
+          return;
         }
-        // 去掉最后一个逗号
-        this.token_ids = this.token_ids.substring(0, this.token_ids.length - 1);
-        console.log("this.token_ids:", this.token_ids);
-        // 根据token_ids去后端查询NFT信息
-        getNFTInfoByTokenId({ token_ids: this.token_ids }).then((res) => {
-          console.log("res:", res.data.data);
-          for (let i = 0; i < res.data.data.length; i++) {
-            this.image_urls.push(res.data.data[i].image_url);
-            this.tokenIds.push(res.data.data[i].token_id);
-            this.copy_right_trading_prices.push(
-              res.data.data[i].copy_right_trading_price
-            );
-            this.paper_ids.push(res.data.data[i].paper_id);
-            this.image_cids.push(res.data.data[i].image_cid);
-            this.transaction_hashs.push(res.data.data[i].transaction_hash);
+          
+        // 检查合约是否正确初始化
+        console.log("Contract address:", MarketplacecontractAddress);
+        
+        try {
+          // 方法一：尝试使用call方法直接获取NFT数据
+          const result = await contractInstance.methods
+            .getAllNFTs()
+            .call({ from: window.ethereum.selectedAddress });
+
+          console.log("Transaction result:", result);
+          
+          if (!result || result.length === 0) {
+            console.log("没有可用的NFT");
+            return;
           }
-        });
-        // 展示NFT信息
+          
+          // 拿到tokenId
+          for (let i = 0; i < result.length; i++) {
+            // 检查result[i]的结构，适应不同版本Web3返回的结果格式
+            const tokenId = result[i].tokenId || result[i][1];
+            if (tokenId) {
+              this.token_ids += tokenId.toString() + ",";
+            }
+          }
+          
+          // 去掉最后一个逗号
+          if (this.token_ids) {
+            this.token_ids = this.token_ids.substring(0, this.token_ids.length - 1);
+            console.log("this.token_ids:", this.token_ids);
+            
+            // 根据token_ids去后端查询NFT信息
+            getNFTInfoByTokenId({ token_ids: this.token_ids }).then((res) => {
+              console.log("res:", res.data.data);
+              if (res.data && res.data.data && res.data.data.length > 0) {
+                for (let i = 0; i < res.data.data.length; i++) {
+                  this.image_urls.push(res.data.data[i].image_url);
+                  this.tokenIds.push(res.data.data[i].token_id);
+                  this.copy_right_trading_prices.push(
+                    res.data.data[i].copy_right_trading_price
+                  );
+                  this.paper_ids.push(res.data.data[i].paper_id);
+                  this.image_cids.push(res.data.data[i].image_cid);
+                  this.transaction_hashs.push(res.data.data[i].transaction_hash);
+                }
+              } else {
+                console.log("没有找到相关的NFT信息");
+              }
+            }).catch(err => {
+              console.error("获取NFT信息失败:", err);
+            });
+          }
+        } catch (contractError) {
+          console.error("Contract call error details:", {
+            message: contractError.message,
+            code: contractError.code,
+            data: contractError.data
+          });
+          
+          // 尝试获取具体的合约错误信息
+          if (contractError.data) {
+            try {
+              // Web3 v1.7.4中获取错误细节的方式
+              console.log("错误详细数据:", contractError.data);
+            } catch (e) {
+              console.log("无法解析错误详情:", e);
+            }
+          }
+          
+          // 尝试备选方案：使用getOrderLength和orders方法单独获取每个NFT
+          try {
+            console.log("尝试备选方案获取NFT数据...");
+            const orderLength = await contractInstance.methods.getOrderLength().call();
+            console.log("订单总数:", orderLength);
+            
+            if (orderLength > 0) {
+              for (let i = 0; i < orderLength; i++) {
+                const order = await contractInstance.methods.orders(i).call();
+                console.log(`订单 ${i}:`, order);
+                
+                if (order && order.tokenId) {
+                  this.token_ids += order.tokenId.toString() + ",";
+                }
+              }
+              
+              if (this.token_ids) {
+                this.token_ids = this.token_ids.substring(0, this.token_ids.length - 1);
+                console.log("备选方案 - tokenIds:", this.token_ids);
+                
+                getNFTInfoByTokenId({ token_ids: this.token_ids }).then((res) => {
+                  if (res.data && res.data.data) {
+                    for (let i = 0; i < res.data.data.length; i++) {
+                      this.image_urls.push(res.data.data[i].image_url);
+                      this.tokenIds.push(res.data.data[i].token_id);
+                      this.copy_right_trading_prices.push(
+                        res.data.data[i].copy_right_trading_price
+                      );
+                      this.paper_ids.push(res.data.data[i].paper_id);
+                      this.image_cids.push(res.data.data[i].image_cid);
+                      this.transaction_hashs.push(res.data.data[i].transaction_hash);
+                    }
+                  }
+                });
+              }
+            } else {
+              console.log("没有可用的NFT订单");
+            }
+          } catch (backupError) {
+            console.error("备选方案获取NFT数据失败:", backupError);
+            
+            // 显示用户友好的错误信息
+            this.$message({
+              message: "获取NFT数据失败，请检查网络连接或合约状态",
+              type: "error"
+            });
+          }
+        }
       } catch (error) {
         // 处理错误
-        console.error("Error:", error);
+        console.error("General error:", error);
+        this.$message({
+          message: "操作失败: " + error.message,
+          type: "error"
+        });
       }
-      // try {
-      //   // 调用智能合约函数
-      //   console.log(
-      //     "window.ethereum.selectedAddress:",
-      //     window.ethereum.selectedAddress
-      //   );
-
-      //   const result = await contractInstance.methods["balanceOf"](
-      //     window.ethereum.selectedAddress
-      //   ).call({
-      //     from: window.ethereum.selectedAddress,
-      //     gasPrice: "0",
-      //   });
-
-      //   // 输出结果
-      //   console.log("Transaction result:", result);
-      // } catch (error) {
-      //   // 处理错误
-      //   console.error("Error:", error);
-      // }
     },
   },
   mounted() {

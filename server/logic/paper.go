@@ -531,24 +531,48 @@ func contentAuthors(content *freetype.Context, authors string) {
 }
 func contentData(content *freetype.Context, title, name string) {
 	content.SetFontSize(30) // 设置字体大小
-	data := "Have Successfully Published a Paper Titled" + title + " in the " + name
-	dataX := 140
-	dataY := 640
-	for i := 0; i < len(data); i += 90 {
-		if i == 0 {
-			content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
-			dataY += 75
-			i -= 10
-			continue
+
+	// 重新设计文本布局逻辑
+	// 使用更清晰的布局方式，避免文本重叠
+
+	// 第一行 - 固定文本
+	baseY := 400
+	firstLine := "Have Successfully Published a Paper Titled"
+	content.DrawString(firstLine, freetype.Pt(140, baseY))
+
+	// 第二行 - 论文标题
+	baseY += 90
+	// 如果标题太长，需要分割
+	if len(title) > 45 {
+		// 找到合适的分割点 - 尽量在单词之间分割
+		splitIndex := 45
+		for i := 45; i > 0; i-- {
+			if i < len(title) && title[i] == ' ' {
+				splitIndex = i
+				break
+			}
 		}
-		content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
-		if i+90 > len(data) {
-			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
-			break
+
+		// 渲染标题第一部分
+		content.DrawString(title[:splitIndex], freetype.Pt(140, baseY))
+
+		// 渲染标题剩余部分
+		baseY += 70
+		if splitIndex < len(title) {
+			content.DrawString(title[splitIndex:], freetype.Pt(140, baseY))
 		}
-		content.DrawString(data[i:i+56], freetype.Pt(dataX, dataY))
-		dataY += 75
+	} else {
+		// 标题较短，直接渲染
+		content.DrawString(title, freetype.Pt(140, baseY))
 	}
+
+	// 第三行 - "in the"
+	baseY += 90
+	content.DrawString("in the", freetype.Pt(140, baseY))
+
+	// 第四行 - 会议/期刊名称
+	baseY += 70
+	content.DrawString(name, freetype.Pt(140, baseY))
 }
 
 func contentIPFS(content *freetype.Context, IPFS string) {
@@ -574,7 +598,7 @@ func contentDate(content *freetype.Context) {
 }
 func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCertificateUrl string, err error) {
 	// 根据路径打开模板文件
-	templateFile, err := os.Open("./image/new/certificate.png")
+	templateFile, err := os.Open("./image/certificate_v3/NFT_certificate/horizontal.png")
 	if err != nil {
 		return
 	}

@@ -8,15 +8,30 @@ export const register = (data) => {
     return http.post('/user/register', data)
 }
 export const login = (data) => {
-    return http.post('/user/login', data)
+    return http.post('/user/login', data).then(response => {
+        if (response && response.data) {
+            return response.data;
+        }
+        return Promise.reject('Invalid response format');
+    });
 }
 export const getMenu = (data) => {
-    return http.get('/menu/getMenu', { params: data })
+    return http.get('/menu/getMenu', { params: data }).then(response => {
+        if (response && response.data) {
+            return response.data;
+        }
+        return Promise.reject('Invalid response format');
+    });
 }
 
 // 用户
 export const getSelfInfo = () => {
-    return http.get('/user/getSelfInfo')
+    return http.get('/user/getSelfInfo').then(response => {
+        if (response && response.data) {
+            return response.data;
+        }
+        return Promise.reject('Invalid response format');
+    });
 }
 // 修改头像
 export const changeHeaderImg = (data) => {

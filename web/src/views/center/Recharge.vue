@@ -82,7 +82,7 @@ export default {
           return
         }
 
-        const balance = await MPScontractInstance.methods.balanceOf(accounts[0]).call()
+        const balance = await MPScontractInstance.methods['balanceOf(address)'](accounts[0]).call()
         // 将 wei 转换为 ether 单位
         this.mpsBalance = Web3.utils.fromWei(balance, 'ether')
       } catch (error) {
@@ -127,42 +127,62 @@ export default {
               return
             }
 
+            console.log('开始充值请求:', {
+              amount: this.rechargeForm.amount,
+              wallet_address: accounts[0],
+              pay_type: this.rechargeForm.pay_type
+            })
+
             const res = await buyMPSWithFiat({
               amount: this.rechargeForm.amount,
               wallet_address: accounts[0],
               pay_type: this.rechargeForm.pay_type
             })
             
-            if (res.code === 0) {
+            console.log('充值响应:', res)
+
+            // 检查响应数据结构
+            if (!res || !res.data) {
+              console.error('响应数据格式错误:', res)
+              this.$message.error('服务器响应格式错误')
+              return
+            }
+
+            const { code, data, msg } = res.data
+
+            if (code === 0) {
               if (this.rechargeForm.pay_type === 'alipay') {
                 // 支付宝支付
-                if (res.data && res.data.pay_url) {
+                if (data && data.pay_url) {
                   // 保存订单号和钱包地址到本地存储
-                  localStorage.setItem('current_order_no', res.data.order_no)
+                  localStorage.setItem('current_order_no', data.order_no)
                   localStorage.setItem('current_wallet_address', accounts[0])
                   localStorage.setItem('current_mps_amount', this.rechargeForm.amount)
                   
                   // 直接使用后端返回的支付URL，不要修改
-                  console.log('跳转到支付页面:', res.data.pay_url)
-                  window.location.href = res.data.pay_url
+                  console.log('跳转到支付页面:', data.pay_url)
+                  window.location.href = data.pay_url
                 } else {
+                  console.error('支付宝支付链接缺失:', data)
                   this.$message.error('获取支付链接失败')
                 }
               } else {
                 // 微信支付
-                if (res.data && res.data.wx_pay_params) {
-                  this.callWxPay(res.data.wx_pay_params)
+                if (data && data.wx_pay_params) {
+                  this.callWxPay(data.wx_pay_params)
                 } else {
+                  console.error('微信支付参数缺失:', data)
                   this.$message.error('获取微信支付参数失败')
                 }
               }
             } else {
-              this.$message.error(res.msg || '充值失败，请重试')
+              console.error('充值失败:', msg || '未知错误')
+              this.$message.error(msg || '充值失败，请重试')
             }
           }
         })
       } catch (error) {
-        console.error('充值失败:', error)
+        console.error('充值过程发生错误:', error)
         this.$message.error('充值失败: ' + (error.message || '未知错误'))
       } finally {
         this.loading = false
