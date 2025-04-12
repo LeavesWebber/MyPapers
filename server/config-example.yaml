@@ -1,0 +1,217 @@
+# 使用方法：
+# 复制本模板文件，然后重命名成 config.yaml
+# 之后按照你的实际情况填写好你复制的 config.yaml ，不知道啥意思的可以就用示例值
+
+jwt:
+  #jwt签名 示例值：e161ff6f-50b6-4c00-96b5-f7ac7f61455f
+  signing-key: 
+  #过期时间（单位：小时） 示例值：168
+  expires-time: 
+  #缓冲时间 示例值：86400
+  buffer-time: 
+  #签发者
+  issuer: Leaves
+zap:
+  #日志级别 示例值：info
+  level: 
+  #日志前缀 示例值：'[myPapers]'
+  prefix: 
+  #输出格式 示例值：console
+  format: 
+  #日志文件夹 示例值：log
+  director: 
+  #编码级 示例值：LowercaseColorLevelEncoder
+  encode-level: 
+  #栈名 示例值：stacktrace
+  stacktrace-key: 
+  #日志留存时间 示例值：30
+  max-age: 
+  #显示行 示例值：true
+  show-line: 
+  #输出控制台 示例值：true
+  log-in-console: 
+system:
+  #环境值 示例值：public
+  env: 
+  #端口值 示例值：8887
+  addr: 
+  #是否使用SSL 示例值：true
+  #use-ssl: 
+  #SSL证书路径 示例值：/etc/ssl/certs/blockchain-fullchain.cer
+  #ssl-cert: 
+  #SSL密钥路径 示例值：/etc/ssl/private/blockchain-cert.key
+  #ssl-key: 
+  #数据库类型 示例值：mysql
+  db-type: 
+  #Oss类型 示例值：local
+  oss-type: 
+  #多点登录拦截 示例值：false
+  use-multipoint: 
+  #使用redis 示例值：false
+  use-redis: 
+  #IP限制次数 示例值：15000
+  iplimit-count: 
+  #IP限制时间 示例值：3600
+  iplimit-time: 
+  #开始时间 示例值："2020-07-01"
+  start-time: 
+  #机器ID 示例值：1
+  machine-id: 
+captcha:
+  #验证码长度 示例值：6
+  key-long: 
+  #验证码宽度 示例值：240
+  img-width: 
+  #验证码高度 示例值：80
+  img-height: 
+mysql:
+  #服务器地址 示例值：localhost
+  path: 
+  #端口 示例值："3306"
+  port: 
+  #高级配置 示例值：charset=utf8mb4&parseTime=True&loc=Local
+  config: 
+  #数据库名 示例值：my_papers
+  db-name: 
+  #数据库用户名 示例值：root
+  username: 
+  #数据库密码 示例值：123456
+  password: 
+  #空闲中的最大连接数 示例值：10
+  max-idle-conns: 
+  #打开到数据库的最大连接数 示例值：100
+  max-open-conns: 
+  #是否开启Gorm全局日志 示例值：error
+  log-mode: 
+  #是否通过zap写入日志文件 示例值：false
+  log-zap: 
+cors:
+  #跨域模式 示例值：allow-all
+  mode: 
+  whitelist:
+    - #允许的域名 示例值：example1.com
+      allow-origin: 
+      #允许的方法 示例值：GET, POST
+      allow-methods: 
+      #允许的头 示例值：content-type
+      allow-headers: 
+      #暴露的头 示例值：Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
+      expose-headers: 
+      #允许凭证 示例值：true
+      allow-credentials: 
+    - #允许的域名 示例值：example2.com
+      allow-origin: 
+      #允许的方法 示例值：GET, POST
+      allow-methods: 
+      #允许的头 示例值：content-type
+      allow-headers: 
+      #暴露的头 示例值：Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
+      expose-headers: 
+      #允许凭证 示例值：true
+      allow-credentials: 
+#传统图片路径 port是nginx监听的端口 示例值：http://localhost:8887/image/
+image-path: 
+ipfs:
+  #IPFS主机 示例值：127.0.0.1
+  host: 
+  #IPFS端口 示例值：5001
+  port: 
+  #网关端口 示例值：8081
+  gateway-port: 
+  #网关路径 示例值：/ipfs/
+  gateway-path: 
+nginx:
+  #Nginx主机 示例值：localhost
+  host: 
+  #Nginx端口 示例值：8887
+  port: 
+
+# 区块链相关配置
+blockchain:
+  # 以太坊节点配置
+  eth-node-url: "128.1.40.107:9000"  # 以太坊节点URL
+  chain-id: 408                             # 链ID
+  gas-limit: 300000                          # Gas限制
+
+  # 智能合约配置
+  mps-contract-address: "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0"    # MPS代币合约地址
+  erc20-contract-address: "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F2434"  # ERC20合约地址
+  erc721-contract-address: "0xCf3150B891e5176545c9EC8BfD2321bf13168848" # ERC721合约地址
+  marketplace-contract-address: "0xe699ED3A02460E3AcE9bf157C5F1098CEb10C2B0" # 市场合约地址
+
+  # 管理员配置
+  #管理员私钥 示例值："your-admin-private-key-here"
+  admin-private-key: 
+  #管理员地址 示例值："your-admin-address-here"
+  admin-address: 
+
+# 微信支付配置
+wxpay:
+  # 基础配置
+  #公众号ID 示例值："your-app-id-here"
+  app-id: 
+  #商户号 示例值："your-mch-id-here"
+  mch-id: 
+  #API密钥 示例值："your-key-here"
+  key: 
+
+  # 支付配置
+  #交易类型 示例值："JSAPI"
+  trade-type: 
+  #签名类型 示例值："MD5"
+  sign-type: 
+
+  # URL配置
+  #支付回调通知地址 示例值："http://www.mypapers.io/api/mps/wxpay/notify"
+  notify-url: 
+  #支付成功跳转页面 示例值："http://www.mypapers.io/payment/success"
+  success-url: 
+  #支付失败跳转页面 示例值："http://www.mypapers.io/payment/fail"
+  fail-url: 
+
+# 支付宝支付配置
+alipay:
+  #支付宝类型 示例值："alipay"
+  ali-pay-type: 
+  # 基础配置
+  #APPID 示例值："2021000147681612"
+  app-id: 
+  #应用私钥文件路径 示例值："utils/alipay/cert/appPrivateKey.key"
+  private-key: 
+  #请求使用的编码格式 示例值："utf-8"
+  charset: 
+  #请求格式 示例值："json"
+  format: 
+
+  # 证书配置
+  public-cert: "utils/alipay/cert/appPublicCert.crt" # 应用公钥证书
+  paypublic-cert: "utils/alipay/cert/alipayPublicCert.crt" # 支付宝公钥证书
+  payroot-cert: "utils/alipay/cert/alipayRootCert.crt" # 支付宝根证书
+
+  # 支付配置
+  #PC扫码方式 示例值："2"
+  qrpay-mode: 
+  #自定义二维码宽度 示例值："100"
+  qrcode_width: 
+  #签名类型 示例值："RSA2"
+  sign-type: 
+  #是否为生产环境 示例值：false
+  is-prod: 
+  # URL配置
+  #支付回调通知地址 示例值："https://9038-112-48-63-231.ngrok-free.app/mypapers/notify/alipay/notify" 要完成本地支付回调测试，你需要做内网穿透
+  notify-url: 
+
+# 系统业务配置
+business:
+  #MPS兑换比率 示例值：1.0
+  mps-exchange-rate: 
+  #订单超时时间（秒） 示例值：1800
+  order-timeout: 
+  #最小充值金额 示例值：1.0
+  min-recharge-amount: 
+  #最大充值金额 示例值：10000.0
+  max-recharge-amount: 
+  #收款账户类型 示例值：1（1：对公 2：对私）
+  account-type: 
+  #银行卡开户银行 示例值："11"
+  inst-name: 

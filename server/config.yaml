@@ -2,7 +2,7 @@ jwt:
   signing-key: e161ff6f-50b6-4c00-96b5-f7ac7f61455f #jwt签名
   expires-time: 168 #过期时间（单位：小时）
   buffer-time: 86400 # 缓冲时间
-  issuer: blingder # 签发者
+  issuer: leaves # 签发者
 zap:
   level: info # 级别,这个级别以上的日志都会被记录
   prefix: '[myPapers]' # 日志前缀
@@ -81,7 +81,7 @@ blockchain:
 
   # 智能合约配置
   mps-contract-address: "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0"    # MPS代币合约地址
-  erc20-contract-address: "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F2434"  # ERC20合约地址
+  erc20-contract-address: "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F243"  # ERC20合约地址
   erc721-contract-address: "0xCf3150B891e5176545c9EC8BfD2321bf13168848" # ERC721合约地址
   marketplace-contract-address: "0xe699ED3A02460E3AcE9bf157C5F1098CEb10C2B0" # 市场合约地址
 
