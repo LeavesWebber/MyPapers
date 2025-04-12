@@ -44,7 +44,7 @@ yarn-error.log*
 # 本地环境文件（不要提交敏感数据）
 .env*
 !.env.example
-config.yaml
+server\config.yaml
 
 # 编辑器相关
 *.suo
