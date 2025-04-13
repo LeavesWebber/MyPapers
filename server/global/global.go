@@ -2,6 +2,7 @@ package global
 
 import (
 	"github.com/redis/go-redis/v9"
+	"github.com/streadway/amqp"
 	"server/config"
 	"time"
 
@@ -13,13 +14,27 @@ import (
 	"github.com/spf13/viper"
 )
 
+// rabbitMQ结构体
+type RabbitMQ struct {
+	Conn    *amqp.Connection
+	Channel *amqp.Channel
+}
+type QueueMessage struct {
+	Address     string
+	MPSAmount   float64
+	UUID        int64
+	Description string
+	OrderNo     string
+}
+
 var (
-	MPS_VP     *viper.Viper
-	MPS_CONFIG config.Server
-	MPS_LOG    *zap.Logger
-	MPS_DB     *gorm.DB
-	MPS_TRAN   ut.Translator
-	MPS_REDIS  *redis.Client
+	MPS_VP       *viper.Viper
+	MPS_CONFIG   config.Server
+	MPS_LOG      *zap.Logger
+	MPS_DB       *gorm.DB
+	MPS_TRAN     ut.Translator
+	MPS_REDIS    *redis.Client
+	MPS_RABBITMQ *RabbitMQ
 )
 
 type MPS_MODEL struct {

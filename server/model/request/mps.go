@@ -25,7 +25,7 @@ type GetMPSTransactionsReq struct {
 	UserId string `json:"user_id" binding:"required"` // 用户ID
 }
 
-// SellMPSToFiatReq 卖出 MPS 换取法币请求
+// SellMPSToFiatReq 卖出 mps 换取法币请求
 type SellMPSToFiatReq struct {
 	MpsAmount  float64          `json:"amount" binding:"required,gt=0"`    // 卖出mps金额
 	WalletAddr string           `json:"wallet_address" binding:"required"` // 钱包地址

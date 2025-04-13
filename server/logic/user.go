@@ -32,7 +32,7 @@ func Login(in *request.Login) (out *response.Login, err error) {
 }
 
 // Register 创建用户
-func Register(in *request.Register) (err error) {
+func Register(in *request.Register) (err error, id int64) {
 	// 判断用户名是已经否存在
 	if _, err = mysql.UserNameExist(in.Username); err == global.ErrorUserExist {
 		return
@@ -63,7 +63,7 @@ func Register(in *request.Register) (err error) {
 	// 生成uuid
 	user.UUID = utils.GenID()
 	// 存入数据库
-	return mysql.Register(user)
+	return mysql.Register(user), user.UUID
 }
 
 // SendMail 发送邮件验证码
@@ -247,3 +247,7 @@ func SetUserInfo(in *request.SetUserInfo) (err error) {
 //	}
 //	return
 //}
+
+func RegisterSendMPS(address string) {
+
+}

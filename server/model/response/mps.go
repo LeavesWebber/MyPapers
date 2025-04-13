@@ -48,7 +48,7 @@ type TxList struct {
 	TxList []types.Transaction `json:"tx_list"`
 }
 
-// SellMPSToFiatResp 卖出 MPS 换取法币响应
+// SellMPSToFiatResp 卖出 mps 换取法币响应
 type SellMPSToFiatResp struct {
 	AlipayResp alipay.TransUniTransfer
 	IsBurnMPS  bool //是否销毁代币

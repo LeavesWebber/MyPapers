@@ -7,7 +7,7 @@ import (
 
 type MPSRouter struct{}
 
-// InitMPSRouter 初始化 MPS 路由
+// InitMPSRouter 初始化 mps 路由
 func (r *MPSRouter) InitMPSRouter(Router *gin.RouterGroup) {
 	mpsRouter := Router.Group("mps")
 	mpsApi := v1.ApiGroupApp.MPSApi

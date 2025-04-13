@@ -1,18 +1,23 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 	"server/global"
 	"server/logic"
 	"server/model/request"
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
-
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
+	"server/utils/rabbitmq"
 )
+
+func (u *UserApi) C(c *gin.Context) {
+	rabbitmq.ConsumeSimple()
+}
 
 // Login 用户登录
 func (u *UserApi) Login(c *gin.Context) {
@@ -68,7 +73,8 @@ func (u *UserApi) Register(c *gin.Context) {
 	//	})
 	//}
 	// 逻辑处理
-	if err := logic.Register(in); err != nil {
+	err, userId := logic.Register(in)
+	if err != nil {
 		if err == global.ErrorUserExist {
 			global.MPS_LOG.Error("logic.Register() failed", zap.Error(err))
 			ResponseError(c, CodeUserExist)
@@ -83,6 +89,23 @@ func (u *UserApi) Register(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
+	// 赠送代币,存入MQ消费
+	msg := global.QueueMessage{
+		Address:     in.BlockChainAddress,
+		Description: "注册赠送",
+		MPSAmount:   global.MPS_CONFIG.Business.RegisterMPSAmount,
+		UUID:        userId,
+		OrderNo:     "",
+	}
+
+	jsonData, err := json.Marshal(msg)
+	if err != nil {
+		// 处理错误
+		global.MPS_LOG.Error("Error marshaling JSON", zap.Error(err))
+		return
+	}
+	//存入rabbitmq
+	rabbitmq.PublishSimple(jsonData)
 	// 返回响应
 	ResponseSuccess(c, nil)
 }
