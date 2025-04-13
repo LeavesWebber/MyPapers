@@ -7,10 +7,11 @@ import (
 
 // AliPayParams 支付宝支付参数
 type AliPayParams struct {
-	Subject     string `json:"subject"`      // 订单标题
-	OutTradeNo  string `json:"out_trade_no"` // 商户订单号
-	TotalAmount string `json:"total_amount"` // 订单总金额
-	ProductCode string `json:"product_code"` //产品码
+	Subject        string `json:"subject"`         // 订单标题
+	OutTradeNo     string `json:"out_trade_no"`    // 商户订单号
+	TotalAmount    string `json:"total_amount"`    // 订单总金额
+	ProductCode    string `json:"product_code"`    //产品码
+	TimeoutExpress string `json:"timeout_express"` //订单超时时间
 }
 
 // WxPayParams 微信支付参数

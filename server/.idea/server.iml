@@ -2,7 +2,14 @@
 <module type="WEB_MODULE" version="4">
   <component name="Go" enabled="true" />
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/log/2025-04-07" />
+      <excludeFolder url="file://$MODULE_DIR$/log/2025-04-08" />
+      <excludeFolder url="file://$MODULE_DIR$/log/2025-04-09" />
+      <excludeFolder url="file://$MODULE_DIR$/log/2025-04-11" />
+      <excludeFolder url="file://$MODULE_DIR$/log/2025-04-12" />
+      <excludeFolder url="file://$MODULE_DIR$/log/2025-04-13" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

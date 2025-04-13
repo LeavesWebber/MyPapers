@@ -84,7 +84,7 @@ type AliPay struct {
 // Business 系统业务配置
 type Business struct {
 	MPSExchangeRate   float64 `mapstructure:"mps-exchange-rate"`   // MPS兑换比率
-	OrderTimeout      int     `mapstructure:"order-timeout"`       // 订单超时时间（秒）
+	OrderTimeout      int     `mapstructure:"order-timeout"`       // 订单超时时间（分）
 	MinRechargeAmount float64 `mapstructure:"min-recharge-amount"` // 最小充值金额
 	MaxRechargeAmount float64 `mapstructure:"max-recharge-amount"` // 最大充值金额
 	AccountType       int8    `mapstructure:"account-type"`        // 收款账户类型。 1：对公（在金融机构开设的公司账户） 2：对私（在金融机构开设的个人账户）
