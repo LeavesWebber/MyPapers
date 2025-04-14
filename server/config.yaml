@@ -22,7 +22,6 @@ system:
   db-type: mysql # 数据库类型
   oss-type: local # Oss类型
   use-multipoint: false # 多点登录拦截
-  use-redis: false # 使用redis
   iplimit-count: 15000 #
   iplimit-time: 3600 #
   start-time: "2020-07-01"

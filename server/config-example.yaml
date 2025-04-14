@@ -1,6 +1,7 @@
 # 使用方法：
 # 复制本模板文件，然后重命名成 config.yaml
-# 之后按照你的实际情况填写好你复制的 config.yaml ，不知道啥意思的可以就用示例值
+# 之后按照你的实际情况填写好你复制的 config.yaml ，一些不知道啥意思的可以先用示例值
+# 我倡议后端开发的同学尽量将配置项暴露在配置文件中，并请积极维护本配置文件模板
 
 jwt:
   #jwt签名 示例值：e161ff6f-50b6-4c00-96b5-f7ac7f61455f
@@ -47,8 +48,6 @@ system:
   oss-type: 
   #多点登录拦截 示例值：false
   use-multipoint: 
-  #使用redis 示例值：false
-  use-redis: 
   #IP限制次数 示例值：15000
   iplimit-count: 
   #IP限制时间 示例值：3600
@@ -215,3 +214,36 @@ business:
   account-type: 
   #银行卡开户银行 示例值："11"
   inst-name: 
+
+# 邮箱配置
+# 但凡涉及邮箱验证码功能，就需要配置下面的配置项，这里配置的是“发件邮箱”
+# 常见邮箱的信息可见 https://github.com/nodemailer/nodemailer/blob/master/lib/well-known/services.json
+# 用户名一般是完整邮箱地址，密码其实说成密钥更合适一点，QQ 邮箱称之为授权码，gmail 和 icloud 邮箱则需要专属的“应用专用密码”
+# 比如谷歌邮箱详情可见 https://support.google.com/mail/answer/185833?hl=zh-Hans
+smtp:
+  #邮箱服务器 示例值：smtp.mail.me.com
+  host: 
+  #邮箱端口 示例值：587
+  port: 
+  #邮箱用户名 示例值：xxxx@icloud.com
+  username: 
+  #邮箱密码 示例值：xxxx-xxxx-xxxx-xxxx
+  password: 
+
+# Redis 配置
+# Redis 是一种高性能数据库，可以用来存临时的邮件验证码之类的东西
+# 在 Windows 里配置 Redis 环境的方法（Leaves 个人推荐，如有更好的办法请忽略）：  
+# 先装个 WSL 环境，这样可以在 Windows 使用 Linux 的包管理器等强大特性（自己找教程）
+# 然后在 WSL 中执行以下命令
+# sudo apt update && sudo apt upgrade -y
+# sudo apt install redis -y
+# sudo service redis-server start
+# redis-cli ping 
+# 如果返回 PONG 则说明 Redis 环境配置成功，默认工作在 6379 端口
+redis:
+  #redis 地址 示例值：localhost:6379
+  addr: 
+  #redis 密码 示例值：""
+  password: 
+  #redis 数据库 示例值：0
+  db: 
