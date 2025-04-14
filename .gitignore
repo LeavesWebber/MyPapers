@@ -12,7 +12,7 @@ web/dist.zip
 web/yarn.lock
 
 # 根目录
-node_modules/
+node_modules
 .DS_Store
 Thumbs.db
 .idea/
@@ -44,7 +44,7 @@ yarn-error.log*
 # 本地环境文件（不要提交敏感数据）
 .env*
 !.env.example
-server\config.yaml
+server/config.yaml
 
 # 编辑器相关
 *.suo

@@ -80,14 +80,15 @@
               v-model="paperForm.correspondingEmail" 
               placeholder="Enter corresponding author's email"
               @input="handleEmailInput"
-              :disabled="emailVerified">
+              :disabled="emailVerified || sendingCode">
               <template slot="append">
                 <el-button 
                   @click="sendVerificationCode" 
-                  :disabled="!canSendCode"
+                  :disabled="!canSendCode || sendingCode"
+                  :loading="sendingCode"
                   :class="{ 'is-primary': canSendCode }"
                   size="small">
-                  {{ countdown > 0 ? `Resend (${countdown}s)` : 'Get Code' }}
+                  {{ countdown > 0 ? `Resend (${countdown}s)` : (sendingCode ? 'Sending...' : 'Get Code') }}
                 </el-button>
               </template>
             </el-input>
@@ -227,6 +228,7 @@ export default {
       },
       verificationCode: '',
       loading: false,
+      sendingCode: false,
       verifying: false,
       countdown: 0,
       timer: null,
@@ -306,7 +308,7 @@ export default {
 
       this.verifying = true
       try {
-        const response = await this.$http.post('/api/published-papers/verify-code', {
+        const response = await this.$http.post('/mypapers/user/VerifyMail', {
           email: this.paperForm.correspondingEmail,
           code: this.verificationCode
         })
@@ -329,8 +331,8 @@ export default {
         return
       }
 
-      this.loading = true
-      this.$http.post('/api/published-papers/verify-email', {
+      this.sendingCode = true
+      this.$http.post('/mypapers/user/SendMail', {
         email: this.paperForm.correspondingEmail
       }).then(response => {
         if (response.data.code === 1000) {
@@ -343,7 +345,7 @@ export default {
       }).catch(error => {
         this.$message.error('Failed to send verification code: ' + (error.response?.data?.msg || error.message))
       }).finally(() => {
-        this.loading = false
+        this.sendingCode = false
       })
     },
     startCountdown() {
@@ -531,6 +533,8 @@ export default {
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    position: relative;
+    margin-bottom: 20px;
 
     .verify-button {
       margin-left: 10px;
@@ -539,15 +543,20 @@ export default {
     .verification-tip {
       font-size: 12px;
       color: #909399;
-      margin-top: 5px;
       position: absolute;
       top: 100%;
       left: 0;
+      z-index: 10;
+      background-color: #fff;
+      padding: 2px 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-radius: 4px;
     }
   }
 
   .el-upload {
     width: 100%;
+    margin-top: 10px;
   }
 
   .el-upload-dragger {

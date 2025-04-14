@@ -35,7 +35,7 @@ type OrderStatusResp struct {
 	OrderNo   string  `json:"order_no"`   // 订单号
 	Status    int     `json:"status"`     // 订单状态：0-待支付 1-支付成功 2-支付失败
 	Amount    float64 `json:"amount"`     // 充值金额
-	MPSAmount int64   `json:"mps_amount"` // MPS数量
+	MPSAmount float64 `json:"mps_amount"` // MPS数量
 }
 
 // MPSBalanceResp 订单状态响应

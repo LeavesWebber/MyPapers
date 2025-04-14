@@ -4,6 +4,14 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import router from './router'
 import store from './store'
+import axios from 'axios' // 导入 axios
+
+// 配置 axios 基础 URL (可选，但推荐)
+// axios.defaults.baseURL = '/api'
+
+// 将 axios 挂载到 Vue 原型链上
+Vue.prototype.$http = axios
+
 // 引入 highlight.js 代码高亮工具
 import hljs from "highlight.js";
 // 使用样式，有多种样式可选

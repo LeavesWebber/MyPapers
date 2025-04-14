@@ -11,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"math/big"
 	"server/contracts"
@@ -33,7 +34,7 @@ func (s *MPSService) CreateRechargeOrder(userID uint, req *request.CreateRecharg
 	// 生成订单号
 	orderNo := GenerateOrderNo()
 	mpsToFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
-	mpsAmount := int64(mpsToFiatRate * req.Amount)
+	mpsAmount := mpsToFiatRate * req.Amount
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
 		UserID:     userID,
@@ -455,7 +456,7 @@ func (s *MPSService) BuyMPSWithFiat(userID uint, req *request.BuyMPSWithFiatReq)
 	// 生成订单号
 	orderNo := GenerateOrderNo()
 	mpstoFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
-	mpsAmount := int64(mpstoFiatRate * req.Amount)
+	mpsAmount := mpstoFiatRate * req.Amount
 	// 创建订单记录
 	order := &tables.MPSRechargeOrder{
 		UserID:     userID,
@@ -580,7 +581,7 @@ func (s *MPSService) Sell(userID uint, req *request.SellMPSToFiatReq) (*response
 //
 //	bool - 销毁是否成功
 //	error - 错误信息（如果有）
-func BurnMPSFromWallet(walletAddr string, MpsAmount int64, userId uint, orderNo string) (bool, error) {
+func BurnMPSFromWallet(walletAddr string, MpsAmount float64, userId uint, orderNo string) (bool, error) {
 	// 开启事务
 	tx := global.MPS_DB.Begin()
 	defer func() {
@@ -630,8 +631,10 @@ func BurnMPSFromWallet(walletAddr string, MpsAmount int64, userId uint, orderNo 
 
 	// 发放代币
 	addresses := common.HexToAddress(walletAddr)
-
-	txn, err := mpsContract.BurnFrom(auth, addresses, big.NewInt(MpsAmount))
+	decimalAmount := decimal.NewFromFloat(MpsAmount).Mul(decimal.NewFromFloat(1e18))
+	mpsAmountToWei := new(big.Int)
+	mpsAmountToWei.SetString(decimalAmount.String(), 10)
+	txn, err := mpsContract.BurnFrom(auth, addresses, mpsAmountToWei)
 	if err != nil {
 		global.MPS_LOG.Error("调用智能合约销毁代币失败: ", zap.Error(err))
 		tx.Rollback()
@@ -679,7 +682,7 @@ func BurnMPSFromWallet(walletAddr string, MpsAmount int64, userId uint, orderNo 
 // 返回值:
 //
 //	如果操作成功，返回nil；否则返回错误。
-func TransMpsToWallet(userID uint, walletAddr string, mpsAmount int64, orderNo string) error {
+func TransMpsToWallet(userID uint, walletAddr string, mpsAmount float64, orderNo string) error {
 	// 开启事务
 	tx := global.MPS_DB.Begin()
 	defer func() {
@@ -731,10 +734,10 @@ func TransMpsToWallet(userID uint, walletAddr string, mpsAmount int64, orderNo s
 	// 发放代币
 	addresses := []common.Address{common.HexToAddress(walletAddr)}
 	// 将 float64 转换为 big.Int，考虑 18 位小数
-	amount := new(big.Int)
-	amount.SetInt64(mpsAmount)
-
-	txn, err := mpsContract.Mint(auth, addresses, amount)
+	decimalAmount := decimal.NewFromFloat(mpsAmount).Mul(decimal.NewFromFloat(1e18))
+	mpsAmountToWei := new(big.Int)
+	mpsAmountToWei.SetString(decimalAmount.String(), 10)
+	txn, err := mpsContract.Mint(auth, addresses, mpsAmountToWei)
 	if err != nil {
 		global.MPS_LOG.Error("调用智能合约发放代币失败: ", zap.Error(err))
 		tx.Rollback()

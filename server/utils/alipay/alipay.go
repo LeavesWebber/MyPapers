@@ -3,16 +3,15 @@ package Alipay
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/go-pay/gopay"
+	"github.com/go-pay/gopay/alipay"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"math/big"
 	"server/global"
 	"server/model/request"
 	"server/model/response"
-
-	"github.com/gin-gonic/gin"
-	"github.com/go-pay/gopay"
-	"github.com/go-pay/gopay/alipay"
-	"go.uber.org/zap"
 )
 
 // 支付宝支付状态
@@ -50,8 +49,7 @@ func GeneratePayParams(orderNo string, amount float64) gopay.BodyMap {
 		Set("total_amount", amount).
 		Set("product_code", FAST_INSTANT_TRADE_PAY).
 		Set("qr_pay_mode", global.MPS_CONFIG.AliPay.QrPayMode).
-		Set("qrcode_width", global.MPS_CONFIG.AliPay.QrcodeWidth).
-		Set("return_url", fmt.Sprintf("http://localhost:8080/center/payment-result?order_no=%s", orderNo))
+		Set("qrcode_width", global.MPS_CONFIG.AliPay.QrcodeWidth)
 	//todo
 	//switch payType {
 	// case constants.PayTypeAlipayWap:
@@ -139,6 +137,8 @@ func FastInstantTradePay(orderNo string, amount float64) (*response.BuyMPSWithFi
 		// 判断是否为业务逻辑错误
 		if bizErr, ok := alipay.IsBizError(err); ok {
 			global.MPS_LOG.Error("业务逻辑出错:", zap.Error(bizErr))
+			// do something
+			return nil, err
 			return nil, bizErr
 		}
 		global.MPS_LOG.Error("交易预创建出错:", zap.Error(err))
@@ -212,7 +212,7 @@ func FundTransUniTransfer(req *request.SellMPSToFiatReq, orderNo string) (*respo
 //	返回一个填充了转账参数的BodyMap对象。
 func GenerateTransferParams(req *request.SellMPSToFiatReq, orderNo string) gopay.BodyMap {
 	// 将请求中的金额转换为大浮点数，以确保精度。
-	amount := big.NewFloat(0).SetInt64(req.MpsAmount)
+	amount := big.NewFloat(req.MpsAmount)
 	// 获取MPS到法定货币的汇率，并将其转换为大浮点数。
 	mpsTOFiatRate := big.NewFloat(global.MPS_CONFIG.Business.MPSExchangeRate)
 	// 计算转账金额，通过请求金额除以汇率得到。
