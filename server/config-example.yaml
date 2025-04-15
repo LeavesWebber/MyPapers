@@ -169,10 +169,10 @@ wxpay:
   fail-url: 
 
 # 支付宝支付配置
+# 请到支付宝沙箱平台注册沙箱账号，然后下载证书
 alipay:
   #支付宝类型 示例值："alipay"
   ali-pay-type: 
-  # 基础配置
   #APPID 示例值："2021000147681612"
   app-id: 
   #应用私钥文件路径 示例值："utils/alipay/cert/appPrivateKey.key"
@@ -183,6 +183,7 @@ alipay:
   format: 
 
   # 证书配置
+  # 这几个证书请从支付宝沙箱平台下载
   public-cert: "utils/alipay/cert/appPublicCert.crt" # 应用公钥证书
   paypublic-cert: "utils/alipay/cert/alipayPublicCert.crt" # 支付宝公钥证书
   payroot-cert: "utils/alipay/cert/alipayRootCert.crt" # 支付宝根证书

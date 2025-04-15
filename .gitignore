@@ -4,6 +4,7 @@ server/log/
 server/server.exe
 server/.idea/
 pkg/
+server/utils/alipay/cert/
 
 # 前端相关
 web/node_modules/
