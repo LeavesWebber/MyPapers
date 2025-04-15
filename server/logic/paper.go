@@ -82,7 +82,7 @@ func SubmitPaper(c *gin.Context, in *request.SubmitPaper) (out *tables.Paper, er
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	finalName := fmt.Sprintf("%d_%s", in.VersionId, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	saveFile := filepath.Join("./public/papers/", finalName)
 	//saveFile := filepath.Join("./public/", filename)
 	// 保存文件
 	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
@@ -160,7 +160,7 @@ func SubmitPaper2(c *gin.Context, in *request.SubmitPaper, userId uint) (out *ta
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	finalName := fmt.Sprintf("%d_%s", in.VersionId, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	saveFile := filepath.Join("./public/papers/", finalName)
 	//saveFile := filepath.Join("./public/", filename)
 	// 保存文件
 	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
@@ -436,7 +436,7 @@ func GetHonoraryCertificate(paperId uint, userinfo string) (honoraryCertificateI
 	metadata.Description = paper.ManuscriptID
 	metadata.Image = honoraryCertificateInfo.Uri
 	// 转为json格式，保存到文件
-	metadataPath := "./public/" + paper.ManuscriptID + ".json"
+	metadataPath := "./public/certificates/" + paper.ManuscriptID + ".json"
 
 	{ // 可以不用逐行写入
 		// map转json字符串
@@ -621,7 +621,7 @@ func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCe
 	contentDate(content) // 写入日期信息
 
 	// 保存图片
-	honoraryCertificateUri = "./image/" + paper.ManuscriptID + ".png"
+	honoraryCertificateUri = "./public/certificates/" + paper.ManuscriptID + ".png"
 	dstFile, err := os.Create(honoraryCertificateUri)
 	if err != nil {
 		return
@@ -699,7 +699,7 @@ func UploadPublishedPaper(c *gin.Context, in *request.UploadPublishedPaper, user
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	finalName := fmt.Sprintf("%d_%s", versionId, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	saveFile := filepath.Join("./public/papers/", finalName)
 
 	// 3. 保存文件
 	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {

@@ -1,5 +1,6 @@
 # 后端相关
-server/public/
+server/public/certificates/
+server/public/papers/
 server/log/
 server/server.exe
 server/.idea/
