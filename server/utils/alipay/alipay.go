@@ -3,16 +3,17 @@ package Alipay
 import (
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/go-pay/gopay"
-	"github.com/go-pay/gopay/alipay"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"math/big"
 	"server/global"
 	"server/model/request"
 	"server/model/response"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-pay/gopay"
+	"github.com/go-pay/gopay/alipay"
+	"go.uber.org/zap"
 )
 
 // 支付宝支付状态
@@ -257,12 +258,50 @@ func GenerateTransferParams(req *request.SellMPSToFiatReq, orderNo string) gopay
 }
 
 func TradeClose(tradeNo string, outTradeNo string) error {
-	params := make(gopay.BodyMap).Set("trade_no", tradeNo).Set("out_trade_no", outTradeNo)
-	// 初始化支付宝客户端
-	aliPayClient := InitAliPayClient()
-	_, err := aliPayClient.TradeClose(context.Background(), params)
-	if err != nil {
-		return err
+	// 在开发环境中直接返回成功
+	if global.MPS_CONFIG.System.Env == "develop" {
+		return nil
 	}
-	return nil
+
+	client := InitAliPayClient()
+	if client == nil {
+		return fmt.Errorf("支付宝客户端初始化失败")
+	}
+
+	// 构建请求参数
+	bm := make(gopay.BodyMap)
+	if tradeNo != "nil" {
+		bm.Set("trade_no", tradeNo)
+	}
+	if outTradeNo != "nil" {
+		bm.Set("out_trade_no", outTradeNo)
+	}
+
+	// 发送请求，最多重试3次
+	var lastErr error
+	for i := 0; i < 3; i++ {
+		aliRsp, err := client.TradeClose(context.Background(), bm)
+		if err != nil {
+			lastErr = err
+			time.Sleep(time.Second * 2) // 等待2秒后重试
+			continue
+		}
+
+		// 检查响应码
+		if aliRsp.Response.Code == "10000" {
+			return nil // 成功
+		}
+
+		// 如果是系统错误，重试
+		if aliRsp.Response.Code == "20000" {
+			lastErr = fmt.Errorf("支付宝系统错误: %s", aliRsp.Response.Msg)
+			time.Sleep(time.Second * 2)
+			continue
+		}
+
+		// 其他错误直接返回
+		return fmt.Errorf("支付宝关闭订单失败: %s", aliRsp.Response.Msg)
+	}
+
+	return lastErr
 }

@@ -31,6 +31,8 @@ zap:
   show-line: 
   #输出控制台 示例值：true
   log-in-console: 
+  # Gin 框架日志级别 示例值：release
+  gin-level: 
 system:
   #环境值 示例值：public
   env: 
@@ -198,7 +200,9 @@ alipay:
   #是否为生产环境 示例值：false
   is-prod: 
   # URL配置
-  #支付回调通知地址 示例值："https://9038-112-48-63-231.ngrok-free.app/mypapers/notify/alipay/notify" 要完成本地支付回调测试，你需要做内网穿透
+  #支付回调通知地址 示例值："https://9038-112-48-63-231.ngrok-free.app/mypapers/notify/alipay/notify"
+  # 要完成本地支付回调测试，你需要做内网穿透，上面示例值的地址就是用 ngork 穿透后的结果
+  # 免费策略下，每次重启后该地址会变
   notify-url: 
 
 # 系统业务配置
@@ -248,3 +252,17 @@ redis:
   password: 
   #redis 数据库 示例值：0
   db: 
+
+# rabbitmq 用于异步任务处理，可以在不同应用或服务之间传递消息，解耦业务模块，提高系统稳定性和扩展性。要使用它，需要先安装 Erlang/OTP
+# Erlang/OTP 安装指南 https://www.erlang.org/downloads
+# rabbitmq 安装指南 https://www.rabbitmq.com/docs/download
+# 默认工作在 5672 端口
+rabbitmq-config:
+  #RabbitMQ连接地址 示例值：amqp://guest:guest@localhost:5672/
+  mqurl: 
+  #队列名称 示例值：my_papers_queue
+  queue-name: 
+  #交换机名称 示例值：my_papers_exchange
+  exchange: 
+  #路由键名称 示例值：my_papers_routing_key
+  key: 

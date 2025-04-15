@@ -1,12 +1,13 @@
 package main
 
 import (
-	"go.uber.org/zap"
 	"server/core"
 	"server/global"
 	"server/initialize"
 	"server/task"
 	"server/utils"
+
+	"go.uber.org/zap"
 )
 
 // @title Swagger for mps
@@ -15,7 +16,7 @@ import (
 // @contact.name blingder
 // @BasePath /
 func main() {
-	global.MPS_VP = core.Viper("config.test.yaml") // 读取配置初始化
+	global.MPS_VP = core.Viper("config.yaml")      // 读取配置初始化
 	global.MPS_LOG = core.Zap()                    // zap日志库初始化
 	global.MPS_TRAN = core.InitTrans("zh")         // 翻译器初始化
 	global.MPS_REDIS = core.Redis()                //redis 初始化

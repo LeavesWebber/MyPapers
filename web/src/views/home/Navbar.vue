@@ -17,7 +17,7 @@
           <a class="a2" href="#">Member benefits</a>
         </p>
       </a>
-      <a class="a" href="committees"
+      <a class="a" href="/committees"
         >Committees
         <p class="p">
           <a class="a2" href="#">Mission and version</a>
@@ -25,7 +25,7 @@
           <a class="a2" href="#">History of mypapers</a>
         </p>
       </a>
-      <a class="a" href="conferences"
+      <a class="a" href="/conferences"
         >Conferences
         <p class="p">
           <a class="a2" href="#">Mission and version</a>
@@ -33,7 +33,7 @@
           <a class="a2" href="#">History of mypapers</a>
         </p>
       </a>
-      <a class="a" href="journals"
+      <a class="a" href="/journals"
         >Journals
         <p class="p">
           <a class="a2" href="#">Mission and version</a>
@@ -41,7 +41,7 @@
           <a class="a2" href="#">History of mypapers</a>
         </p>
       </a>
-      <a class="a" href="market"
+      <a class="a" href="/market"
         >Market
         <p class="p">
           <a class="a2" href="#">Mission and version</a>
