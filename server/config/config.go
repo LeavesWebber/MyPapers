@@ -18,6 +18,7 @@ type Server struct {
 	Business      Business   `mapstructure:"business"`
 	Smtp          Smtp       `mapstructure:"smtp"`
 	Redis         Redis      `mapstructure:"redis"`
+	RabbitMQ      RabbitMQ   `mapstructure:"rabbitmq-config"`
 }
 
 // Blockchain 区块链配置
@@ -25,7 +26,7 @@ type Blockchain struct {
 	EthNodeURL string `mapstructure:"eth-node-url"` // 以太坊节点URL
 	ChainID    int64  `mapstructure:"chain-id"`     // 链ID
 	GasLimit   uint64 `mapstructure:"gas-limit"`    // Gas限制
-
+	Decimals   int64  `mapstructure:"decimals"`
 	// 智能合约地址
 	MPSContractAddress         string `mapstructure:"mps-contract-address"`         // MPS代币合约地址
 	ERC20ContractAddress       string `mapstructure:"erc20-contract-address"`       // ERC20合约地址
@@ -35,6 +36,7 @@ type Blockchain struct {
 	// 管理员配置
 	AdminPrivateKey string `mapstructure:"admin-private-key"` // 管理员私钥
 	AdminAddress    string `mapstructure:"admin-address"`     // 管理员地址
+
 }
 
 // WxPay 微信支付配置
@@ -82,9 +84,10 @@ type AliPay struct {
 // Business 系统业务配置
 type Business struct {
 	MPSExchangeRate   float64 `mapstructure:"mps-exchange-rate"`   // MPS兑换比率
-	OrderTimeout      int     `mapstructure:"order-timeout"`       // 订单超时时间（秒）
+	OrderTimeout      int     `mapstructure:"order-timeout"`       // 订单超时时间（分）
 	MinRechargeAmount float64 `mapstructure:"min-recharge-amount"` // 最小充值金额
 	MaxRechargeAmount float64 `mapstructure:"max-recharge-amount"` // 最大充值金额
-	AccountType       int8    `mapstructure:"account-type"`
-	InstName          string  `mapstructure:"inst-name"`
+	AccountType       int8    `mapstructure:"account-type"`        // 收款账户类型。 1：对公（在金融机构开设的公司账户） 2：对私（在金融机构开设的个人账户）
+	InstName          string  `mapstructure:"inst-name"`           //#银行卡卡开户银行
+	RegisterMPSAmount float64 `mapstructure:"register-mps-amount"` //充值赠送MPS数量
 }

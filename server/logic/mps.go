@@ -21,13 +21,13 @@ func GetTXHashList(userId string) (out []string, err error) {
 	return out, err
 }
 
-func CreateMPSRechargeOrder(req *request.BuyMPSWithFiatReq, userID uint, orderNo string) error {
+func CreateMPSRechargeOrder(req *request.BuyMPSWithFiatReq, userID int64, orderNo string) error {
 	// 获取配置
 	mpsTOFiatRate := global.MPS_CONFIG.Business.MPSExchangeRate
 	if mpsTOFiatRate <= 0 {
-		return errors.New("invalid MPS to fiat exchange rate")
+		return errors.New("invalid mps to fiat exchange rate")
 	}
-	// 计算 MPS 金额
+	// 计算 mps 金额
 	BigAmount := big.NewFloat(req.Amount)
 	BigmpsTOFiatRate := big.NewFloat(mpsTOFiatRate)
 	mpsAmount, _ := BigAmount.Mul(BigAmount, BigmpsTOFiatRate).Float64()
@@ -57,7 +57,7 @@ func CreateMPSRechargeOrder(req *request.BuyMPSWithFiatReq, userID uint, orderNo
 // 返回值:
 //
 //	error: 在执行过程中遇到的错误（如果有）
-func CreateMPSBusinessTransferOrder(req *request.SellMPSToFiatReq, resp *response.SellMPSToFiatResp, id uint, no string) error {
+func CreateMPSBusinessTransferOrder(req *request.SellMPSToFiatReq, resp *response.SellMPSToFiatResp, id int64, no string) error {
 	// 金额
 
 	amount := big.NewFloat(req.MpsAmount)

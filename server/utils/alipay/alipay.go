@@ -12,6 +12,7 @@ import (
 	"server/global"
 	"server/model/request"
 	"server/model/response"
+	"time"
 )
 
 // 支付宝支付状态
@@ -44,21 +45,22 @@ const (
 // GeneratePayParams 生成支付参数
 func GeneratePayParams(orderNo string, amount float64) gopay.BodyMap {
 	params := make(gopay.BodyMap)
+	outTime := time.Duration(global.MPS_CONFIG.Business.OrderTimeout) * time.Minute
+	if amount < global.MPS_CONFIG.Business.MinRechargeAmount {
+		global.MPS_LOG.Error(fmt.Sprintf("充值金额小于%f", global.MPS_CONFIG.Business.MinRechargeAmount), zap.Error(global.ErrMinRechargeAmount))
+		return nil
+	}
+	if amount > global.MPS_CONFIG.Business.MaxRechargeAmount {
+		global.MPS_LOG.Error(fmt.Sprintf("充值金额大于%f", global.MPS_CONFIG.Business.MaxRechargeAmount), zap.Error(global.ErrMaxRechargeAmount))
+		return nil
+	}
 	params.Set("subject", "MPS充值").
 		Set("out_trade_no", orderNo).
 		Set("total_amount", amount).
 		Set("product_code", FAST_INSTANT_TRADE_PAY).
 		Set("qr_pay_mode", global.MPS_CONFIG.AliPay.QrPayMode).
-		Set("qrcode_width", global.MPS_CONFIG.AliPay.QrcodeWidth)
-	//todo
-	//switch payType {
-	// case constants.PayTypeAlipayWap:
-	// 	m["product_code"] = AlipayWapProductCode
-	// case constants.PayTypeAlipayApp:
-	// 	m["product_code"] = AlipayAppProductCode
-	// case constants.PayTypeAlipayMini:
-	// 	m["buyer_id"] = buyerId
-	// }
+		Set("qrcode_width", global.MPS_CONFIG.AliPay.QrcodeWidth).
+		Set("timeout_express", fmt.Sprintf("%dm", int(outTime.Minutes())))
 	return params
 }
 
@@ -152,10 +154,11 @@ func FastInstantTradePay(orderNo string, amount float64) (*response.BuyMPSWithFi
 		OrderNo: orderNo,
 		PayUrl:  aliRsp,
 		AliPayParams: response.AliPayParams{
-			OutTradeNo:  orderNo,
-			ProductCode: FAST_INSTANT_TRADE_PAY,
-			Subject:     "MPS充值",
-			TotalAmount: fmt.Sprintf("%f", amount),
+			OutTradeNo:     orderNo,
+			ProductCode:    FAST_INSTANT_TRADE_PAY,
+			Subject:        "MPS充值",
+			TotalAmount:    fmt.Sprintf("%f", amount),
+			TimeoutExpress: params.Get("timeout_express"),
 		},
 	}
 	// 返回支付响应结构体指针和nil错误，表示执行成功
@@ -251,4 +254,15 @@ func GenerateTransferParams(req *request.SellMPSToFiatReq, orderNo string) gopay
 	})
 	// 返回填充了转账参数的BodyMap对象。
 	return params
+}
+
+func TradeClose(tradeNo string, outTradeNo string) error {
+	params := make(gopay.BodyMap).Set("trade_no", tradeNo).Set("out_trade_no", outTradeNo)
+	// 初始化支付宝客户端
+	aliPayClient := InitAliPayClient()
+	_, err := aliPayClient.TradeClose(context.Background(), params)
+	if err != nil {
+		return err
+	}
+	return nil
 }

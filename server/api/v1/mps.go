@@ -18,7 +18,7 @@ type MPSApi struct{}
 var mpsService = new(service.MPSService)
 
 // CreateRechargeOrder 创建充值订单
-// @Tags MPS
+// @Tags mps
 // @Summary 创建充值订单
 // @accept application/json
 // @Produce application/json
@@ -45,7 +45,7 @@ func (m *MPSApi) CreateRechargeOrder(c *gin.Context) {
 }
 
 // GetOrderStatus 获取订单状态
-// @Tags MPS
+// @Tags mps
 // @Summary 获取订单状态
 // @accept application/json
 // @Produce application/json
@@ -119,7 +119,7 @@ func (m *MPSApi) GetMPSRate(c *gin.Context) {
 }
 
 // WxPayNotify 微信支付回调
-// @Tags MPS
+// @Tags mps
 // @Summary 微信支付回调
 // @accept application/xml
 // @Produce application/xml

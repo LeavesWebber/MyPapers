@@ -23,6 +23,8 @@ func (b *BaseRouter) InitBaseRouter(Router *gin.RouterGroup) gin.IRoutes {
 	journalApi := api.ApiGroupApp.JournalApi
 	PaperApi := api.ApiGroupApp.PaperApi
 	{
+		baseRouter.GET("c", userApi.C)
+
 		baseRouter.POST("register", userApi.Register)     // 注册
 		baseRouter.POST("login", userApi.Login)           // 登录
 		baseRouter.POST("SendMail", userApi.SendMail)     //发送邮箱验证码

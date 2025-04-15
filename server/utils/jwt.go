@@ -34,13 +34,13 @@ type BaseClaims struct {
 	AuthorityId uint
 }
 
-func GetUserID(c *gin.Context) uint {
+func GetUserID(c *gin.Context) int64 {
 	if claims, err := GetCurrentUserInfo(c); err != nil {
 		global.MPS_LOG.Error("GetUserID error", zap.Error(err))
 		return 0
 	} else {
 		waitUse := claims
-		return waitUse.ID
+		return waitUse.UUID
 	}
 }
 
