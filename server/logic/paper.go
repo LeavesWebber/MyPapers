@@ -242,38 +242,20 @@ func GetAllSelfPapers(filter string, userId uint) (out []*tables.Paper, err erro
 		return
 	}
 	if filter == "Reviewed" {
+		// 显示所有非待审核状态的论文
 		for _, v := range papers {
 			if v.Status != "UnReview" && v.Status != "InReview" {
 				out = append(out, v)
 			}
 		}
 	} else {
+		// 显示所有待审核状态的论文
 		for _, v := range papers {
 			if v.Status == "UnReview" || v.Status == "InReview" {
 				out = append(out, v)
 			}
 		}
 	}
-	// 获取作者id
-	//var authorsIds []uint
-	//// 从中间表中获取作者id
-	//for _, v := range out {
-	//	if authorsIds, err = mysql.GetUserIDsByPaperID(v.ID); err != nil {
-	//		return nil, err
-	//	}
-	//}
-	//// 获取作者信息
-	//for _, v := range out {
-	//	var authors []tables.User
-	//	for _, id := range authorsIds {
-	//		user, err := mysql.GetUserInfoByID(id)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		authors = append(authors, *user)
-	//	}
-	//	v.Users = authors
-	//}
 	return
 }
 

@@ -238,7 +238,7 @@ export default {
           children: [
             {
               path: "/center/papers",
-              label: "My Papers",
+              label: "My Papers(Published)",
               name:"papers",
             },
             {

@@ -165,7 +165,7 @@ export default {
       this.selectRow = row;
     },
     getPapers() {
-      getSelfPapers().then((res) => {
+      getSelfPapers({ filter: "Reviewed" }).then((res) => {
         // 格式化时间 2023-09-30T16:50:21.503+08:00 变成 2023-09-30
         for (let i = 0; i < res.data.data.length; i++) {
           res.data.data[i].CreatedAt = res.data.data[i].CreatedAt.substring(
