@@ -41,14 +41,14 @@
         </el-form-item>
         <el-form-item label="Phone" prop="phone">
           <el-input v-model="ruleForm.phone">
-            <template #append>
+            <!-- <template #append>
             <el-button @click="getVerificationCode" :disabled="isSendingCode">
               {{ isSendingCode? countdown + 's 后重试' : '获取验证码' }}
             </el-button>
-          </template>
+          </template> -->
           </el-input>
         </el-form-item>
-        <el-form-item label="Address" label-width="87px" prop="address">
+        <el-form-item label="Address" prop="address">
           <el-input v-model="ruleForm.address"></el-input>
         </el-form-item>
         <el-form-item label="Education" prop="education">
