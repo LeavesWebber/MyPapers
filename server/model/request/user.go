@@ -79,9 +79,15 @@ type SetUserInfo struct {
 type SendMail struct {
 	Email string `json:"email" binding:"required,email" `
 }
+
 type VerifyMail struct {
 	Email string `json:"email" binding:"required,email"`
 	Code  string `json:"code"  binding:"required"`
+}
+
+type VerifyMailResponse struct {
+	Token     string `json:"token"`
+	ExpiresAt int64  `json:"expires_at"`
 }
 
 // SetUserAuthorities 设置用户权限组

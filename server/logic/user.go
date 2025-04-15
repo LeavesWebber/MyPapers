@@ -11,6 +11,10 @@ import (
 	"server/model/tables"
 	"server/utils"
 
+	"errors"
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
@@ -68,28 +72,22 @@ func Register(in *request.Register) (err error, id int64) {
 }
 
 // SendMail 发送邮件验证码
-// 参数:
-//
-//	in: 包含邮件发送信息的指针，如收件人邮箱
-//
-// 返回值:
-//
-//	如果邮件发送成功，则返回nil；否则返回错误
 func SendMail(in *request.SendMail) error {
 	// 检查Redis中邮箱验证码的TTL，以防止重复发送
 	get := global.MPS_REDIS.Do(context.Background(), "TTL", global.REDIS_SMTP_PREFIX+in.Email)
-	time, err := get.Result()
+	ttlResult, err := get.Result()
 	if err != nil {
 		global.MPS_LOG.Error("failed to check TTL in Redis", zap.String("email", in.Email), zap.Error(err))
 		return fmt.Errorf("failed to check TTL in Redis: %v", err)
 	}
 	// 处理 TTL 返回值
-	ttl, ok := time.(int64)
+	ttl, ok := ttlResult.(int64)
 	if ok && ttl > 0 { // 键不存在
 		if int64(global.SMTP_EXPIRED_TIME.Seconds())-ttl <= int64(global.SMTP_RETRY_TIME.Seconds()) {
 			return global.ErrorInvalidEmailReSend{}
 		}
 	}
+
 	// 生成6位数字验证码
 	code, err := utils.GenerateRandomNumericCode(6)
 	if err != nil {
@@ -97,7 +95,7 @@ func SendMail(in *request.SendMail) error {
 		return fmt.Errorf("failed to generate random numeric code: %v", err)
 	}
 
-	// 输出验证码到控制台（ Leaves 添加，仅在开发环境使用）
+	// 输出验证码到控制台（仅在开发环境使用）
 	global.MPS_LOG.Info("Email verification code",
 		zap.String("email", in.Email),
 		zap.String("code", code))
@@ -109,6 +107,7 @@ func SendMail(in *request.SendMail) error {
 	m.SetHeader("Subject", "验证码")
 	msg := fmt.Sprintf("您的验证码为: %s", code)
 	m.SetBody("text/html", msg)
+
 	// 连接SMTP服务器
 	d := gomail.NewDialer(global.MPS_CONFIG.Smtp.Host, global.MPS_CONFIG.Smtp.Port, global.MPS_CONFIG.Smtp.Username, global.MPS_CONFIG.Smtp.Password)
 
@@ -118,24 +117,85 @@ func SendMail(in *request.SendMail) error {
 		return err
 	}
 
-	// 将验证码存入Redis并设置过期时间
-	if err := global.MPS_REDIS.SetEx(context.Background(), global.REDIS_SMTP_PREFIX+in.Email, code, global.SMTP_EXPIRED_TIME).Err(); err != nil {
-		global.MPS_LOG.Error("redis SetEx failed", zap.Error(err))
+	// 将验证信息存入Redis
+	verificationInfo := map[string]interface{}{
+		"code":       code,
+		"attempts":   0,
+		"verified":   false,
+		"created_at": time.Now().Unix(),
+	}
+
+	if err := global.MPS_REDIS.HSet(context.Background(), global.REDIS_SMTP_PREFIX+in.Email, verificationInfo).Err(); err != nil {
+		global.MPS_LOG.Error("redis HSet failed", zap.Error(err))
 		return err
 	}
+
+	// 设置过期时间
+	if err := global.MPS_REDIS.Expire(context.Background(), global.REDIS_SMTP_PREFIX+in.Email, global.SMTP_EXPIRED_TIME).Err(); err != nil {
+		global.MPS_LOG.Error("redis Expire failed", zap.Error(err))
+		return err
+	}
+
 	return nil
 }
-func VerifyMail(in *request.VerifyMail) error {
-	search := global.MPS_REDIS.Get(context.Background(), global.REDIS_SMTP_PREFIX+in.Email)
-	if err := search.Err(); err != nil {
-		global.MPS_LOG.Error("redis Get failed", zap.Error(err))
-		return err
+
+func VerifyMail(in *request.VerifyMail) (*request.VerifyMailResponse, error) {
+	// 获取验证信息
+	key := global.REDIS_SMTP_PREFIX + in.Email
+	info, err := global.MPS_REDIS.HGetAll(context.Background(), key).Result()
+	if err != nil {
+		return nil, err
 	}
-	if code, err := search.Result(); err == nil && code == in.Code {
-		return nil
-	} else {
-		return global.ErrorInvalidEmailCode{}
+
+	if len(info) == 0 {
+		return nil, global.ErrorInvalidEmailCode{}
 	}
+
+	// 检查尝试次数
+	attempts, _ := strconv.Atoi(info["attempts"])
+	if attempts >= 5 {
+		return nil, errors.New("验证尝试次数过多")
+	}
+
+	// 检查验证码是否匹配
+	if info["code"] != in.Code {
+		// 增加尝试次数
+		global.MPS_REDIS.HIncrBy(context.Background(), key, "attempts", 1)
+		return nil, global.ErrorInvalidEmailCode{}
+	}
+
+	// 检查是否已验证
+	if info["verified"] == "true" {
+		return nil, errors.New("验证码已被使用")
+	}
+
+	// 标记为已验证
+	global.MPS_REDIS.HSet(context.Background(), key, "verified", true)
+
+	// 生成验证token
+	expiresAt := time.Now().Add(time.Hour).Unix()
+
+	// 创建一个临时用户对象用于生成token
+	tempUser := tables.User{
+		Email: in.Email,
+		UUID:  utils.GenID(),
+	}
+
+	token, err := utils.GenToken(tempUser)
+	if err != nil {
+		return nil, err
+	}
+
+	// 存储token
+	global.MPS_REDIS.Set(context.Background(),
+		global.REDIS_SMTP_PREFIX+"token:"+in.Email,
+		token,
+		time.Hour)
+
+	return &request.VerifyMailResponse{
+		Token:     token,
+		ExpiresAt: expiresAt,
+	}, nil
 }
 
 // // GetUserTree 获取用户树

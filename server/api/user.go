@@ -3,9 +3,6 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 	"server/global"
 	"server/logic"
 	"server/model/request"
@@ -13,6 +10,10 @@ import (
 	"server/model/tables"
 	"server/utils"
 	"server/utils/rabbitmq"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 )
 
 func (u *UserApi) C(c *gin.Context) {
@@ -276,20 +277,20 @@ func (u *UserApi) SendMail(c *gin.Context) {
 
 // VerifyMail 邮箱验证
 func (u *UserApi) VerifyMail(c *gin.Context) {
-
 	in := new(request.VerifyMail)
 	if err := c.ShouldBindJSON(in); err != nil {
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			ResponseError(c, CodeInvalidParam) // 非validator.ValidationErrors类型错误直接返回
+			ResponseError(c, CodeInvalidParam)
 			return
 		}
-		// validator.ValidationErrors类型错误则进行翻译
 		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
 		return
 	}
+
 	// 逻辑处理
-	if err := logic.VerifyMail(in); err != nil {
+	response, err := logic.VerifyMail(in)
+	if err != nil {
 		global.MPS_LOG.Error("logic.VerifyMail() failed", zap.Error(err))
 		if _, ok := err.(global.ErrorInvalidEmailCode); ok {
 			ResponseError(c, CodeInvalidEmailCode)
@@ -300,7 +301,7 @@ func (u *UserApi) VerifyMail(c *gin.Context) {
 	}
 
 	// 返回响应
-	ResponseSuccess(c, nil)
+	ResponseSuccess(c, response)
 }
 
 // ResetPassword 重置用户密码
