@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"server/api"
+
+	"github.com/gin-gonic/gin"
 )
 
 type PaperRouter struct{}
@@ -28,5 +29,6 @@ func (p *PaperRouter) InitPaperRouter(Router *gin.RouterGroup) {
 		paperRouter.PUT("updatePrice", paperApi.UpdatePrice)                    // 更新价格
 		paperRouter.GET("getNFTInfo", paperApi.GetNFTInfoByTokenId)             // 根据tokenId获取NFT信息
 		paperRouter.PUT("updatePaperUserId", paperApi.UpdatePaperUserId)        // 修改投稿对应的user_id
+		paperRouter.POST("uploadPublished", paperApi.UploadPublishedPaper)      // 上传已发表论文
 	}
 }

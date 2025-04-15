@@ -36,6 +36,15 @@ type Paper struct {
 	ImageCid              string `json:"image_cid" gorm:"comment:证书图片cid"`
 	JsonUri               string `json:"json_uri" gorm:"comment:证书nft元数据json路径"`
 	TransactionHash       string `json:"transaction_hash" gorm:"comment:交易hash"`
+	JournalName           string `json:"journal_name" gorm:"comment:期刊名称"`
+	VolumeAndIssue        string `json:"volume_and_issue" gorm:"comment:卷号和期号"`
+	PublicationDate       string `json:"publication_date" gorm:"comment:发表日期"`
+	ConferenceName        string `json:"conference_name" gorm:"comment:会议名称"`
+	ConferenceDate        string `json:"conference_date" gorm:"comment:会议日期"`
+	ConferenceLocation    string `json:"conference_location" gorm:"comment:会议地点"`
+	Pages                 string `json:"pages" gorm:"comment:页码"`
+	Issn                  string `json:"issn" gorm:"comment:ISSN号"`
+	PaperLink             string `json:"paper_link" gorm:"comment:论文链接"`
 	//Justification      string    `json:"justification" comment:"投稿理由"`
 	//Scope              string    `json:"scope" comment:"研究范围"`
 	Users []User                `json:"user,omitempty" gorm:"many2many:user_paper;"`

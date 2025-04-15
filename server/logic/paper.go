@@ -705,3 +705,72 @@ func GetNFTInfoByTokenId(tokenIds string) (out []*response.GetMyNFTs, err error)
 func UpdatePaperUserId(paperId, userId uint) (err error) {
 	return mysql.UpdatePaperUserId(paperId, userId)
 }
+
+// UploadPublishedPaper 上传已发表论文
+func UploadPublishedPaper(c *gin.Context, in *request.UploadPublishedPaper, userId uint) (out *tables.Paper, err error) {
+	// 1. 生成version_id
+	versionId, err := getPaperVersionID()
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. 生成文件名和保存路径
+	filename := filepath.Base(in.Data.Filename)
+	finalName := fmt.Sprintf("%d_%s", versionId, filename)
+	saveFile := filepath.Join("./public/", finalName)
+
+	// 3. 保存文件
+	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
+		global.MPS_LOG.Error("SaveUploadedFile failed", zap.Error(err))
+		return nil, err
+	}
+
+	// 4. 构建论文信息
+	paper := &tables.Paper{
+		VersionId:            versionId,
+		PaperType:            in.PaperType,
+		Title:                in.Title,
+		Authors:              in.Authors,
+		KeyWords:             in.Keywords,
+		CorAuthor:            in.CorrespondingEmail,
+		Hash:                 in.Hash,
+		BlockAddress:         in.BlockAddress,
+		PaperTransactionHash: in.PaperTransactionAddress,
+		Filepath:             saveFile,
+		Status:               "Published", // 已发表论文直接设置为已发布状态
+		Users: []tables.User{
+			{
+				MPS_MODEL: global.MPS_MODEL{ID: userId},
+			},
+		},
+	}
+
+	// 5. 根据论文类型添加额外信息
+	if in.PaperType == "journal" {
+		paper.JournalName = in.JournalName
+		paper.VolumeAndIssue = in.VolumeAndIssue
+		paper.PublicationDate = in.PublicationDate
+	} else {
+		paper.ConferenceName = in.ConferenceName
+		paper.ConferenceDate = in.ConferenceDate
+		paper.ConferenceLocation = in.ConferenceLocation
+	}
+
+	// 6. 添加可选信息
+	if in.Pages != "" {
+		paper.Pages = in.Pages
+	}
+	if in.Issn != "" {
+		paper.Issn = in.Issn
+	}
+	if in.PaperLink != "" {
+		paper.PaperLink = in.PaperLink
+	}
+
+	// 7. 直接插入论文记录
+	if err = global.MPS_DB.Create(paper).Error; err != nil {
+		return nil, err
+	}
+
+	return paper, nil
+}
