@@ -33,19 +33,26 @@
         <!-- <el-form-item label="Sex" prop="data">
           <el-input v-model="ruleForm.sex"></el-input>
         </el-form-item> -->
-        <el-form-item label="Email" prop="email">
-          <el-input v-model="ruleForm.email"></el-input>
+        <el-form-item label="Email" prop="email" style="margin-right: 0.75%;">
+          <el-input v-model.lazy="ruleForm.email"></el-input>
+          
         </el-form-item>
-        <el-form-item label="Department" prop="department">
+        <el-form-item>
+           <el-button @click="sendVerificationCode"
+           :disabled="!canSendCode||sendingCode"
+           :loading="sendingCode"
+           style="width: 85px;align-content: center; font-size:10px;height: 28px;"
+           >
+           {{ countdown > 0 ? `Resend (${countdown}s)` : (sendingCode ? 'Sending...' : 'Get Code') }}
+
+          </el-button>
+        </el-form-item>
+       
+        <el-form-item label-width="auto" label="Department" prop="department">
           <el-input v-model="ruleForm.department"></el-input>
         </el-form-item>
         <el-form-item label="Phone" prop="phone">
           <el-input v-model="ruleForm.phone">
-            <!-- <template #append>
-            <el-button @click="getVerificationCode" :disabled="isSendingCode">
-              {{ isSendingCode? countdown + 's 后重试' : '获取验证码' }}
-            </el-button>
-          </template> -->
           </el-input>
         </el-form-item>
         <el-form-item label="Address" prop="address">
@@ -69,28 +76,21 @@
         <el-form-item label="AffiliationType" prop="affiliation_type">
           <el-input v-model="ruleForm.affiliation_type"></el-input>
         </el-form-item>
+        <el-form-item label="EmailCode" prop="EmailCode">
+          <el-input v-model="ruleForm.EmailCode"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="verifyCode"
+          :disabled="!VerificationSended">
+            Verificate
+          </el-button>
+        </el-form-item>
         <div class="button">
-          <el-button type="primary" round @click="handleInput()"
-          
+          <el-button type="primary" round @click="submitForm('ruleForm')"
+          :disabled="!(emailVerified && AllNeed)"
           >Register</el-button
           >
           <div class="modal" v-show="showModal">
-      <div class="modal-content">
-        <label class="input-label">验证码已发送至邮箱,请输入验证码:</label>
-        <input
-          
-          v-model="inputValue"
-          type="string"
-          placeholder="请输入数字"
-          class="number-input"
-        />
-        <div class="button-container">
-          <button class="confirm-button" round @click.prevent="VerificationEqual()">确认</button>
-          <button @click.prevent="showModal = false" class="cancel-button">取消</button>
-          <div v-show="showError" class="error-message">请输入正确验证码</div>
-        </div>
-        
-      </div>
     </div>
           <el-button type="primary" plain round @click="resetForm('ruleForm')"
             >Reset</el-button
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { register, SendMail } from "../../api";
+import { register, SendMail, submitPaper } from "../../api";
 import { MPScontractInstance } from "@/constant";
 const contractInstance = MPScontractInstance;
 export default {
@@ -127,9 +127,15 @@ export default {
       showModal:null,
       showError:null,
       countdown:60,
-      isSendingCode: false,
+      sendingCode: false,
+      countdown:0,
+      emailVerified:false,
+      isValidEmail:false,
+      showVerificationTip:undefined,
+      VerificationSended:false,
+      verifying:false,
+      AllNeed:false,
       ruleForm: {
-        
         id: 0,
         username: "",
         password: "",
@@ -146,6 +152,7 @@ export default {
         block_chain_address: "",
         affiliation: "",
         affiliation_type: "",
+        EmailCode:"",
       },
       SendMails:{
         MailReceiver:"",
@@ -188,10 +195,79 @@ export default {
             message: "please input block chain address",
           },
         ],
+        EmailCode:[{required:true,trigger:"blur",message:"please input the Email Code"}],
       },
     };
   },
   methods: {
+    async verifyCode() {
+      try {
+        const response = await this.$http.post('/mypapers/user/VerifyMail', {
+          email: this.ruleForm.email,
+          code: this.ruleForm.EmailCode
+        });
+
+        if (response.data.code === 1000) {
+          // 验证成功后，将验证信息存储在 localStorage 中
+          const verificationData = {
+            email: this.ruleForm.email,
+            code: this.ruleForm.EmailCode,
+            token: response.data.data.token,
+            expiresAt: response.data.data.expires_at
+          };
+          localStorage.setItem('emailVerification', JSON.stringify(verificationData));
+          
+          this.emailVerified = true;
+          this.$message.success('邮箱验证成功');
+        } else {
+          this.emailVerified = false;
+          this.$message.error(response.data.msg || '验证码无效');
+        }
+      } catch (error) {
+        this.emailVerified = false;
+        this.$message.error('验证失败: ' + (error.response?.data?.msg || error.message));
+      } finally {
+        this.verifying = false;
+      }
+    },
+    sendVerificationCode() {
+      if (!this.ruleForm.email || !this.isValidEmail) {
+        this.$message.error('Please enter a valid email address')
+        return
+      }
+      this.sendingCode = true
+      this.$http.post('/mypapers/user/SendMail', {
+        email: this.ruleForm.email
+      }).then(response => {
+        if (response.data.code === 1000) {
+          this.showVerificationTip = true
+          this.startCountdown()
+          this.$message.success('Verification code has been sent to your email')
+        } else {
+          this.$message.error(response.data.msg || 'Failed to send verification code')
+        }
+      }).catch(error => {
+        this.$message.error('Failed to send verification code: ' + (error.response?.data?.msg || error.message))
+      }).finally(() => {
+        this.sendingCode = false
+        this.VerificationSended=true
+      })
+    },
+
+    startCountdown() {
+      this.countdown = 60
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
+      this.timer = setInterval(() => {
+        if (this.countdown > 0) {
+          this.countdown--
+        } else {
+          clearInterval(this.timer)
+        }
+      }, 1000)
+    },
+
     async registe_gift(block_chain_address) {
       const functionArgs = [
           block_chain_address
@@ -205,16 +281,14 @@ export default {
         });
       
       },
-     
-    generateCode() {
-      const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
-      let code = '';
-      for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * charset.length);
-        code += charset[randomIndex];
-      }
-      this.verificationCode = code;
-      return this.verificationCode;
+    fixall(){
+      this.AllNeed=this.ruleForm.username 
+      && this.ruleForm.password 
+      && this.ruleForm.email 
+      && this.ruleForm.first_name 
+      && this.ruleForm.last_name 
+      && this.ruleForm.phone 
+      && this.ruleForm.block_chain_address
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -242,48 +316,98 @@ export default {
         }
       });
     },
-   
-    getVerificationCode() {
-          // 验证手机号码格式
-          this.$refs.ruleForm.validateField('phone', (valid) => {
-            if (valid) {
-              this.isSendingCode = true;
-              const timer = setInterval(() => {
-                this.countdown--;
-                if (this.countdown === 0) {
-                  clearInterval(timer);
-                  this.isSendingCode = false;
-                  this.countdown = 60;
-                }
-              }, 1000);
-              // 这里可以添加实际发送验证码的逻辑，例如调用 API
-              console.log(`向 ${this.ruleForm.phone} 发送验证码`);
+    validateEmail(email) {
+      if (!email) return false
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return emailRegex.test(email)
+    },
+  submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          register(this.ruleForm).then(({ data }) => {
+            console.log(data.data);
+            if (data.code === 1000) {
+              // localStorage.setItem("token", data.data.token); // 用localStorage缓存token值
+              this.$alert("Register success", {
+                confirmButtonText: "ok",
+              });
+              this.registe_gift(this.ruleForm.block_chain_address)
+              this.$router.push("/home");
+            }
+
+            if (data.code === 1003) {
+              this.$alert("User Existed!", {
+                confirmButtonText: "ok",
+              });
             }
           });
-        },
-
-    VerificationEqual(){
-    if(this.inputValue==this.SendMails.Verification)
-    {
-      this.showError=false
-      this.submitForm("ruleForm")
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+},
+  computed:{
+    canVerify() {
+      return !this.emailVerified && this.verificationCode.length === 6 && !this.verifying
+    },
+    canSendCode() {
+      const result =this.ruleForm.email && !this.countdown && this.isValidEmail
+      console.log(this.isValidEmail)
+      console.log(this.countdown)
+      console.log(result);
+      return result
+  }
+},
+watch:{
+  'ruleForm.email': {
+      immediate: true,
+      handler(value) {
+        this.isValidEmail = this.validateEmail(value)
+        console.log('Watch triggered:', {
+          value,
+          isValidEmail: this.isValidEmail
+        })
+      }
+    },
+  'ruleForm.username':{
+    immediate: true,
+    handler(){
+      this.fixall()
     }
-    else
-    {this.showError=true
-      this.showModal=true
-    }
-    }, 
-    handleInput(){
-    this.SendMails.MailReceiver=this.ruleForm.email;
-    this.SendMails.Verification=this.generateCode();
-    SendMail(this.SendMails).then(({ }) => {
-      this.$alert("Send Email Success!")
-      this.showModal=true;
-      console.log(this.SendMails.Verification)
-            return true;
-            });
-          }
   },
+  'ruleForm.password':{
+    immediate: true,
+    handler(){
+      this.fixall()
+    }
+  },
+  'ruleForm.firstname':{
+    immediate: true,
+    handler(){
+      this.fixall()
+    }
+  },
+  'ruleForm.lastname':{
+    immediate: true,
+    handler(){
+      this.fixall()
+    }
+  },
+  'ruleForm.block_chain_address':{
+    immediate: true,
+    handler(){
+      this.fixall()
+    }
+  },
+  'ruleForm.phone':{
+    immediate: true,
+    handler(){
+      this.fixall()
+    }
+  },
+},
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
