@@ -82,7 +82,7 @@ func SubmitPaper(c *gin.Context, in *request.SubmitPaper) (out *tables.Paper, er
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	finalName := fmt.Sprintf("%d_%s", in.VersionId, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	saveFile := filepath.Join("./public/papers/", finalName)
 	//saveFile := filepath.Join("./public/", filename)
 	// 保存文件
 	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
@@ -160,7 +160,7 @@ func SubmitPaper2(c *gin.Context, in *request.SubmitPaper, userId uint) (out *ta
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	finalName := fmt.Sprintf("%d_%s", in.VersionId, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	saveFile := filepath.Join("./public/papers/", finalName)
 	//saveFile := filepath.Join("./public/", filename)
 	// 保存文件
 	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
@@ -242,38 +242,20 @@ func GetAllSelfPapers(filter string, userId uint) (out []*tables.Paper, err erro
 		return
 	}
 	if filter == "Reviewed" {
+		// 显示所有非待审核状态的论文
 		for _, v := range papers {
 			if v.Status != "UnReview" && v.Status != "InReview" {
 				out = append(out, v)
 			}
 		}
 	} else {
+		// 显示所有待审核状态的论文
 		for _, v := range papers {
 			if v.Status == "UnReview" || v.Status == "InReview" {
 				out = append(out, v)
 			}
 		}
 	}
-	// 获取作者id
-	//var authorsIds []uint
-	//// 从中间表中获取作者id
-	//for _, v := range out {
-	//	if authorsIds, err = mysql.GetUserIDsByPaperID(v.ID); err != nil {
-	//		return nil, err
-	//	}
-	//}
-	//// 获取作者信息
-	//for _, v := range out {
-	//	var authors []tables.User
-	//	for _, id := range authorsIds {
-	//		user, err := mysql.GetUserInfoByID(id)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		authors = append(authors, *user)
-	//	}
-	//	v.Users = authors
-	//}
 	return
 }
 
@@ -454,7 +436,7 @@ func GetHonoraryCertificate(paperId uint, userinfo string) (honoraryCertificateI
 	metadata.Description = paper.ManuscriptID
 	metadata.Image = honoraryCertificateInfo.Uri
 	// 转为json格式，保存到文件
-	metadataPath := "./public/" + paper.ManuscriptID + ".json"
+	metadataPath := "./public/certificates/" + paper.ManuscriptID + ".json"
 
 	{ // 可以不用逐行写入
 		// map转json字符串
@@ -531,24 +513,48 @@ func contentAuthors(content *freetype.Context, authors string) {
 }
 func contentData(content *freetype.Context, title, name string) {
 	content.SetFontSize(30) // 设置字体大小
-	data := "Have Successfully Published a Paper Titled" + title + " in the " + name
-	dataX := 140
-	dataY := 640
-	for i := 0; i < len(data); i += 90 {
-		if i == 0 {
-			content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
-			dataY += 75
-			i -= 10
-			continue
+
+	// 重新设计文本布局逻辑
+	// 使用更清晰的布局方式，避免文本重叠
+
+	// 第一行 - 固定文本
+	baseY := 400
+	firstLine := "Have Successfully Published a Paper Titled"
+	content.DrawString(firstLine, freetype.Pt(140, baseY))
+
+	// 第二行 - 论文标题
+	baseY += 90
+	// 如果标题太长，需要分割
+	if len(title) > 45 {
+		// 找到合适的分割点 - 尽量在单词之间分割
+		splitIndex := 45
+		for i := 45; i > 0; i-- {
+			if i < len(title) && title[i] == ' ' {
+				splitIndex = i
+				break
+			}
 		}
-		content.DrawString(data[i:i+56], freetype.Pt(dataX+110, dataY))
-		if i+90 > len(data) {
-			content.DrawString(data[i:], freetype.Pt(dataX, dataY))
-			break
+
+		// 渲染标题第一部分
+		content.DrawString(title[:splitIndex], freetype.Pt(140, baseY))
+
+		// 渲染标题剩余部分
+		baseY += 70
+		if splitIndex < len(title) {
+			content.DrawString(title[splitIndex:], freetype.Pt(140, baseY))
 		}
-		content.DrawString(data[i:i+56], freetype.Pt(dataX, dataY))
-		dataY += 75
+	} else {
+		// 标题较短，直接渲染
+		content.DrawString(title, freetype.Pt(140, baseY))
 	}
+
+	// 第三行 - "in the"
+	baseY += 90
+	content.DrawString("in the", freetype.Pt(140, baseY))
+
+	// 第四行 - 会议/期刊名称
+	baseY += 70
+	content.DrawString(name, freetype.Pt(140, baseY))
 }
 
 func contentIPFS(content *freetype.Context, IPFS string) {
@@ -574,7 +580,7 @@ func contentDate(content *freetype.Context) {
 }
 func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCertificateUrl string, err error) {
 	// 根据路径打开模板文件
-	templateFile, err := os.Open("./image/new/certificate.png")
+	templateFile, err := os.Open("./image/certificate_v3/NFT_certificate/horizontal.png")
 	if err != nil {
 		return
 	}
@@ -615,7 +621,7 @@ func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCe
 	contentDate(content) // 写入日期信息
 
 	// 保存图片
-	honoraryCertificateUri = "./image/" + paper.ManuscriptID + ".png"
+	honoraryCertificateUri = "./public/certificates/" + paper.ManuscriptID + ".png"
 	dstFile, err := os.Create(honoraryCertificateUri)
 	if err != nil {
 		return
@@ -680,4 +686,73 @@ func GetNFTInfoByTokenId(tokenIds string) (out []*response.GetMyNFTs, err error)
 // UpdatePaperUserId 修改投稿对应的user_id
 func UpdatePaperUserId(paperId, userId uint) (err error) {
 	return mysql.UpdatePaperUserId(paperId, userId)
+}
+
+// UploadPublishedPaper 上传已发表论文
+func UploadPublishedPaper(c *gin.Context, in *request.UploadPublishedPaper, userId uint) (out *tables.Paper, err error) {
+	// 1. 生成version_id
+	versionId, err := getPaperVersionID()
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. 生成文件名和保存路径
+	filename := filepath.Base(in.Data.Filename)
+	finalName := fmt.Sprintf("%d_%s", versionId, filename)
+	saveFile := filepath.Join("./public/papers/", finalName)
+
+	// 3. 保存文件
+	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
+		global.MPS_LOG.Error("SaveUploadedFile failed", zap.Error(err))
+		return nil, err
+	}
+
+	// 4. 构建论文信息
+	paper := &tables.Paper{
+		VersionId:            versionId,
+		PaperType:            in.PaperType,
+		Title:                in.Title,
+		Authors:              in.Authors,
+		KeyWords:             in.Keywords,
+		CorAuthor:            in.CorrespondingEmail,
+		Hash:                 in.Hash,
+		BlockAddress:         in.BlockAddress,
+		PaperTransactionHash: in.PaperTransactionAddress,
+		Filepath:             saveFile,
+		Status:               "Published", // 已发表论文直接设置为已发布状态
+		Users: []tables.User{
+			{
+				MPS_MODEL: global.MPS_MODEL{ID: userId},
+			},
+		},
+	}
+
+	// 5. 根据论文类型添加额外信息
+	if in.PaperType == "journal" {
+		paper.JournalName = in.JournalName
+		paper.VolumeAndIssue = in.VolumeAndIssue
+		paper.PublicationDate = in.PublicationDate
+	} else {
+		paper.ConferenceName = in.ConferenceName
+		paper.ConferenceDate = in.ConferenceDate
+		paper.ConferenceLocation = in.ConferenceLocation
+	}
+
+	// 6. 添加可选信息
+	if in.Pages != "" {
+		paper.Pages = in.Pages
+	}
+	if in.Issn != "" {
+		paper.Issn = in.Issn
+	}
+	if in.PaperLink != "" {
+		paper.PaperLink = in.PaperLink
+	}
+
+	// 7. 直接插入论文记录
+	if err = global.MPS_DB.Create(paper).Error; err != nil {
+		return nil, err
+	}
+
+	return paper, nil
 }

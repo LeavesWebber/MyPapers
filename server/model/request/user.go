@@ -1,6 +1,8 @@
 package request
 
-import "mime/multipart"
+import (
+	"mime/multipart"
+)
 
 // Login 登录
 type Login struct {
@@ -75,8 +77,17 @@ type SetUserInfo struct {
 }
 
 type SendMail struct {
-	MailReceiver string `json:"MailReceiver"`
-	Verification string `json:"Verification"`
+	Email string `json:"email" binding:"required,email" `
+}
+
+type VerifyMail struct {
+	Email string `json:"email" binding:"required,email"`
+	Code  string `json:"code"  binding:"required"`
+}
+
+type VerifyMailResponse struct {
+	Token     string `json:"token"`
+	ExpiresAt int64  `json:"expires_at"`
 }
 
 // SetUserAuthorities 设置用户权限组

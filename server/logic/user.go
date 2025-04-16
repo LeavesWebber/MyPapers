@@ -1,10 +1,8 @@
 package logic
 
 import (
+	"context"
 	"fmt"
-	"log"
-	"net"
-	"net/smtp"
 	"path/filepath"
 	"server/dao/mysql"
 	"server/global"
@@ -12,10 +10,14 @@ import (
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
+
+	"errors"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gopkg.in/gomail.v2"
 )
 
 // Login 用户登录
@@ -35,7 +37,7 @@ func Login(in *request.Login) (out *response.Login, err error) {
 }
 
 // Register 创建用户
-func Register(in *request.Register) (err error) {
+func Register(in *request.Register) (err error, id int64) {
 	// 判断用户名是已经否存在
 	if _, err = mysql.UserNameExist(in.Username); err == global.ErrorUserExist {
 		return
@@ -66,83 +68,134 @@ func Register(in *request.Register) (err error) {
 	// 生成uuid
 	user.UUID = utils.GenID()
 	// 存入数据库
-	return mysql.Register(user)
+	return mysql.Register(user), user.UUID
 }
 
+// SendMail 发送邮件验证码
 func SendMail(in *request.SendMail) error {
-	from := "root@mypapers.io"
-	to := []string{in.MailReceiver}
-	smtpServer := "mail.mypapers.io:25"
-
-	// 尝试解析域名
-	host, _, err := net.SplitHostPort(smtpServer)
+	// 检查Redis中邮箱验证码的TTL，以防止重复发送
+	get := global.MPS_REDIS.Do(context.Background(), "TTL", global.REDIS_SMTP_PREFIX+in.Email)
+	ttlResult, err := get.Result()
 	if err != nil {
-		log.Fatalf("Failed to split host and port: %v", err)
-		return err
+		global.MPS_LOG.Error("failed to check TTL in Redis", zap.String("email", in.Email), zap.Error(err))
+		return fmt.Errorf("failed to check TTL in Redis: %v", err)
 	}
-	addrs, err := net.LookupHost(host)
-	if err != nil {
-		log.Printf("Failed to resolve domain: %v", err)
-		return err
-	}
-	log.Printf("Resolved IP addresses for %s: %v", host, addrs)
-
-	conn, err := net.DialTimeout("tcp", smtpServer, 120*time.Second)
-	if err != nil {
-		log.Printf("Failed to connect to SMTP server: %v", err)
-		return err
-	}
-	log.Printf("tcp connection is right")
-	log.Printf("conn is :%v", conn)
-
-	// 设置读写超时
-	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
-	conn.SetWriteDeadline(time.Now().Add(60 * time.Second))
-
-	client, err := smtp.NewClient(conn, host)
-	log.Printf("client is %v", client)
-	if err != nil {
-		log.Fatalf("Failed to create SMTP client: %v", err)
-		return err
-	}
-	defer client.Quit()
-
-	if err = client.Mail(from); err != nil {
-		log.Printf("Failed to set sender: %v", err)
-		return err
-	}
-
-	for _, addr := range to {
-		if err = client.Rcpt(addr); err != nil {
-			log.Printf("Failed to set recipient: %v", err)
-			return err
+	// 处理 TTL 返回值
+	ttl, ok := ttlResult.(int64)
+	if ok && ttl > 0 { // 键不存在
+		if int64(global.SMTP_EXPIRED_TIME.Seconds())-ttl <= int64(global.SMTP_RETRY_TIME.Seconds()) {
+			return global.ErrorInvalidEmailReSend{}
 		}
 	}
 
-	w, err := client.Data()
+	// 生成6位数字验证码
+	code, err := utils.GenerateRandomNumericCode(6)
 	if err != nil {
-		log.Printf("Failed to start data transfer: %v", err)
+		global.MPS_LOG.Error("failed to generate random numeric code", zap.Error(err))
+		return fmt.Errorf("failed to generate random numeric code: %v", err)
+	}
+
+	// 输出验证码到控制台（仅在开发环境使用）
+	global.MPS_LOG.Info("Email verification code",
+		zap.String("email", in.Email),
+		zap.String("code", code))
+
+	// 构建邮件内容
+	m := gomail.NewMessage()
+	m.SetHeader("From", global.MPS_CONFIG.Smtp.Username)
+	m.SetHeader("To", in.Email)
+	m.SetHeader("Subject", "验证码")
+	msg := fmt.Sprintf("您的验证码为: %s", code)
+	m.SetBody("text/html", msg)
+
+	// 连接SMTP服务器
+	d := gomail.NewDialer(global.MPS_CONFIG.Smtp.Host, global.MPS_CONFIG.Smtp.Port, global.MPS_CONFIG.Smtp.Username, global.MPS_CONFIG.Smtp.Password)
+
+	// 发送邮件
+	if err := d.DialAndSend(m); err != nil {
+		global.MPS_LOG.Error("SendMail failed", zap.Error(err))
 		return err
 	}
 
-	message := []byte("From: " + from + "\r\n" +
-		"To: " + in.MailReceiver + "\r\n" +
-		"Subject: Varification\r\n" +
-		"\r\n" +
-		in.Verification)
-	_, err = w.Write(message)
-	if err != nil {
-		log.Printf("Failed to write message: %v", err)
+	// 将验证信息存入Redis
+	verificationInfo := map[string]interface{}{
+		"code":       code,
+		"attempts":   0,
+		"verified":   false,
+		"created_at": time.Now().Unix(),
+	}
+
+	if err := global.MPS_REDIS.HSet(context.Background(), global.REDIS_SMTP_PREFIX+in.Email, verificationInfo).Err(); err != nil {
+		global.MPS_LOG.Error("redis HSet failed", zap.Error(err))
 		return err
 	}
 
-	err = w.Close()
-	if err != nil {
-		log.Printf("Failed to close data transfer: %v", err)
+	// 设置过期时间
+	if err := global.MPS_REDIS.Expire(context.Background(), global.REDIS_SMTP_PREFIX+in.Email, global.SMTP_EXPIRED_TIME).Err(); err != nil {
+		global.MPS_LOG.Error("redis Expire failed", zap.Error(err))
 		return err
 	}
-	log.Println("Email sent successfully.")
+
 	return nil
+}
+
+func VerifyMail(in *request.VerifyMail) (*request.VerifyMailResponse, error) {
+	// 获取验证信息
+	key := global.REDIS_SMTP_PREFIX + in.Email
+	info, err := global.MPS_REDIS.HGetAll(context.Background(), key).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(info) == 0 {
+		return nil, global.ErrorInvalidEmailCode{}
+	}
+
+	// 检查尝试次数
+	attempts, _ := strconv.Atoi(info["attempts"])
+	if attempts >= 5 {
+		return nil, errors.New("验证尝试次数过多")
+	}
+
+	// 检查验证码是否匹配
+	if info["code"] != in.Code {
+		// 增加尝试次数
+		global.MPS_REDIS.HIncrBy(context.Background(), key, "attempts", 1)
+		return nil, global.ErrorInvalidEmailCode{}
+	}
+
+	// 检查是否已验证
+	if info["verified"] == "true" {
+		return nil, errors.New("验证码已被使用")
+	}
+
+	// 标记为已验证
+	global.MPS_REDIS.HSet(context.Background(), key, "verified", true)
+
+	// 生成验证token
+	expiresAt := time.Now().Add(time.Hour).Unix()
+
+	// 创建一个临时用户对象用于生成token
+	tempUser := tables.User{
+		Email: in.Email,
+		UUID:  utils.GenID(),
+	}
+
+	token, err := utils.GenToken(tempUser)
+	if err != nil {
+		return nil, err
+	}
+
+	// 存储token
+	global.MPS_REDIS.Set(context.Background(),
+		global.REDIS_SMTP_PREFIX+"token:"+in.Email,
+		token,
+		time.Hour)
+
+	return &request.VerifyMailResponse{
+		Token:     token,
+		ExpiresAt: expiresAt,
+	}, nil
 }
 
 // // GetUserTree 获取用户树
@@ -261,3 +314,7 @@ func SetUserInfo(in *request.SetUserInfo) (err error) {
 //	}
 //	return
 //}
+
+func RegisterSendMPS(address string) {
+
+}

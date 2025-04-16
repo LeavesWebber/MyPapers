@@ -1,11 +1,10 @@
 <template>
   <div class="header">
-    <el-link
+    <router-link
       class="login"
-      :underline="false"
       :style="{ display: visibleLogin }"
-      href="login"
-      >Login</el-link
+      to="/login"
+      >Login</router-link
     >
     <el-button
       class="login"
@@ -14,12 +13,11 @@
       @click="logout"
       >Logout</el-button
     >
-    <el-link
+    <router-link
       class="register"
-      :underline="false"
       :style="{ display: visibleLogin }"
-      href="register"
-      >Register</el-link
+      to="/register"
+      >Register</router-link
     >
     <el-link
       class="register"
@@ -80,7 +78,6 @@ export default {
     position: absolute;
     left: 100px;
     color: #40a2fe;
-    // 鼠标悬停时显示下划线
     text-decoration: none;
     &:hover {
       text-decoration: underline;
@@ -90,7 +87,7 @@ export default {
     position: absolute;
     right: 100px;
     color: #40a2fe;
-    // 鼠标悬停时显示下划线
+    text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
@@ -99,7 +96,7 @@ export default {
     position: absolute;
     right: 150px;
     color: #40a2fe;
-    // 鼠标悬停时显示下划线
+    text-decoration: none;
     &:hover {
       text-decoration: underline;
     }

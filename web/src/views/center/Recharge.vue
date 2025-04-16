@@ -22,8 +22,14 @@
         <el-form-item label="获得MPS">
           <span class="mps-amount">{{ rechargeForm.amount }} MPS</span>
         </el-form-item>
+        <el-form-item label="支付方式">
+          <el-radio-group v-model="rechargeForm.pay_type">
+            <el-radio label="alipay">支付宝支付</el-radio>
+            <el-radio label="wxpay">微信支付</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleRecharge" :loading="loading">微信支付充值</el-button>
+          <el-button type="primary" @click="handleRecharge" :loading="loading">立即充值</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -42,7 +48,8 @@ export default {
       mpsBalance: '0',
       loading: false,
       rechargeForm: {
-        amount: 100
+        amount: 100,
+        pay_type: 'alipay'
       },
       rules: {
         amount: [
@@ -75,7 +82,7 @@ export default {
           return
         }
 
-        const balance = await MPScontractInstance.methods.balanceOf(accounts[0]).call()
+        const balance = await MPScontractInstance.methods['balanceOf(address)'](accounts[0]).call()
         // 将 wei 转换为 ether 单位
         this.mpsBalance = Web3.utils.fromWei(balance, 'ether')
       } catch (error) {
@@ -86,28 +93,97 @@ export default {
     handleAmountChange(value) {
       this.rechargeForm.amount = value
     },
+    // 调用智能合约发放代币
+    async mintMPS(toAddress, amount) {
+      try {
+        // 获取代币精度
+        const decimals = await MPScontractInstance.methods.decimals().call()
+        // 将金额转换为代币的最小单位
+        const tokenAmount = Web3.utils.toWei(amount.toString(), 'ether')
+        
+        // 调用智能合约的 mint 函数
+        const result = await MPScontractInstance.methods.mint([toAddress], tokenAmount).send({
+          from: window.ethereum.selectedAddress,
+          gasPrice: "0",
+        })
+        
+        console.log('代币发放成功:', result)
+        return true
+      } catch (error) {
+        console.error('代币发放失败:', error)
+        this.$message.error('代币发放失败: ' + (error.message || '未知错误'))
+        return false
+      }
+    },
     async handleRecharge() {
       try {
         this.$refs.rechargeForm.validate(async (valid) => {
           if (valid) {
             this.loading = true
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+            if (!accounts || accounts.length === 0) {
+              this.$message.error('请先连接 MetaMask 钱包')
+              this.loading = false
+              return
+            }
+
+            console.log('开始充值请求:', {
+              amount: this.rechargeForm.amount,
+              wallet_address: accounts[0],
+              pay_type: this.rechargeForm.pay_type
+            })
+
             const res = await buyMPSWithFiat({
-              amount: this.rechargeForm.amount
+              amount: this.rechargeForm.amount,
+              wallet_address: accounts[0],
+              pay_type: this.rechargeForm.pay_type
             })
             
-            if (res.data.code === 1000) {
-              // 假设后端返回微信支付所需的参数
-              const payParams = res.data.data
-              // 调用微信支付
-              this.callWxPay(payParams)
+            console.log('充值响应:', res)
+
+            // 检查响应数据结构
+            if (!res || !res.data) {
+              console.error('响应数据格式错误:', res)
+              this.$message.error('服务器响应格式错误')
+              return
+            }
+
+            const { code, data, msg } = res.data
+
+            if (code === 0) {
+              if (this.rechargeForm.pay_type === 'alipay') {
+                // 支付宝支付
+                if (data && data.pay_url) {
+                  // 保存订单号和钱包地址到本地存储
+                  localStorage.setItem('current_order_no', data.order_no)
+                  localStorage.setItem('current_wallet_address', accounts[0])
+                  localStorage.setItem('current_mps_amount', this.rechargeForm.amount)
+                  
+                  // 直接使用后端返回的支付URL，不要修改
+                  console.log('跳转到支付页面:', data.pay_url)
+                  window.location.href = data.pay_url
+                } else {
+                  console.error('支付宝支付链接缺失:', data)
+                  this.$message.error('获取支付链接失败')
+                }
+              } else {
+                // 微信支付
+                if (data && data.wx_pay_params) {
+                  this.callWxPay(data.wx_pay_params)
+                } else {
+                  console.error('微信支付参数缺失:', data)
+                  this.$message.error('获取微信支付参数失败')
+                }
+              }
             } else {
-              this.$message.error(res.data.msg || '充值失败，请重试')
+              console.error('充值失败:', msg || '未知错误')
+              this.$message.error(msg || '充值失败，请重试')
             }
           }
         })
       } catch (error) {
-        console.error('充值失败:', error)
-        this.$message.error('充值失败，请稍后重试')
+        console.error('充值过程发生错误:', error)
+        this.$message.error('充值失败: ' + (error.message || '未知错误'))
       } finally {
         this.loading = false
       }

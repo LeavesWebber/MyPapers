@@ -449,3 +449,40 @@ func (p *PaperApi) UpdatePaperUserId(c *gin.Context) {
 	}
 	ResponseSuccess(c, nil)
 }
+
+// UploadPublishedPaper 上传已发表论文
+func (p *PaperApi) UploadPublishedPaper(c *gin.Context) {
+	var err error
+	in := new(request.UploadPublishedPaper)
+	// 1. 获取参数和校验参数
+	if err = c.ShouldBind(in); err != nil {
+		// 请求参数有误，直接返回响应
+		global.MPS_LOG.Error("UploadPublishedPaper with invalid param", zap.Error(err))
+		// 判断err是不是validator.ValidationErrors 类型
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
+		return
+	}
+
+	// 2. 从token中获取用户信息
+	userInfo, _ := utils.GetCurrentUserInfo(c)
+
+	// 3. 逻辑处理
+	out, err := logic.UploadPublishedPaper(c, in, userInfo.ID)
+	if err != nil {
+		global.MPS_LOG.Error("logic.UploadPublishedPaper failed", zap.Error(err))
+		if errors.Is(err, global.ErrorUserNotExist) {
+			ResponseError(c, CodeUserNotExist)
+			return
+		}
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
+	// 4. 返回响应
+	ResponseSuccess(c, out)
+}

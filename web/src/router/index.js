@@ -56,6 +56,7 @@ import Recharge from '../views/center/Recharge.vue'
 import PublishedPapers from '../views/home/PublishedPapers.vue'
 import UploadPublishedPaper from '../views/home/UploadPublishedPaper.vue'
 import MyPublishedPapers from '../views/home/MyPublishedPapers.vue'
+import PaymentResult from '@/views/center/PaymentResult.vue'
 
 Vue.use(VueRouter)
 
@@ -137,7 +138,9 @@ const routes = [
             { path: '/center/mint', name: 'mint', component: Mint, meta: { requireAuth: true } },
             { path: '/center/createJournal', name: 'createJournal', component: CreateJournal },
             { path: '/center/selfJournal', name: 'selfJournal', component: SelfJournal },
-            { path: '/center/recharge', name: 'recharge', component: Recharge, meta: { requireAuth: true } }
+            { path: '/center/recharge', name: 'recharge', component: Recharge, meta: { requireAuth: true } },
+            { path: '/center/payment-result', name: 'PaymentResult', component: PaymentResult, meta: { title: '支付结果', requireAuth: true } },
+            { path: '/center/publishedPaperSubmit', name: 'PublishedPaperSubmit', component: () => import('@/views/center/PublishedPaperSubmit.vue'), meta: { title: '已出版论文上传' } }
         ]
     }
 ]

@@ -2,6 +2,7 @@ package router
 
 import (
 	"server/api"
+	v1 "server/api/v1"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,15 +16,20 @@ func (b *BaseRouter) InitBaseRouter(Router *gin.RouterGroup) gin.IRoutes {
 	conferenceRouter := Router.Group("conference")
 	journalRouter := Router.Group("journal")
 	paperRouter := Router.Group("paper")
+	NotifyGroup := Router.Group("notify")
 	userApi := api.ApiGroupApp.UserApi
 	committeeApi := api.ApiGroupApp.CommitteeApi
 	conferenceApi := api.ApiGroupApp.ConferenceApi
 	journalApi := api.ApiGroupApp.JournalApi
 	PaperApi := api.ApiGroupApp.PaperApi
 	{
-		baseRouter.POST("register", userApi.Register) // 注册
-		baseRouter.POST("login", userApi.Login)       // 登录
-		baseRouter.POST("SendMail", userApi.SendMail) //发送邮箱验证码
+		baseRouter.GET("c", userApi.C)
+
+		baseRouter.POST("register", userApi.Register)     // 注册
+		baseRouter.POST("login", userApi.Login)           // 登录
+		baseRouter.POST("SendMail", userApi.SendMail)     //发送邮箱验证码
+		baseRouter.POST("VerifyMail", userApi.VerifyMail) //发送邮箱验证码
+
 		//baseRouter.POST("captcha", userApi.Captcha)   // 生成验证码
 		committeeRouter.GET("detail", committeeApi.GetCommittee)                                              // 查看委员会详情
 		committeeRouter.GET("list", committeeApi.GetAllCommittees)                                            // 查询委员会列表
@@ -38,6 +44,8 @@ func (b *BaseRouter) InitBaseRouter(Router *gin.RouterGroup) gin.IRoutes {
 		paperRouter.GET("acceptPaperListByConferenceAndTime", PaperApi.GetAllAcceptPapersByConferenceAndTime) // 按期刊和时间查询已经审核通过的投稿列表
 		journalRouter.GET("issue/list", journalApi.GetAllJournalIssues)
 		conferenceRouter.GET("issue/list", conferenceApi.GetAllConferenceIssues) // 查询会议Issue列表
+		NotifyGroup.POST("/wxpay/notify", v1.ApiGroupApp.MPSApi.WxPayNotify)
+		NotifyGroup.POST("/alipay/notify", v1.ApiGroupApp.MPSApi.AliPayNotify)
 	}
 	return baseRouter
 }

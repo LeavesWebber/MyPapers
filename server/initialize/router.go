@@ -17,8 +17,8 @@ func Routers() *gin.Engine {
 	// 跨域，如需跨域可以打开下面的注释
 	Router.Use(middleware.Cors())        // 直接放行全部跨域请求
 	Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求
-
 	global.MPS_LOG.Info("use middleware cors")
+
 	PublicGroup := Router.Group("mypapers")
 	{
 		// 健康监测
@@ -43,7 +43,6 @@ func Routers() *gin.Engine {
 		systemRouter.InitReviewRouter(PrivateGroup)     // 评审功能路由
 		systemRouter.InitMPSRouter(PrivateGroup)        // MPS功能路由
 	}
-
 	global.MPS_LOG.Info("router register success")
 	return Router
 }

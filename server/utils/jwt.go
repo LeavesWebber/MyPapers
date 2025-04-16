@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"go.uber.org/zap"
 	"server/global"
 	"server/model/tables"
 	"time"
@@ -33,12 +34,13 @@ type BaseClaims struct {
 	AuthorityId uint
 }
 
-func GetUserID(c *gin.Context) uint {
-	if claims, exists := c.Get("claims"); !exists {
+func GetUserID(c *gin.Context) int64 {
+	if claims, err := GetCurrentUserInfo(c); err != nil {
+		global.MPS_LOG.Error("GetUserID error", zap.Error(err))
 		return 0
 	} else {
-		waitUse := claims.(*CustomClaims)
-		return waitUse.ID
+		waitUse := claims
+		return waitUse.UUID
 	}
 }
 

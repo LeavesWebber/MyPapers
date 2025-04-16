@@ -11,7 +11,7 @@
 
       <div class="features">
         <el-row :gutter="30">
-          <el-col :span="8">
+          <el-col :span="12">
             <div class="feature-card">
               <div class="icon">
                 <i class="el-icon-upload"></i>
@@ -27,7 +27,7 @@
             </div>
           </el-col>
 
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <div class="feature-card">
               <div class="icon">
                 <i class="el-icon-document"></i>
@@ -41,9 +41,9 @@
                 View Papers
               </el-button>
             </div>
-          </el-col>
+          </el-col> -->
 
-          <el-col :span="8">
+          <el-col :span="12">
             <div class="feature-card">
               <div class="icon">
                 <i class="el-icon-info"></i>
@@ -124,7 +124,7 @@
           <h4>2. Upload and Verification</h4>
           <ul>
             <li>Fill in the paper details including title, authors, and publication venue</li>
-            <li>Upload the PDF file (max 50MB)</li>
+            <li>Upload the PDF file (max 15MB)</li>
             <li>Verify your email as the corresponding author</li>
           </ul>
         </div>

@@ -39,6 +39,8 @@
   border-right: none;
   position: fixed;
   width: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
   
   h4 {
     color: #fff;
@@ -47,6 +49,10 @@
     line-height: 8vh;
     font-size: clamp(14px, 2vh, 18px);
     font-weight: 400;
+    position: sticky;
+    top: 0;
+    background-color: #191A23;
+    z-index: 1;
   }
 
   :deep(.el-submenu__title),
@@ -105,6 +111,8 @@
   width: 280px;
   height: 100%;
   min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 // 响应式布局
@@ -230,7 +238,7 @@ export default {
           children: [
             {
               path: "/center/papers",
-              label: "My Papers",
+              label: "My Papers(Published)",
               name:"papers",
             },
             {

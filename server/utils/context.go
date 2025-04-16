@@ -24,5 +24,5 @@ func GetCurrentUserInfo(c *gin.Context) (mc BaseClaims, err error) {
 		err = ErrorUserNotLogin
 		return
 	}
-	return
+	return mc, nil
 }

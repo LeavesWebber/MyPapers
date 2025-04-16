@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"server/api"
+	"server/global"
 	"server/utils"
 	"strings"
 
@@ -17,6 +18,7 @@ func JWTAuth() func(c *gin.Context) {
 		// 这里的具体实现方式要依据你的实际业务情况决定
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
+			global.MPS_LOG.Error("请求头中auth为空")
 			api.ResponseError(c, api.CodeNeedLogin)
 			c.Abort()
 			return

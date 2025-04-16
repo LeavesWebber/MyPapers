@@ -1342,6 +1342,25 @@ const MPScontractABI = [
         "type": "event"
     },
     {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -1754,7 +1773,7 @@ const MPScontractABI = [
         "type": "function"
     }
 ]
-const MPScontractAddress = "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0";
+const MPScontractAddress = "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F2434";
 export const MPScontractInstance = new web3.eth.Contract(
     MPScontractABI,
     MPScontractAddress

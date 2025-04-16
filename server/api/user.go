@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"server/global"
 	"server/logic"
@@ -8,11 +9,16 @@ import (
 	"server/model/response"
 	"server/model/tables"
 	"server/utils"
+	"server/utils/rabbitmq"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
+
+func (u *UserApi) C(c *gin.Context) {
+	rabbitmq.ConsumeSimple()
+}
 
 // Login 用户登录
 func (u *UserApi) Login(c *gin.Context) {
@@ -68,7 +74,8 @@ func (u *UserApi) Register(c *gin.Context) {
 	//	})
 	//}
 	// 逻辑处理
-	if err := logic.Register(in); err != nil {
+	err, userId := logic.Register(in)
+	if err != nil {
 		if err == global.ErrorUserExist {
 			global.MPS_LOG.Error("logic.Register() failed", zap.Error(err))
 			ResponseError(c, CodeUserExist)
@@ -83,6 +90,23 @@ func (u *UserApi) Register(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
+	// 赠送代币,存入MQ消费
+	msg := global.QueueMessage{
+		Address:     in.BlockChainAddress,
+		Description: "注册赠送",
+		MPSAmount:   global.MPS_CONFIG.Business.RegisterMPSAmount,
+		UUID:        userId,
+		OrderNo:     "",
+	}
+
+	jsonData, err := json.Marshal(msg)
+	if err != nil {
+		// 处理错误
+		global.MPS_LOG.Error("Error marshaling JSON", zap.Error(err))
+		return
+	}
+	//存入rabbitmq
+	rabbitmq.PublishSimple(jsonData)
 	// 返回响应
 	ResponseSuccess(c, nil)
 }
@@ -234,18 +258,50 @@ func (u *UserApi) SendMail(c *gin.Context) {
 	}
 	// 逻辑处理
 	if err := logic.SendMail(in); err != nil {
-		if err == global.ErrorUserExist {
-			global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
-			ResponseError(c, CodeUserExist)
+		global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
+		if _, ok := err.(global.ErrorInvalidEmailReSend); ok {
+			ResponseError(c, CodeInvalidEmailTime)
 			return
 		}
-		global.MPS_LOG.Error("logic.SendMail() failed", zap.Error(err))
-		ResponseError(c, CodeServerBusy)
+		if _, ok := err.(global.ErrorInvalidEmailCode); ok {
+			ResponseError(c, CodeInvalidEmailCode)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInnerError, err.Error())
 		return
 	}
 
 	// 返回响应
 	ResponseSuccess(c, nil)
+}
+
+// VerifyMail 邮箱验证
+func (u *UserApi) VerifyMail(c *gin.Context) {
+	in := new(request.VerifyMail)
+	if err := c.ShouldBindJSON(in); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInvalidParam, utils.RemoveTopStruct(errs.Translate(global.MPS_TRAN)))
+		return
+	}
+
+	// 逻辑处理
+	response, err := logic.VerifyMail(in)
+	if err != nil {
+		global.MPS_LOG.Error("logic.VerifyMail() failed", zap.Error(err))
+		if _, ok := err.(global.ErrorInvalidEmailCode); ok {
+			ResponseError(c, CodeInvalidEmailCode)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInnerError, err.Error())
+		return
+	}
+
+	// 返回响应
+	ResponseSuccess(c, response)
 }
 
 // ResetPassword 重置用户密码
