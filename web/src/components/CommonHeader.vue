@@ -23,7 +23,7 @@
       class="register"
       :underline="false"
       :style="{ display: visibleUserInfo }"
-      href="center"
+      href="/center"
       target="_blank"
       >Center</el-link
     >
