@@ -31,6 +31,15 @@
                   placeholder="Enter password"
                   autocomplete="off"
                 ></el-input>
+                <div class="password-tips">
+                  <div class="tips-title">Password must contain:</div>
+                  <div class="tips-grid">
+                    <div class="tip-item">• At least 6 characters</div>
+                    <div class="tip-item">• At least one uppercase letter</div>
+                    <div class="tip-item">• At least one lowercase letter</div>
+                    <div class="tip-item">• At least one number</div>
+                  </div>
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -107,14 +116,19 @@
         <div class="form-section">
           <h3 class="section-title">Personal Information</h3>
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="8">
               <el-form-item label="First Name" prop="first_name">
-                <el-input v-model="ruleForm.first_name" placeholder="Enter first name"></el-input>
+                <el-input v-model="ruleForm.first_name" placeholder="First name"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
+              <el-form-item label="Middle Name" prop="middle_name">
+                <el-input v-model="ruleForm.middle_name" placeholder="Middle name"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
               <el-form-item label="Last Name" prop="last_name">
-                <el-input v-model="ruleForm.last_name" placeholder="Enter last name"></el-input>
+                <el-input v-model="ruleForm.last_name" placeholder="Last name"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -132,7 +146,7 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="24">
-              <el-form-item label="Blockchain Addr" prop="block_chain_address">
+              <el-form-item label="Blockchain Add." prop="block_chain_address">
                 <el-input v-model="ruleForm.block_chain_address" placeholder="Enter blockchain address"></el-input>
               </el-form-item>
             </el-col>
@@ -145,31 +159,46 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="Education" prop="education">
-                <el-input v-model="ruleForm.education" placeholder="Enter education"></el-input>
+                <el-select v-model="ruleForm.education" placeholder="Select education level" style="width: 100%">
+                  <el-option label="Bachelor" value="Bachelor"></el-option>
+                  <el-option label="Master" value="Master"></el-option>
+                  <el-option label="Doctor" value="Doctor"></el-option>
+                  <el-option label="Other" value="Other"></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="Title" prop="title">
-                <el-input v-model="ruleForm.title" placeholder="Enter title"></el-input>
+              <el-form-item label="Position/Title" prop="title">
+                <el-select v-model="ruleForm.title" placeholder="Select position/title" style="width: 100%">
+                  <el-option label="Professor" value="Professor"></el-option>
+                  <el-option label="Associate Professor" value="Associate Professor"></el-option>
+                  <el-option label="Assistant Professor" value="Assistant Professor"></el-option>
+                  <el-option label="Research Fellow" value="Research Fellow"></el-option>
+                  <el-option label="Postdoctoral Researcher" value="Postdoctoral Researcher"></el-option>
+                  <el-option label="Doctoral Student" value="Doctoral Student"></el-option>
+                  <el-option label="Master's Student" value="Master's Student"></el-option>
+                  <el-option label="Undergraduate Student" value="Undergraduate Student"></el-option>
+                  <el-option label="Other" value="Other"></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="24">
-              <el-form-item label="Research" prop="research">
-                <el-input v-model="ruleForm.research" placeholder="Enter research field"></el-input>
+              <el-form-item label="Research Fields" prop="research">
+                <el-input v-model="ruleForm.research" placeholder="Enter research fields (optional)"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="Affiliations" prop="affiliation">
-                <el-input v-model="ruleForm.affiliation" placeholder="Enter affiliations"></el-input>
+              <el-form-item label="Organization" prop="affiliation">
+                <el-input v-model="ruleForm.affiliation" placeholder="Enter organization"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="Affiliation Type" prop="affiliation_type">
-                <el-input v-model="ruleForm.affiliation_type" placeholder="Enter affiliation type"></el-input>
+              <el-form-item label="Department" prop="affiliation_type">
+                <el-input v-model="ruleForm.affiliation_type" placeholder="Enter department"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -204,6 +233,14 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("Password is required"));
+      } else if (value.length < 6) {
+        callback(new Error("Password must be at least 6 characters"));
+      } else if (!/[A-Z]/.test(value)) {
+        callback(new Error("Password must contain at least one uppercase letter"));
+      } else if (!/[a-z]/.test(value)) {
+        callback(new Error("Password must contain at least one lowercase letter"));
+      } else if (!/[0-9]/.test(value)) {
+        callback(new Error("Password must contain at least one number"));
       } else {
         callback();
       }
@@ -261,7 +298,7 @@ export default {
         ],
         password: [
           { required: true, trigger: "blur", message: "please input password" },
-          { min: 6, max: 20, message: "密码长度在6到20个字符之间", trigger: "blur" }
+          { validator: validatePass, trigger: "blur" }
         ],
         confirmPassword: [
           { required: true, trigger: "blur", message: "please confirm password" },
@@ -301,6 +338,18 @@ export default {
         EmailCode: [
           { required: true, trigger: "blur", message: "please input the Email Code" },
           { pattern: /^\d{6}$/, message: "验证码必须是6位数字", trigger: "blur" }
+        ],
+        education: [
+          { required: true, trigger: "change", message: "please select education level" }
+        ],
+        title: [
+          { required: true, trigger: "change", message: "please select position/title" }
+        ],
+        affiliation: [
+          { required: true, trigger: "blur", message: "please input organization" }
+        ],
+        affiliation_type: [
+          { required: true, trigger: "blur", message: "please input department" }
         ],
       },
     };
@@ -730,5 +779,29 @@ export default {
   border-color: #E4E7ED;
   color: #909399;
   cursor: not-allowed;
+}
+
+.password-tips {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #606266;
+  
+  .tips-title {
+    margin-bottom: 5px;
+    color: #606266;
+  }
+  
+  .tips-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    
+    .tip-item {
+      color: #909399;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+  }
 }
 </style>
