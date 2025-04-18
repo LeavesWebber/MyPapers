@@ -12,6 +12,7 @@ type User struct {
 	Username          string       `json:"username" gorm:"unique;comment:用户登录名"`
 	Password          string       `json:"-" gorm:"comment:用户登录密码"`
 	FirstName         string       `json:"first_name" gorm:"comment:姓氏"`
+	MiddleName        string       `json:"middle_name" gorm:"comment:中间名"`
 	LastName          string       `json:"last_name" gorm:"comment:名字"`
 	HeaderImg         string       `json:"headerImg" gorm:"default:https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png;comment:用户头像"`
 	Email             string       `json:"email" gorm:"comment:用户邮箱"`
