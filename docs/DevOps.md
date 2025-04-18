@@ -1,21 +1,32 @@
-# MyPapers 运维日志  
+# MyPapers 运维日志
+
 > 请在此处记录你在 `mypapers` 机子上的关键操作，模板可参照前文，创建新日志的时候，请直接在本文章开头书写。  
 
 ## 2025年2月27日16:04:52
+
 ### 操作人
+
 叶文博
+
 ### 操作说明  
+
 今天试图修复 mypapers 网站访问 404 的问题，试图跑前端进程时，系统 ram 吃满，导致 ssh 都连不上了。  
 所以我针对 mypapers 这台机子写了一个 ssh 脚本，确保 ssh 在极端负载的情况下仍可用。  
-### 操作步骤  
+
+### 操作步骤
+
 #### 1. 创建 SSH 资源保障脚本
-我命名为 `ssh_resource_guard.sh`
+
+我命名为 `ssh_resource_guard.sh`  
+
 ``` bash
 vim /usr/local/bin/ssh_resource_guard.sh
 # 将脚本内容粘贴到文件中
 # 按ESC键，然后输入:wq保存并退出
 ```
-脚本内容：
+
+脚本内容：  
+
 ``` bash
 #!/bin/bash
 # 脚本名: ssh_resource_guard.sh
@@ -175,12 +186,15 @@ done
 echo ""
 echo "已完成所有配置。"
 ```
-#### 2. 设置执行权限：
+
+#### 2. 设置执行权限
+
 ``` bash
 chmod +x /usr/local/bin/ssh_resource_guard.sh
 ```
 
-#### 3. 创建systemd服务，使脚本在系统启动时自动运行：
+#### 3. 创建systemd服务，使脚本在系统启动时自动运行
+
 ``` bash
 cat > /etc/systemd/system/ssh-resource-guard.service << 'EOF'
 [Unit]
@@ -198,24 +212,30 @@ StandardError=journal
 WantedBy=multi-user.target
 EOF
 ```
-#### 4. 启用并启动服务：
+
+#### 4. 启用并启动服务
+
 ``` bash
 systemctl daemon-reload
 systemctl enable ssh-resource-guard.service
 systemctl start ssh-resource-guard.service
 ```
-#### 5. 检查systemd服务状态：
+
+#### 5. 检查systemd服务状态
+
 ``` bash
 systemctl status ssh-resource-guard.service
 ```
-#### 如果需要检查运行日志：
+
+#### 如果需要检查运行日志
+
 ``` bash
 journalctl -u ssh-resource-guard.service
 ```
-执行成功后，可见  
-![](https://pic.kiss1314.top/d/LeavesResource/webImage/20250227155732.png)
 
-#### 如果需要手动启动脚本，可以直接执行：
+
+#### 如果需要手动启动脚本，可以直接执行
+
 ``` bash
 bash /usr/local/bin/ssh_resource_guard.sh
 ```

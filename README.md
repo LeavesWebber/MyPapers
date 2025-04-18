@@ -96,8 +96,8 @@ go run main.go
 
 - `main` 分支： 用于发布合并（Merge）后的代码到生产环境  
 - `raw` 分支： 用于存放学长最初给的代码，分支只读，请不要向此推送  
-- `Leaves` 分支： [22 网络 叶文博](https://kiss1314.top) 工作的分支  
-- `MRdada` 分支： [22 计科 林振超]() 工作的分支  
+- `Leaves` 分支： [22 网络 叶文博](https://oksanye.com) 工作的分支  
+- `MRdada` 分支： 22 计科 林振超 工作的分支  
 - 待添加  
 
 ## 关于项目部署
@@ -147,8 +147,8 @@ go run main.go
 - `5001`: IPFS 的 webui && API  
   
    （web UI 请使用 http://107.155.56.166:5001/webui/ 访问）  
-- `8080`: MyPapers web 前端  
 - `8081`: IPFS 的网关  
+- `8080`: MyPapers web 前端  
 - `8887`: MyPapers 后端  
 
 ---  
