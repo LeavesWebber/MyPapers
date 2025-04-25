@@ -30,15 +30,25 @@
                   v-model="ruleForm.password"
                   placeholder="Enter password"
                   autocomplete="off"
+                  @focus="passwordFocused = true"
+                  @blur="passwordFocused = false"
                 ></el-input>
-                <div class="password-tips">
+                <div class="password-tips" v-if="passwordError || passwordFocused">
                   <div class="tips-title">Password must contain:</div>
-                  <div class="tips-grid">
-                    <div class="tip-item">• At least 6 characters</div>
-                    <div class="tip-item">• At least one uppercase letter</div>
-                    <div class="tip-item">• At least one lowercase letter</div>
-                    <div class="tip-item">• At least one number</div>
-                  </div>
+                  <ul class="tips-list">
+                    <li class="tip-item" :class="{ 'fulfilled': ruleForm.password.length >= 6 }">
+                      At least 6 characters
+                    </li>
+                    <li class="tip-item" :class="{ 'fulfilled': /[A-Z]/.test(ruleForm.password) }">
+                      At least one uppercase letter
+                    </li>
+                    <li class="tip-item" :class="{ 'fulfilled': /[a-z]/.test(ruleForm.password) }">
+                      At least one lowercase letter
+                    </li>
+                    <li class="tip-item" :class="{ 'fulfilled': /[0-9]/.test(ruleForm.password) }">
+                      At least one number
+                    </li>
+                  </ul>
                 </div>
               </el-form-item>
             </el-col>
@@ -267,6 +277,8 @@ export default {
       VerificationSended:false,
       verifying:false,
       AllNeed:false,
+      passwordFocused: false,
+      passwordError: false,
       ruleForm: {
         id: 0,
         username: "",
@@ -508,13 +520,24 @@ export default {
           })
         }
       },
-    'ruleForm.username':{
-      immediate: true,
-      handler(){
-        this.fixall()
+    'ruleForm.password': {
+      handler(value) {
+        if (!value) {
+          this.passwordError = false;
+          return;
+        }
+        
+        // Check if password meets all requirements
+        const isLengthValid = value.length >= 6;
+        const hasUppercase = /[A-Z]/.test(value);
+        const hasLowercase = /[a-z]/.test(value);
+        const hasNumber = /[0-9]/.test(value);
+        
+        // Show error if any requirement is not met
+        this.passwordError = !(isLengthValid && hasUppercase && hasLowercase && hasNumber);
       }
     },
-    'ruleForm.password':{
+    'ruleForm.username':{
       immediate: true,
       handler(){
         this.fixall()
@@ -782,25 +805,44 @@ export default {
 }
 
 .password-tips {
-  margin-top: 5px;
-  font-size: 12px;
-  color: #606266;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #e6e8eb;
   
   .tips-title {
-    margin-bottom: 5px;
-    color: #606266;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #303133;
+    font-size: 13px;
   }
   
-  .tips-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+  .tips-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
     
     .tip-item {
+      position: relative;
+      padding: 4px 0 4px 24px;
       color: #909399;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
+      font-size: 12px;
+      
+      &:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+      }
+      
+      &.fulfilled {
+        color: #67C23A;
+        
+        &:before {
+          content: "✓";
+          left: 10px;
+        }
+      }
     }
   }
 }

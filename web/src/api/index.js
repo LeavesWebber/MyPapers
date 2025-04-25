@@ -30,7 +30,16 @@ export const getSelfInfo = () => {
         if (response && response.data) {
             return response.data;
         }
-        return Promise.reject('Invalid response format');
+        return Promise.reject(new Error('Invalid response format'));
+    }).catch(error => {
+        console.error('获取用户信息失败:', error);
+        if (error.response && error.response.status === 401) {
+            // 清除本地存储的token
+            localStorage.removeItem('token');
+            // 抛出401错误，让调用者处理重定向
+            throw error;
+        }
+        throw error;
     });
 }
 // 修改头像
