@@ -1,66 +1,175 @@
 <template>
-  <el-row>
-    <el-col :span="24">
-      <el-col :span="4">
-      <!-- 图片选择对话框 -->
-      <el-dialog :visible.sync="showImageDialog" title="选择图片">
-        
-          <!-- 已有图片列表 -->
-          <div class="image-container">
-            <div v-for="(image, index) in existingImages" :key="index">
-              <img :src="image" alt="已有图片" style="width: 100px; height: 100px; margin: 10px; cursor: pointer" @click="selectExistingImage(image)">
-            </div>
-          </div>
-          <!-- 选择本地图片按钮 -->
-          <el-upload class="avatar-uploader"
+  <div class="user-profile-container">
+    <div class="profile-header">
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <img
+            v-if="userForm && userForm.headerImg"
+            :src="userForm.headerImg"
+            class="avatar"
+            alt="User Avatar"
+          />
+          <i v-else class="el-icon-user-solid avatar-placeholder"></i>
+        </div>
+        <el-button 
+          type="primary" 
+          size="small" 
+          @click="showImageDialog = true"
+          class="change-avatar-btn"
+        >
+          Change Avatar
+        </el-button>
+      </div>
+      <div class="user-name">
+        <h2>{{ userForm?.first_name || '' }} {{ userForm?.middle_name || '' }} {{ userForm?.last_name || '' }}</h2>
+        <div v-if="userForm?.block_chain_address" class="blockchain-address-section" @click="copyBlockchainAddress">
+          <span class="blockchain-address">{{ formatBlockchainAddress(userForm.block_chain_address) }}</span>
+          <i class="el-icon-document-copy copy-icon"></i>
+        </div>
+        <p class="username">@{{ userForm?.username || '' }}</p>
+      </div>
+    </div>
+
+    <el-tabs v-model="activeTab" class="profile-tabs">
+      <el-tab-pane label="Basic Information" name="basic">
+        <div class="info-section">
+          <h3 class="section-title">Account Information</h3>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Username</span>
+                <span class="info-value">{{ userForm?.username || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ userForm?.email || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{ userForm?.phone || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ userForm?.address || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Personal Information</h3>
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <div class="info-item">
+                <span class="info-label">First Name</span>
+                <span class="info-value">{{ userForm?.first_name || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="info-item">
+                <span class="info-label">Middle Name</span>
+                <span class="info-value">{{ userForm?.middle_name || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="info-item">
+                <span class="info-label">Last Name</span>
+                <span class="info-value">{{ userForm?.last_name || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Professional Information</h3>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Education</span>
+                <span class="info-value">{{ userForm?.education || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Position/Title</span>
+                <span class="info-value">{{ userForm?.title || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <div class="info-item">
+                <span class="info-label">Research Fields</span>
+                <span class="info-value">{{ userForm?.research || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Organization</span>
+                <span class="info-value">{{ userForm?.affiliation || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Department</span>
+                <span class="info-value">{{ userForm?.affiliation_type || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+
+    <div class="action-buttons">
+      <el-button type="primary" @click="update">Edit Information</el-button>
+    </div>
+
+    <!-- Avatar Selection Dialog -->
+    <el-dialog 
+      :visible.sync="showImageDialog" 
+      title="Select Avatar" 
+      width="600px"
+      custom-class="avatar-dialog"
+    >
+      <div class="image-container">
+        <div 
+          v-for="(image, index) in existingImages" 
+          :key="index" 
+          class="image-item"
+          @click="selectExistingImage(image)"
+        >
+          <img :src="image" alt="Avatar Option" />
+        </div>
+      </div>
+      
+      <div class="upload-section">
+        <el-upload
+          class="avatar-uploader"
           :on-change="handleUploadChange"
           action=""
           :auto-upload="false"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
-          >选择本地图片</el-upload>
-        
-        <template #footer>
-          <el-button @click="showImageDialog = false">取消</el-button>
-        </template>
-      </el-dialog>
-      <!-- 隐藏的文件输入框 -->
+        >
+          <el-button type="primary" plain>Upload Local Image</el-button>
+        </el-upload>
+      </div>
       
-      <el-button
-        @click="showImageDialog=true"
-      >
-        <img
-          v-if="userForm && userForm.headerImg"
-          :src="userForm.headerImg"
-          class="avatar"
-        />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-button>
-    </el-col>
-      <el-col :span="12"> UserName: {{ userForm?.username || '' }} </el-col>
-
-      <el-col :span="12"> First Name: {{ userForm?.first_name || '' }} </el-col>
-      <el-col :span="12"> Last Name: {{ userForm?.last_name || '' }} </el-col>
-      <el-col :span="19">
-        Blockchain Address: {{ userForm?.block_chain_address || '' }}
-      </el-col>
-      <el-button type="primary" plain @click="update">Update</el-button>
-      </el-col>
-
-    <el-col :span="12"> Email: {{ userForm?.email || '' }} </el-col>
-    <el-col :span="12"> Department: {{ userForm?.department || '' }} </el-col>
-    <el-col :span="12"> Phone: {{ userForm?.phone || '' }} </el-col>
-    <el-col :span="12"> Address: {{ userForm?.address || '' }} </el-col>
-    <el-col :span="12"> Education: {{ userForm?.education || '' }} </el-col>
-    <el-col :span="12"> Title: {{ userForm?.title || '' }} </el-col>
-    <el-col :span="12"> Research: {{ userForm?.research || '' }} </el-col>
-
-    <el-col :span="12"> Affiliation: {{ userForm?.affiliation || '' }} </el-col>
-    <el-col :span="12"> Affiliation Type: {{ userForm?.affiliation_type || '' }}</el-col>
-    
-      
-  </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showImageDialog = false">Cancel</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -69,6 +178,7 @@ import { getSelfInfo, changeHeaderImg } from "../../api";
 export default {
   data() {
     return {
+      activeTab: 'basic',
       showImageDialog: false, 
       existingImages: [
         "/headimg/成熟男用户头像1.png",
@@ -114,97 +224,101 @@ export default {
         "/headimg/年青女用户头像8.png",
         "/headimg/年青女用户头像9.png",
       ],
-      selectedFile: null,
-      headers: {},
-      uploadUrl: 'http://localhost:8887/mypapers/user/changeHeaderImg',
       userForm: null,
     };
   },
   methods: {
     async selectExistingImage(image) {
-      const blob = await (await fetch(image)).blob();
-      const file = new File([blob], 'selected_image.jpg', { type: blob.type });
+      try {
+        const blob = await (await fetch(image)).blob();
+        const file = new File([blob], 'selected_image.jpg', { type: blob.type });
 
-      const formData = new FormData();
-      
-      formData.append("file_name", file.name);
-      formData.append("data", file);
-      await changeHeaderImg(formData).then((res) => {
-        console.log(res);
+        const formData = new FormData();
+        formData.append("file_name", file.name);
+        formData.append("data", file);
+        
+        const res = await changeHeaderImg(formData);
         if (res.data.code === 1000) {
           this.userForm.headerImg = res.data.data;
-          // 清空fileList
-          this.$message.success("Change Success");
-          location.reload()
+          this.$message.success("Avatar changed successfully");
+          this.showImageDialog = false;
+          location.reload();
         } else {
-          // 清空fileList
-          fileList.splice(0, 1);
-          this.$message({
-            message: "Change failed",
-            type: "error",
-          });
+          this.$message.error("Failed to change avatar");
         }
-      });
+      } catch (error) {
+        console.error("Error changing avatar:", error);
+        this.$message.error("Failed to change avatar");
+      }
     },
     update() {
       this.$router.push("/center/updateInformation");
     },
-    handleAvatarSuccess(res, file) {
-      this.headerImg = URL.createObjectURL(file.raw);
-    },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
-      const isPDF = file.type === "application/pdf";
+      const isPNG = file.type === "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        this.$message.error("Only JPG Or PDF Format Allowed!");
-      }
-      if (!isPDF) {
-        this.$message.error("Only JPG Or PDF Format Allowed!");
+      if (!isJPG && !isPNG) {
+        this.$message.error("Only JPG or PNG format is allowed!");
+        return false;
       }
       if (!isLt2M) {
-        this.$message.error("Image Size Can't Exceed 2MB!");
+        this.$message.error("Image size cannot exceed 2MB!");
+        return false;
       }
-      return isJPG && isLt2M;
+      return true;
     },
     async handleUploadChange(file, fileList) {
-      // 调用修改头像接口
-      const formData = new FormData();
-      formData.append("file_name", fileList[0].name);
-      formData.append("data", fileList[0].raw);
-      await changeHeaderImg(formData).then((res) => {
-        console.log(res);
+      if (fileList.length === 0) return;
+      
+      try {
+        const formData = new FormData();
+        formData.append("file_name", fileList[0].name);
+        formData.append("data", fileList[0].raw);
+        
+        const res = await changeHeaderImg(formData);
         if (res.data.code === 1000) {
           this.userForm.headerImg = res.data.data;
-          // 清空fileList
-          fileList.splice(0, 1);
-          this.$message.success("Change Success");
+          this.$message.success("Avatar changed successfully");
+          this.showImageDialog = false;
           location.reload();
         } else {
-          // 清空fileList
-          fileList.splice(0, 1);
-          this.$message({
-            message: "Change failed",
-            type: "error",
-          });
+          this.$message.error("Failed to change avatar");
         }
-      });
+      } catch (error) {
+        console.error("Error changing avatar:", error);
+        this.$message.error("Failed to change avatar");
+      }
+    },
+    copyBlockchainAddress() {
+      if (this.userForm?.block_chain_address) {
+        navigator.clipboard.writeText(this.userForm.block_chain_address)
+          .then(() => {
+            this.$message.success('Blockchain address copied to clipboard');
+          })
+          .catch(() => {
+            this.$message.error('Failed to copy blockchain address');
+          });
+      }
+    },
+    formatBlockchainAddress(address) {
+      if (!address) return '';
+      if (address.length <= 12) return address;
+      return `${address.slice(0, 6)}...${address.slice(-6)}`;
     },
   },
   mounted() {
     getSelfInfo().then((res) => {
-      console.log('用户信息响应:', res);
       if (res && res.code === 1000 && res.data) {
         const userData = res.data;
         this.userForm = {
           id: userData.ID || 0,
           username: userData.username || '',
           first_name: userData.first_name || '',
+          middle_name: userData.middle_name || '',
           last_name: userData.last_name || '',
-          sex: userData.sex || '',
           email: userData.email || '',
-          department: userData.department || '',
           phone: userData.phone || '',
           address: userData.address || '',
           education: userData.education || '',
@@ -216,16 +330,15 @@ export default {
           headerImg: userData.headerImg || '',
         };
       } else {
-        console.error('获取用户信息失败:', res);
-        this.$message.error('获取用户信息失败');
+        console.error('Failed to get user information:', res);
+        this.$message.error('Failed to get user information');
         this.userForm = {
           id: 0,
           username: '',
           first_name: '',
+          middle_name: '',
           last_name: '',
-          sex: '',
           email: '',
-          department: '',
           phone: '',
           address: '',
           education: '',
@@ -238,16 +351,15 @@ export default {
         };
       }
     }).catch(error => {
-      console.error('获取用户信息出错:', error);
-      this.$message.error('获取用户信息失败');
+      console.error('Error getting user information:', error);
+      this.$message.error('Failed to get user information');
       this.userForm = {
         id: 0,
         username: '',
         first_name: '',
+        middle_name: '',
         last_name: '',
-        sex: '',
         email: '',
-        department: '',
         phone: '',
         address: '',
         education: '',
@@ -262,58 +374,210 @@ export default {
   },
 };
 </script>
-<style  lang="less" scoped>
+
+<style lang="less" scoped>
+.user-profile-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.avatar-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 2px solid #409EFF;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f7fa;
+  color: #909399;
+  font-size: 50px;
+}
+
+.change-avatar-btn {
+  margin-top: 10px;
+}
+
+.user-name {
+  margin-left: 30px;
+  text-align: left;
+  
+  h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    color: #303133;
+  }
+  
+  .username {
+    margin: 0;
+    color: #909399;
+    font-size: 14px;
+  }
+
+  .blockchain-address-section {
+    margin: 4px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    max-width: 200px;
+    transition: all 0.3s;
+    font-size: 13px;
+    
+    .blockchain-address {
+      color: #1a1a1a;
+      font-family: monospace;
+      background-color: #f5f7fa;
+      padding: 2px 10px;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      
+      &:hover {
+        background-color: #ecf5ff;
+      }
+    }
+    
+    .copy-icon {
+      opacity: 0;
+      margin-left: 4px;
+      transition: all 0.3s;
+      color: #409EFF;
+      font-size: 14px;
+    }
+    
+    &:hover {
+      .copy-icon {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.profile-tabs {
+  margin-bottom: 30px;
+}
+
+.info-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  
+  .section-title {
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ebeef5;
+    color: #409EFF;
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.info-item {
+  margin-bottom: 20px;
+  
+  .info-label {
+    display: block;
+    color: #606266;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .info-value {
+    display: block;
+    color: #303133;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .blockchain-address {
+    word-break: break-all;
+    font-family: monospace;
+  }
+}
+
+.action-buttons {
+  text-align: center;
+  margin-top: 30px;
+  
+  .el-button {
+    padding: 12px 35px;
+  }
+}
+
 .image-container {
   display: flex;
   flex-wrap: wrap;
-}
-.el-row {
-  padding: 50px;
-  margin-bottom: 20px;
-  background: #ecf5ff;
-  height: 550px;
-  border-radius: 8px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.el-col {
-  // 内容靠左
-  text-align: left;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #f8f9fa;
   border-radius: 4px;
 }
-.box {
-  // 内边距
-  padding: 50px;
-  background: #ecf5ff;
-  border-radius: 8px;
-  height: 570px;
-}
-.avatar-uploader .el-button {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
+
+.image-item {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  
+  &:hover {
+    transform: scale(1.05);
+    border-color: #409EFF;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
-.avatar-uploader .el-button:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  background-color: rgb(226, 237, 247);
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
+
+.upload-section {
+  margin-top: 20px;
   text-align: center;
 }
-.avatar {
-  width: 132px;
-  height: 178px;
-  display: block;
-}
-.avatar-box {
-  width: 132px;
+
+.avatar-dialog {
+  .el-dialog__body {
+    padding: 20px;
+  }
 }
 </style>
