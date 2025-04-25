@@ -2,11 +2,21 @@
   <div class="recharge-container">
     <el-card class="recharge-card">
       <div slot="header" class="card-header">
-        <span>充值 MPS</span>
+        <span class="header-title">充值 MPS</span>
+        <span class="header-subtitle">快速充值，便捷支付</span>
       </div>
       <div class="balance-info">
-        <p>当前 MPS 余额：{{ mpsBalance }} MPS</p>
-        <p>兑换比例：1 CNY = 1 MPS</p>
+        <div class="balance-card">
+          <i class="el-icon-wallet"></i>
+          <div class="balance-details">
+            <span class="balance-label">当前 MPS 余额</span>
+            <span class="balance-amount">{{ mpsBalance }} MPS</span>
+          </div>
+        </div>
+        <div class="exchange-rate">
+          <i class="el-icon-refresh"></i>
+          <span>兑换比例：1 CNY = 1 MPS</span>
+        </div>
       </div>
       <el-form :model="rechargeForm" :rules="rules" ref="rechargeForm" label-width="100px" class="recharge-form">
         <el-form-item label="充值金额" prop="amount">
@@ -15,21 +25,40 @@
             :min="1"
             :max="10000"
             controls-position="right"
+            class="amount-input"
             @change="handleAmountChange">
           </el-input-number>
           <span class="unit">CNY</span>
         </el-form-item>
         <el-form-item label="获得MPS">
-          <span class="mps-amount">{{ rechargeForm.amount }} MPS</span>
+          <div class="mps-amount-card">
+            <span class="mps-amount">{{ rechargeForm.amount }}</span>
+            <span class="mps-unit">MPS</span>
+          </div>
         </el-form-item>
         <el-form-item label="支付方式">
-          <el-radio-group v-model="rechargeForm.pay_type">
-            <el-radio label="alipay">支付宝支付</el-radio>
-            <el-radio label="wxpay">微信支付</el-radio>
-          </el-radio-group>
+          <div class="payment-methods">
+            <div 
+              class="payment-method alipay" 
+              :class="{ active: rechargeForm.pay_type === 'alipay' }"
+              @click="rechargeForm.pay_type = 'alipay'"
+            >
+              <img src="@/assets/alipay-logo.svg" alt="支付宝" class="payment-logo">
+            </div>
+            <div 
+              class="payment-method wxpay"
+              :class="{ active: rechargeForm.pay_type === 'wxpay' }"
+              @click="rechargeForm.pay_type = 'wxpay'"
+            >
+              <img src="@/assets/wechat-logo.svg" alt="微信" class="payment-logo">
+              <span>微信支付</span>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleRecharge" :loading="loading">立即充值</el-button>
+          <el-button type="primary" @click="handleRecharge" :loading="loading" class="recharge-button">
+            立即充值
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -223,38 +252,180 @@ export default {
 
 <style scoped>
 .recharge-container {
-  padding: 20px;
+  padding: 30px;
   max-width: 800px;
   margin: 0 auto;
 }
 
 .recharge-card {
-  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
 .card-header {
-  font-size: 18px;
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  padding: 5px;
+}
+
+.header-title {
+  font-size: 24px;
   font-weight: bold;
+  color: #303133;
+  margin-bottom: 5px;
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: #909399;
+  margin-left: 10px;
 }
 
 .balance-info {
+  margin: 5px 0;
+}
+
+.balance-card {
+  display: flex;
+  align-items: left;
+  background: #f5f7fa;
+  padding: 20px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  color: #666;
+}
+
+.balance-card i {
+  font-size: 24px;
+  color: #409EFF;
+  margin-right: 15px;
+}
+
+.balance-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.balance-label {
+  font-size: 14px;
+  color: #606266;
+  margin-bottom: 5px;
+}
+
+.balance-amount {
+  font-size: 24px;
+  font-weight: bold;
+  color: #303133;
+}
+
+.exchange-rate {
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  color: #909399;
+  font-size: 14px;
+}
+
+.exchange-rate i {
+  margin-right: 8px;
 }
 
 .recharge-form {
   max-width: 500px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
+}
+
+.amount-input {
+  width: 200px;
 }
 
 .unit {
   margin-left: 10px;
-  color: #666;
+  color: #909399;
+}
+
+.mps-amount-card {
+  display: flex;
+  align-items: baseline;
+  background: #f5f7fa;
+  padding: 10px 20px;
+  border-radius: 8px;
 }
 
 .mps-amount {
-  font-size: 16px;
-  color: #409EFF;
+  font-size: 24px;
   font-weight: bold;
+  color: #409EFF;
+}
+
+.mps-unit {
+  margin-left: 5px;
+  color: #606266;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 20px;
+  border: 1px solid #DCDFE6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex: 1;
+  max-width: 200px;
+}
+
+.payment-logo {
+  width: 80px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.payment-method.wxpay .payment-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  filter: brightness(0) saturate(100%);
+  transition: filter 0.3s;
+  filter: brightness(0) saturate(100%) invert(56%) sepia(83%) saturate(543%) hue-rotate(93deg) brightness(96%) contrast(93%);
+}
+
+
+.payment-method.alipay:hover,
+.payment-method.alipay.active {
+  border-color: #1677FF;
+  background: rgba(22, 119, 255, 0.05);
+}
+
+.payment-method.wxpay:hover,
+.payment-method.wxpay.active {
+  border-color: #07C160;
+  background: rgba(7, 193, 96, 0.05);
+}
+
+.payment-method span {
+  font-size: 18px;
+  font-weight: 500;
+  color: #606266;
+}
+
+.payment-method.active span {
+  color: #07C160;
+}
+
+.recharge-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  border-radius: 8px;
+  margin-top: 5px;
 }
 </style> 

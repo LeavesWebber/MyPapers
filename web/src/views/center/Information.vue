@@ -31,7 +31,7 @@
     </div>
 
     <el-tabs v-model="activeTab" class="profile-tabs">
-      <el-tab-pane label="Basic Information" name="basic">
+      <el-tab-pane label="Information" name="basic">
         <div class="info-section">
           <h3 class="section-title">Account Information</h3>
           <el-row :gutter="20">
@@ -45,20 +45,6 @@
               <div class="info-item">
                 <span class="info-label">Email</span>
                 <span class="info-value">{{ userForm?.email || 'Not Set' }}</span>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <div class="info-item">
-                <span class="info-label">Phone</span>
-                <span class="info-value">{{ userForm?.phone || 'Not Set' }}</span>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="info-item">
-                <span class="info-label">Address</span>
-                <span class="info-value">{{ userForm?.address || 'Not Set' }}</span>
               </div>
             </el-col>
           </el-row>
@@ -83,6 +69,20 @@
               <div class="info-item">
                 <span class="info-label">Last Name</span>
                 <span class="info-value">{{ userForm?.last_name || 'Not Set' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{ userForm?.phone || 'Not Set' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ userForm?.address || 'Not Set' }}</span>
               </div>
             </el-col>
           </el-row>
@@ -436,19 +436,19 @@ export default {
   text-align: left;
   
   h2 {
-    margin: 0 0 5px 0;
+    margin: 0 0 15px 0;
     font-size: 24px;
     color: #303133;
   }
   
   .username {
-    margin: 0;
+    margin: 10px 0 0 0;
     color: #909399;
     font-size: 14px;
   }
 
   .blockchain-address-section {
-    margin: 4px 0;
+    margin: 15px 0;
     display: inline-flex;
     align-items: center;
     gap: 6px;

@@ -5,10 +5,10 @@
         <center-aside />
       </el-aside>
       <el-container>
-        <el-header>
+        <el-header height="64px" class="header-wrapper">
           <center-header />
         </el-header>
-        <el-main>
+        <el-main class="content-main">
           <!-- 子路由出口 -->
           <router-view></router-view>
         </el-main>
@@ -37,23 +37,29 @@ export default {
 .el-aside {
   position: relative;
   z-index: 1;
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.08);
 }
 
-.el-main {
+.header-wrapper {
+  padding: 0;
+  line-height: 1;
+}
+
+.content-main {
   padding: 20px;
-  line-height: 40px;
-  text-align: center;
+  line-height: 1.5;
 }
 
 @media screen and (max-width: 1200px) {
-  .el-main {
+  .content-main {
     margin-left: 260px;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .el-main {
+  .content-main {
     margin-left: 250px;
+    padding: 15px;
   }
 }
 </style>

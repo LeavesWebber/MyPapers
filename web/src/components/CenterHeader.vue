@@ -1,36 +1,61 @@
 <template>
   <div class="header-container">
-    <div class="l-content">
+    <div class="header-left">
       <el-button
-        style="margin-right: 20px; color: #40a2fe"
+        class="toggle-menu"
         @click="handleMenu"
-        icon="el-icon-menu"
-        size="mini"
+        icon="el-icon-s-fold"
+        type="text"
       ></el-button>
+      <div class="brand-title">Mypapers</div>
     </div>
-    <el-button class="logout" type="text" @click="logout">Logout</el-button>
-    <el-button class="home" type="text" @click="home">Home</el-button>
-    <span class="username">
-      {{ userInfo.username }}
-    </span>
-    <el-dropdown @command="handleCommand" v-if="hasAuthority()">
-      <span class="el-dropdown-link">
-        Authority <i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          v-for="authority in userInfo.authorities"
-          :key="authority.authorityId"
-          :command="authority.authorityId"
-        >
-          <span>{{ authority.authorityName }}</span>
-          <i
-            v-if="authority.authorityId === userInfo.authorityId"
-            class="el-icon-check"
-          ></i>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+    
+    <div class="header-right">
+      <div class="nav-item">
+        <el-button class="action-button" type="text" @click="home">
+          <i class="el-icon-s-home"></i>
+        </el-button>
+      </div>
+      
+      <el-dropdown @command="handleCommand" v-if="hasAuthority()" class="nav-item">
+        <span class="el-dropdown-link">
+          <i class="el-icon-s-tools"></i>
+          <span class="dropdown-text">Permissions</span>
+        </span>
+        <el-dropdown-menu slot="dropdown" class="auth-dropdown">
+          <el-dropdown-item
+            v-for="authority in userInfo.authorities"
+            :key="authority.authorityId"
+            :command="authority.authorityId"
+            :class="{ 'active-authority': authority.authorityId === userInfo.authorityId }"
+          >
+            <span>{{ authority.authorityName }}</span>
+            <i
+              v-if="authority.authorityId === userInfo.authorityId"
+              class="el-icon-check"
+            ></i>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      
+      <el-dropdown class="nav-item user-dropdown" trigger="click">
+        <div class="user-info">
+          <el-avatar :size="32" class="user-avatar">
+            {{ userInfo.username.charAt(0).toUpperCase() }}
+          </el-avatar>
+          <span class="username">{{ userInfo.username }}</span>
+          <i class="el-icon-arrow-down"></i>
+        </div>
+        <el-dropdown-menu slot="dropdown" class="user-dropdown-menu">
+          <el-dropdown-item @click.native="goToProfile">
+            <i class="el-icon-user"></i> Profile
+          </el-dropdown-item>
+          <el-dropdown-item divided @click.native="logout">
+            <i class="el-icon-switch-button"></i> Logout
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
   </div>
 </template>
 
@@ -66,12 +91,12 @@ export default {
             }
           );
           this.$message({
-            message: "Create successfully",
+            message: "权限切换成功",
             type: "success",
           });
         } else {
           this.$message({
-            message: "Change Authority failed",
+            message: "权限切换失败",
             type: "error",
           });
         }
@@ -105,6 +130,9 @@ export default {
       // return this.userInfo.authorityId === 101;
       return false;
     },
+    goToProfile() {
+      this.$router.push('/center/information');
+    },
   },
   mounted() {
     // 从localStorage中获取用户信息
@@ -114,72 +142,159 @@ export default {
 </script>
 <style lang="less" scoped>
 .header-container {
-  background-color: #fff;
-  border-bottom: 1px solid #f3f4f6;
-  height: 40px;
-  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 60px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 0 20px;
+  color: #333;
   position: relative;
-  .text {
-    color: #fff;
-    font-size: 14px;
-    margin-left: 10px;
-  }
-  .r-content {
-    .user {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  
+  .toggle-menu {
+    color: #606266;
+    font-size: 18px;
+    margin-right: 16px;
+    padding: 0;
+    
+    &:hover, &:focus {
+      color: #409EFF;
+      background: transparent;
     }
   }
-  .l-content {
-    display: flex;
-    align-items: center;
-    /deep/.el-breadcrumb__item {
-      .el-breadcrumb__inner {
-        font-weight: normal;
-        &.is-link {
-          color: #666;
-        }
-      }
-      &:last-child {
-        .el-breadcrumb__inner {
-          color: #fff;
-        }
-      }
-    }
-  }
-  .logout {
-    position: absolute;
-    right: 180px;
-    color: #40a2fe;
-    // 鼠标悬停时显示下划线
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  .home {
-    position: absolute;
-    right: 240px;
-    color: #40a2fe;
-    // 鼠标悬停时显示下划线
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  .username {
-    position: absolute;
-    right: 120px;
-    color: #40a2fe;
+  
+  .brand-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #303133;
+    margin-left: 4px;
+    letter-spacing: 0.5px;
   }
 }
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-item {
+  margin-left: 8px;
+  position: relative;
+  padding: 0 8px;
+  
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 16px;
+    background-color: #EBEEF5;
+  }
+}
+
+.action-button {
+  color: #606266;
+  font-size: 18px;
+  
+  &:hover, &:focus {
+    color: #409EFF;
+    background: transparent;
+  }
+}
+
 .el-dropdown-link {
   cursor: pointer;
-  color: #409eff;
+  color: #606266;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  
+  i {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+  
+  .dropdown-text {
+    margin-right: 4px;
+  }
 }
-.el-icon-arrow-down {
-  font-size: 12px;
+
+.user-dropdown {
+  cursor: pointer;
+  margin-left: 20px;
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    
+    &:hover {
+      background-color: #F2F6FC;
+      border-radius: 4px;
+    }
+  }
+  
+  .user-avatar {
+    background-color: #409EFF;
+    color: #fff;
+    border: 1px solid #E4E7ED;
+  }
+  
+  .username {
+    margin: 0 8px;
+    font-size: 14px;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #606266;
+  }
+}
+
+.auth-dropdown {
+  min-width: 120px;
+}
+
+.active-authority {
+  color: #409EFF;
+  font-weight: 500;
+  background-color: #ecf5ff;
+}
+
+/deep/ .el-dropdown-menu__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  
+  i {
+    margin-left: 8px;
+    font-size: 14px;
+  }
+  
+  &:hover {
+    background-color: #F5F7FA;
+  }
+}
+
+.user-dropdown-menu {
+  min-width: 160px;
+  
+  /deep/ .el-dropdown-menu__item {
+    i {
+      margin-right: 8px;
+      margin-left: 0;
+      font-size: 14px;
+    }
+  }
 }
 </style>
