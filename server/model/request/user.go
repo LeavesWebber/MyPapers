@@ -18,6 +18,7 @@ type Register struct {
 	Username          string `json:"username" gorm:"unique;comment:用户登录名"`
 	Password          string `json:"password"`            // 用户登录密码
 	FirstName         string `json:"first_name"`          // 姓氏
+	MiddleName        string `json:"middle_name"`         // 中间名
 	LastName          string `json:"last_name"`           // 名字
 	HeaderImg         string `json:"header_img"`          // 用户头像
 	Email             string `json:"email"`               // 用户邮箱
@@ -62,6 +63,7 @@ type SetUserInfo struct {
 	Sex               int    `json:"sex"`
 	Username          string `json:"username"`
 	FirstName         string `json:"first_name"`
+	MiddleName        string `json:"middle_name"`
 	LastName          string `json:"last_name"`
 	HeaderImg         string `json:"headerImg"`
 	Email             string `json:"email"`
