@@ -428,4 +428,4 @@ export default {
   border-radius: 8px;
   margin-top: 5px;
 }
-</style> 
+</style>
