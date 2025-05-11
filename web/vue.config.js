@@ -5,7 +5,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/mypapers': {
-        target: 'http://localhost:8887/mypapers/',// 后端接口
+        target: 'http://127.0.0.1:8887/mypapers/',// 后端接口
         changeOrigin: true, // 是否跨域
         pathRewrite: {
           '/mypapers': ''
@@ -15,6 +15,9 @@ module.exports = defineConfig({
     client: {
       overlay: false,
     },
-    allowedHosts: 'all',  // 新增这一行，允许所有的 Host 请求
-  }
+    allowedHosts: 'all',  // 允许所有的 Host 请求
+  },
+  // 生产环境配置
+  productionSourceMap: false, // 关闭生产环境的sourcemap
+  publicPath: '/', // 部署应用包时的基本URL
 })
