@@ -21,7 +21,7 @@ COPY ./config ./config
 COPY ./core ./core
 COPY ./dao ./dao
 COPY ./global ./global
-COPY ./image ./image
+COPY assets ./image
 COPY ./initialize ./initialize
 COPY ./log ./log
 COPY ./logic ./logic
@@ -44,7 +44,7 @@ FROM scratch
 
 COPY ./config.yaml ./config.yaml
 COPY ./times.ttf ./times.ttf
-COPY ./image ./image
+COPY assets ./image
 
 # 从my-papers镜像中把/dist/app 拷贝到当前目录
 COPY --from=builder /build/my-papers /

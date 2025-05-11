@@ -240,14 +240,14 @@ func ChangeHeaderImg(c *gin.Context, uuid int64, in *request.ChangeHeaderImg) (u
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	finalName := fmt.Sprintf("%d_%s", uuid, filename)
-	saveFile := filepath.Join("./image/", finalName)
+	saveFile := filepath.Join("./public/images/avatar/", finalName)
 	// 保存文件
 	if err = c.SaveUploadedFile(in.Data, saveFile); err != nil {
 		global.MPS_LOG.Error("SaveUploadedFile failed", zap.Error(err))
 		return
 	}
 	// 3. 保存路径到数据库
-	url = fmt.Sprintf("%s%s", global.MPS_CONFIG.ImagePath, finalName)
+	url = fmt.Sprintf("/public/images/avatar/%s", finalName)
 	if err = mysql.ChangeHeaderImg(uuid, url); err != nil {
 		return
 	}

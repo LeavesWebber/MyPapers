@@ -102,16 +102,21 @@ go run main.go
 
 ## 关于项目部署
 
-> 目前，项目组有两台服务器用于部署 Mypapers 项目。以下信息仅针对新加坡的那台机子。以下信息写于叶文博运维这台机子的时候，信息可能已经过时，我倡议负责项目运维的同学积极维护 docs 文件夹内的 [运维文档](docs\DevOps.md)，其中应当包含机子的运维日志和基本信息。  
-
+> 目前，项目组在国内和国外各有一台机子部署了 Mypapers 项目。  
+> 我倡议负责项目运维的同学积极维护 docs 文件夹内的 [运维文档](docs\DevOps.md)，其中应当包含机子的运维日志和基本信息。  
+> 敏感的凭证不应该出现在项目里的文档里，或者以任何形式同步进 VCS。运维的同学可以把环境变量和其他凭证放进服务器的项目根目录。
 
 ### 域名
 
-[MyPapers.io](https://mypapers.io)  
+- 新加坡：  
+[MyPapers.io](https://www.mypapers.io)  
+
+- 国内京东云：  
+[mypapers.com.cn](https://www.mypapers.com.cn)
 
 ### 项目地址
 
-私有仓库，目前仅项目组员可见
+私有仓库，目前仅项目组员可见，项目代码请不要外传。
 
 - [MyPapers Project（Gitee）](https://gitee.com/leaveswebber/MyPapers)  
 
@@ -119,44 +124,31 @@ go run main.go
   
 ### Host
 
-- 内网： `10.35.54.29`  
+- 新加坡 Ucloud： `107.155.56.166`  
 
-- 公网： `107.155.56.166`  
-
-### SSH
-
-- username: `ubuntu`
-
-- password: `xmutBC2024`
-  
-### 数据库（mysql）
-
-- db-name: `MyPapers`  
-
-- username: `leaves`  
-
-- password: `leaves`  
-
-- port: `3306`
+- 国内京东云： `117.72.49.185`  
 
 ### 端口
+
+> 下面这些信息仅供参考，具体可能需要问运维的同学设置的什么
 
 - `22`: ssh && sftp
 - `3306`: mysql 数据库  
 - `4001`: IPFS P2P 节点通信  
 - `5001`: IPFS 的 webui && API  
   
-   （web UI 请使用 http://107.155.56.166:5001/webui/ 访问）  
+   （web UI 请使用 http://ip:5001/webui/ 访问）  
 - `8081`: IPFS 的网关  
 - `8080`: MyPapers web 前端  
 - `8887`: MyPapers 后端  
 
----  
+---
 
 文档更新者： **叶文博**  
-最后更新时间： **2025-04-12**  
+最后更新时间： **2025-05-11**  
 
 ---
+
 ## 附录目录
 
 1. [附录1： 项目待办事项](#附录1-项目待办事项)
@@ -167,48 +159,16 @@ go run main.go
 
 ### 附录1： 项目待办事项  
 
-#### Avatar 显示异常
-
-本地已经可显示、修改头像，但是服务器显示不了，有多个报错如下：  
-![](https://kiss1314.top:5555/d/webImage/20250104205949.png)
-经测试，图片上传是正常的。
-
-#### 权限管理异常
-
-> 这个问题在 **center** 里的 **User Management** 里能复现。  
-
-- 仅管理员才能有修改 role 的权限
-
-![](https://kiss1314.top:5555/d/webImage/20250104224620.png)
-
-#### ws 请求头问题
-
-这个问题服务器有，本地没有，尝试过很多修改仍未解决
-![](https://kiss1314.top:5555/d/webImage/20250104210137.png)
-
-#### 属性值复定义的问题
-
-这在打开 center 时会显示出来，一堆让人头疼的报错  
-![](https://kiss1314.top:5555/d/webImage/20250104221345.png)
-
-
-#### smtp 验证码机制
-
-- [ ] 在咱们的 VPS 上搭建 smtp 服务器，或采用域名注册商那边的邮件服务。
-- [ ] 用户注册时，用咱们的域名（`mypapers.io`）作为邮件发件方，发送邮箱验证码，认证后才准许注册。
-- [ ] 有基本的域审查（仅像`@edu`这样受到认可的邮箱才准许注册）
-  
-#### 已完成
-
-- [x] ~~Journey 显示异常~~
-
-- [x] ~~修复侧边栏折叠按钮的显示异常~~
-
-- [x] ~~Desr 加入编辑栏~~
+- [ ] 后端部署 Dify  
+- [ ] 调整已出版论文生成 NFT 逻辑  
+- [ ] 重复注册-无法注册但未提醒, 包含用户名，邮箱，手机号码和钱包地址重复注册无警告？  
+- [ ] 已投稿论文上传，通过 ai 识别邮箱，一起识别其他信息  
+- [ ] 注册送币机制修改  
+- [ ] 现在论文都是明文上传到 IPFS ，现在需要想一个论文加密授权解决方案
 
 ### 附录2： 后端数据库结构
 
-> 我把后端数据库结构做成了 `Markdown` 表格，作为大家执行 `sql` 查询时的参考
+> 我把后端数据库结构做成了 `Markdown` 表格，作为大家执行 `sql` 查询时的参考。表格在 [server/model/tables](server/model/tables) 里定义
 
 #### 1. authorities
 
@@ -367,6 +327,15 @@ go run main.go
 | image_cid               | varchar   |
 | json_uri                | varchar   |
 | transaction_hash        | varchar   |
+| journal_name            | varchar   |
+| volume_and_issue        | varchar   |
+| publication_date        | varchar   |
+| conference_name         | varchar   |
+| conference_date         | varchar   |
+| conference_location     | varchar   |
+| pages                   | varchar   |
+| issn                    | varchar   |
+| paper_link              | varchar   |
 
 #### 11. reviews
 
@@ -444,6 +413,7 @@ go run main.go
 | username            | varchar   |
 | password            | varchar   |
 | first_name          | varchar   |
+| middle_name         | varchar   |
 | last_name           | varchar   |
 | header_img          | varchar   |
 | email               | varchar   |
@@ -457,12 +427,60 @@ go run main.go
 | affiliation         | varchar   |
 | affiliation_type    | varchar   |
 
-  
+#### 18. mps_recharge_orders
+
+| Column Name | Data Type |
+| ----------- | --------- |
+| id          | bigint    |
+| user_id     | bigint    |
+| order_no    | varchar   |
+| amount      | float     |
+| mps_amount  | float     |
+| status      | int       |
+| wx_trade_no | varchar   |
+| ali_trade_no| varchar   |
+| wallet_addr | varchar   |
+| created_at  | datetime  |
+| updated_at  | datetime  |
+
+#### 19. mps_transactions
+
+| Column Name | Data Type |
+| ----------- | --------- |
+| id          | bigint    |
+| user_id     | bigint    |
+| type        | int       |
+| mps_amount  | float     |
+| tx_hash     | varchar   |
+| order_no    | varchar   |
+| description | varchar   |
+| created_at  | datetime  |
+
+#### 20. mps_business_transfer_orders
+
+| Column Name           | Data Type |
+| --------------------- | --------- |
+| id                    | bigint    |
+| created_at            | datetime  |
+| updated_at            | datetime  |
+| deleted_at            | datetime  |
+| user_id               | bigint    |
+| order_no              | varchar   |
+| identity              | varchar   |
+| identity_type         | varchar   |
+| mps_amount            | float     |
+| fait_amount           | float     |
+| wx_trade_no           | varchar   |
+| ali_pay_fund_order_id | varchar   |
+| trans_date            | varchar   |
+| status                | varchar   |
+
 ---
+
 ### 附录3：学长最初的开发环境
 
 操作系统：centos7.9.2009  
 开发平台：Visual Studio Code 1.88.0；Remix   0.47.0；Goland  2023.1.2  
 开发语言：Solidity ^0.8.0 ；javascript ；css ；html；go 1.20.2
 
----  
+---

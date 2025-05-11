@@ -6,6 +6,7 @@ server/server.exe
 server/.idea/
 pkg/
 server/utils/alipay/cert/
+server/public/images
 
 # 前端相关
 web/node_modules/
@@ -64,3 +65,6 @@ coverage/
 *.pid
 *.seed
 *.pid.lock
+
+# 无关的测试信息
+docs/测试用附件/随机论文生成器/生成的随机论文

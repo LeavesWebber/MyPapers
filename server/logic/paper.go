@@ -423,10 +423,6 @@ func GetHonoraryCertificate(paperId uint, userinfo string) (honoraryCertificateI
 	honoraryCertificateInfo.Cid = cid
 	honoraryCertificateInfo.Uri = "http://" + global.MPS_CONFIG.IPFS.Host + ":" + global.MPS_CONFIG.IPFS.GatewayPort + global.MPS_CONFIG.IPFS.GatewayPath + cid
 	// 创建json元数据
-	//metadata := make(map[string]string)
-	//metadata["name"] = paper.Title
-	//metadata["description"] = paper.ManuscriptID
-	//metadata["image"] = honoraryCertificateInfo.Uri
 	metadata := new(struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
@@ -438,25 +434,6 @@ func GetHonoraryCertificate(paperId uint, userinfo string) (honoraryCertificateI
 	// 转为json格式，保存到文件
 	metadataPath := "./public/certificates/" + paper.ManuscriptID + ".json"
 
-	{ // 可以不用逐行写入
-		// map转json字符串
-		//metadataByte, err := json.Marshal(metadata)
-		//if err != nil {
-		//	return
-		//}
-		// 写入文件
-		// 先格式化json字符串
-		//err = ioutil.WriteFile(metadataPath, metadataByte, 0644)
-		//if err != nil {
-		//	return
-		//}
-		// 打开文件以进行写入
-		//jsonData, err := json.MarshalIndent(metadata, "", "    ")
-		//err = ioutil.WriteFile(metadataPath, jsonData, 0644)
-		//if err != nil {
-		//	return
-		//}
-	}
 	file, err := os.Create(metadataPath)
 	if err != nil {
 		return
@@ -559,7 +536,7 @@ func contentData(content *freetype.Context, title, name string) {
 
 func contentIPFS(content *freetype.Context, IPFS string) {
 	content.SetFontSize(30) // 设置字体大小
-	content.DrawString("107.155.56.166:8080/ipfs/"+IPFS, freetype.Pt(430, 1000))
+	content.DrawString(global.MPS_CONFIG.IPFS.Host+":"+global.MPS_CONFIG.IPFS.GatewayPort+"/ipfs/"+IPFS, freetype.Pt(430, 1000))
 }
 
 func contentHash(content *freetype.Context, NFTtransactionAddress, TransactionAddress string) {
@@ -580,7 +557,7 @@ func contentDate(content *freetype.Context) {
 }
 func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCertificateUrl string, err error) {
 	// 根据路径打开模板文件
-	templateFile, err := os.Open("./image/certificate_v3/NFT_certificate/horizontal.png")
+	templateFile, err := os.Open("./assets/certificate_v3/NFT_certificate_template/horizontal.png")
 	if err != nil {
 		return
 	}
@@ -596,7 +573,7 @@ func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCe
 	draw.Draw(newTemplateImage, templateFileImage.Bounds(), templateFileImage, templateFileImage.Bounds().Min, draw.Over)
 
 	// 加载字体文件  这里我们加载两种字体文件
-	fontKai, err = loadFont("./times.ttf")
+	fontKai, err = loadFont("./assets/times.ttf")
 	if err != nil {
 		return
 	}
@@ -618,7 +595,7 @@ func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCe
 	contentData(content, paper.Title, conferenceOrJournalName)           // 写入数据信息
 	contentHash(content, paper.PaperTransactionHash, paper.BlockAddress) // 写入hash信息
 	contentIPFS(content, paper.Cid)
-	contentDate(content) // 写入日期信息
+	contentDate(content)
 
 	// 保存图片
 	honoraryCertificateUri = "./public/certificates/" + paper.ManuscriptID + ".png"
@@ -629,7 +606,7 @@ func createHonoraryCertificate(paper *tables.Paper, userinfo string) (honoraryCe
 	defer dstFile.Close()
 	png.Encode(dstFile, newTemplateImage)
 	// 返回路径
-	return global.MPS_CONFIG.ImagePath + paper.ManuscriptID + ".png", err
+	return "/public/certificates/" + paper.ManuscriptID + ".png", err
 }
 
 // PublishPaper 发布投稿

@@ -131,8 +131,7 @@ func (p *PaperApi) UpdatePaper(c *gin.Context) {
 	// 2. 生成文件名和保存路径
 	filename := filepath.Base(in.Data.Filename)
 	//finalName := fmt.Sprintf("%d_%s", currentUserID, filename)
-	//saveFile := filepath.Join("./public/", finalName)
-	saveFile := filepath.Join("./public/", filename)
+	saveFile := filepath.Join("./public/papers/", filename)
 	// 保存文件
 	if err := c.SaveUploadedFile(in.Data, saveFile); err != nil {
 		global.MPS_LOG.Error("SaveUploadedFile failed", zap.Error(err))
