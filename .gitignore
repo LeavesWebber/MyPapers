@@ -47,6 +47,8 @@ yarn-error.log*
 .env*
 !.env.example
 server/config.yaml
+这台机子上用到的环境变量.md
+一些运维可能用到的AI-prompt.md
 
 # 编辑器相关
 *.suo

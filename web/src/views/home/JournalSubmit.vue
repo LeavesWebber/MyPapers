@@ -470,21 +470,31 @@ export default {
     },
     // 限制添加文件的格式为PDF和大小小于15MB
     beforeUpload(file) {
-      const isPDF = file.raw.type === "application/pdf";
+      // 检查file.raw是否存在
+      if (!file.raw) {
+        this.$message.error('文件对象无效，请重新选择文件');
+        this.fileList = [];
+        return false;
+      }
+      
+      const isPDF = (file.raw.type === "application/pdf") || 
+                   (typeof file.raw.name === 'string' && file.raw.name.toLowerCase().endsWith('.pdf'));
       const isLt15M = file.raw.size / 1024 / 1024 < 15;
 
       if (!isPDF) {
         this.$message.error("Upload file must be PDF format!");
         // 清除添加文件
         this.fileList = [];
+        return false;
       }
       if (!isLt15M) {
         this.$message.error("Upload file size can not exceed 15MB!");
         // 清除添加文件
         this.fileList = [];
+        return false;
       }
 
-      return isPDF && isLt15M;
+      return true;
     },
     async handleUploadChange(file, fileList) {
       if (this.beforeUpload(file) === false) {
@@ -492,9 +502,23 @@ export default {
       }
       this.fileList = fileList;
       try {
+        // 检查file.raw是否存在
+        if (!file.raw) {
+          this.$message.error('文件对象无效，请重新选择文件');
+          this.fileList = [];
+          return;
+        }
+        
         // 计算文件的哈希值
-        const fileData = await this.readFileAsArrayBuffer(this.fileList[0].raw);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", fileData);
+        const fileData = await this.readFileAsArrayBuffer(file.raw);
+        // 检查 crypto API 是否可用
+        if (!window.crypto || !window.crypto.subtle) {
+          this.$message.error('您的浏览器不支持Web Cryptography API，请使用最新版Chrome或Firefox浏览器');
+          this.fileList = [];
+          return;
+        }
+        
+        const hashBuffer = await window.crypto.subtle.digest("SHA-256", fileData);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const fileHash = hashArray
           .map((byte) => byte.toString(16).padStart(2, "0"))
@@ -504,6 +528,8 @@ export default {
         await this.callSmartContract(fileHash);
       } catch (error) {
         console.error("Error:", error);
+        this.$message.error('文件处理失败，请重试');
+        this.fileList = [];
       }
     },
     handleClose(tag) {

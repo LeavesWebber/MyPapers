@@ -536,9 +536,23 @@ export default {
       this.fileList = fileList;
       this.paperForm.paperFile = file.raw;
       try {
+        // 检查file.raw是否存在
+        if (!file.raw) {
+          this.$message.error('文件对象无效，请重新选择文件');
+          this.fileList = [];
+          return;
+        }
+        
         // 计算文件的哈希值
-        const fileData = await this.readFileAsArrayBuffer(this.fileList[0].raw);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", fileData);
+        const fileData = await this.readFileAsArrayBuffer(file.raw);
+        // 检查 crypto API 是否可用
+        if (!window.crypto || !window.crypto.subtle) {
+          this.$message.error('您的浏览器不支持Web Cryptography API，请使用最新版Chrome或Firefox浏览器');
+          this.fileList = [];
+          return;
+        }
+        
+        const hashBuffer = await window.crypto.subtle.digest("SHA-256", fileData);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const fileHash = hashArray
           .map((byte) => byte.toString(16).padStart(2, "0"))
@@ -571,7 +585,8 @@ export default {
     },
     beforeUpload(file) {
       // 检查文件类型
-      const isPDF = file.type === "application/pdf" || file.name.toLowerCase().endsWith('.pdf');
+      const isPDF = (file.type === "application/pdf") || 
+                   (typeof file.name === 'string' && file.name.toLowerCase().endsWith('.pdf'));
       const isLt15M = file.size / 1024 / 1024 < 15;
 
       if (!isPDF) {
