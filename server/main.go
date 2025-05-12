@@ -1,21 +1,11 @@
 package main
 
-import (
-	"server/core"
-	"server/global"
-	"server/initialize"
-	"server/task"
-	"server/utils"
-
-	"go.uber.org/zap"
-)
-
 // @title Swagger for mps
 // @version 0.0.1
 // @description This is a simple family tree system
 // @contact.name blingder
 // @BasePath /
-func main() {
+/*func main() {
 	global.MPS_VP = core.Viper("config.yaml")      // 读取配置初始化
 	global.MPS_LOG = core.Zap()                    // zap日志库初始化
 	global.MPS_TRAN = core.InitTrans("zh")         // 翻译器初始化
@@ -34,3 +24,4 @@ func main() {
 	task.Task()
 	core.RunServer()
 }
+*/
