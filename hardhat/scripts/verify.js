@@ -3,39 +3,30 @@ const { getDeployment } = require("./utils/deployment");
 const { verifyStorageLayout } = require("./utils/storage");
 
 async function main() {
-  const network = "paperschain";
-  const deployment = getDeployment(network, "MPERProxy");
+  const [deployer] = await ethers.getSigners();
+  const deployments = require('../deployments.json');
   
-  if (!deployment) {
-    console.error("找不到部署记录");
-    return;
+  const network = hre.network.name;
+  const proxyInfo = deployments[network]?.MPSProxy;
+  
+  if (!proxyInfo) {
+    throw new Error(`找不到${network}网络上的MPSProxy部署记录`);
   }
 
-  console.log(`
-🔍 验证部署
-====================================
-代理合约地址: ${deployment.address}
-实现合约地址: ${deployment.implementation}
-部署时间: ${deployment.timestamp}
-`);
+  const MPSProxy = await ethers.getContractFactory("MPSproxy");
+  const proxy = MPSProxy.attach(proxyInfo.address);
 
-  // 验证存储布局
-  console.log("正在验证存储布局...");
-  const slots = await verifyStorageLayout(deployment.address, {
-    _hashToAddress: 0,
-    _reviewToAddress: 1,
-    _hashCounter: 2
-  });
+  // 验证所有者
+  const owner = await proxy.owner();
+  console.log(`代理合约所有者: ${owner}`);
   
-  console.table(slots);
+  // 验证实现地址
+  const implementation = await proxy.implementation();
+  console.log(`当前实现地址: ${implementation}`);
   
-  // 验证代币供应量
-  const proxy = await ethers.getContractFactory("MPER");
-  
-  console.log("验证初始化状态:");
-  console.log("- 管理员:", await proxy.owner());
-  console.log("- 总供应量:", await proxy.totalSupply());
-  console.log("- 实现地址:", await upgrades.erc1967.getImplementationAddress(proxyAddress));
+  // 验证时间锁
+  const timelock = await proxy.timelock();
+  console.log(`时间锁地址: ${timelock}`);
 }
 
 main().catch(console.error);
