@@ -1,0 +1,42 @@
+{
+  "local": {
+    "MPERProxy": {
+      "address": "0x31FDCAd51173a67DD5fc6118E111706197e5c0C6",
+      "txHash": "0x44eaecb2ac71d5f6718e81f759e0a173913413227174ea5b611c01151e99a9f0",
+      "timestamp": "2025-05-12T04:57:17.448Z",
+      "implementation": "0x40d9c6bb107458269124226788B24013df59d184",
+      "upgradeDelay": 86400,
+      "timelock": "0x9F5F2D0D94cb918E7B728859e3c4022a98dc0494",
+      "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2"
+    },
+    "MPSProxy": {
+      "address": "0x9aB8199C95b77FED1ee62ecE22a23DfcC72fE81C",
+      "txHash": "0x4eb52843d278e321d43445096898da8e7866ddd0db18ea9be0f8b24c78f00bc8",
+      "timestamp": "2025-05-12T15:23:30.469Z",
+      "implementation": "0xA8399C7a31DBAF9a6d6d98114538cdF8a7753d20",
+      "timelock": "0x45b0ef4ba4ca8Fc929400852675D59BE88952457",
+      "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2",
+      "upgradeDelay": 86400
+    }
+  },
+  "paperschain": {
+    "MPERProxy": {
+      "address": "0x31FDCAd51173a67DD5fc6118E111706197e5c0C6",
+      "txHash": "0x44eaecb2ac71d5f6718e81f759e0a173913413227174ea5b611c01151e99a9f0",
+      "timestamp": "2025-05-12T04:57:17.448Z",
+      "implementation": "0x40d9c6bb107458269124226788B24013df59d184",
+      "upgradeDelay": 86400,
+      "timelock": "0x9F5F2D0D94cb918E7B728859e3c4022a98dc0494",
+      "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2"
+    },
+    "MPSProxy": {
+      "address": "0x9aB8199C95b77FED1ee62ecE22a23DfcC72fE81C",
+      "txHash": "0x4eb52843d278e321d43445096898da8e7866ddd0db18ea9be0f8b24c78f00bc8",
+      "timestamp": "2025-05-12T15:23:30.469Z",
+      "implementation": "0xA8399C7a31DBAF9a6d6d98114538cdF8a7753d20",
+      "timelock": "0x45b0ef4ba4ca8Fc929400852675D59BE88952457",
+      "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2",
+      "upgradeDelay": 86400
+    }
+  }
+}
