@@ -219,35 +219,13 @@
 -   **`PROPOSER_ROLE`**: 提议者角色。拥有此角色的账户可以向时间锁提交新的操作提案（即调用 `schedule` 函数）。在 `MPERproxy` 的构造函数中，此角色初始授予部署时指定的 `admin` 地址。
 -   **`EXECUTOR_ROLE`**: 执行者角色。拥有此角色的账户可以执行已经通过时间延迟且准备就绪的操作提案（即调用 `execute` 函数）。在 `MPERproxy` 的构造函数中，`address(this)` (即 `MPERproxy` 合约自身) 和 `address(0)` (表示任何人都可以执行已就绪的提案) 通常被授予此角色。
 -   **`CANCELLER_ROLE`**: 取消者角色。拥有此角色的账户可以取消一个已调度但尚未执行的操作提案（即调用 `cancel` 函数）。通常，`PROPOSER_ROLE` 也兼具取消其自己提案的能力，或者 `TIMELOCK_ADMIN_ROLE` 可以取消任何提案。在 `MPERproxy` 的构造函数中，此角色初始授予部署时指定的 `admin` 地址。
+### A.2 核心函数
 
-### A.2 关键操作与 JavaScript 示例 (ethers.js)
+`TimelockController` 提供了几个核心函数，用于管理提案、执行提案、取消提案以及更改时间锁参数。
 
-以下示例假设你已经有了一个 `TimelockController` 合约的 `ethers.js` 实例 (`timelockContract`) 和一个签名者 (`signer`)。
-
-#### 1. 准备操作数据
-
-首先，你需要 ABI 编码你想要通过时间锁执行的操作。
-
-```javascript
-const { ethers } = require("ethers");
-
-// 示例：假设我们要调用 MPERproxy 的 setUpgradeDelay(uint256 newDelay)
-// MPERproxy 合约的 ABI (仅包含 setUpgradeDelay)
-const mperProxyAbi = [
-  "function setUpgradeDelay(uint256 newDelay)"
-];
-const mperProxyInterface = new ethers.Interface(mperProxyAbi);
-
-const newDelayValue = 7 * 24 * 60 * 60; // 7 天
-const targetAddress = "0xMPERPROXY_CONTRACT_ADDRESS"; // MPERproxy 合约地址
-
-// ABI 编码调用数据
-const callData = mperProxyInterface.encodeFunctionData("setUpgradeDelay", [newDelayValue]);
-const callValue = 0; // 通常为 0，除非操作涉及发送 ETH
-```
-2. 调度操作 ( schedule )
-提议者调用此函数来提交一个操作。
+-   **`schedule(address target, uint256 value, bytes calldata data, bytes32 predecessor, bytes32 salt, uint256 delay)`**: 此函数允许账户（拥有 `PROPOSER_ROLE`）向时间锁提交一个新的操作提案。提案会在 `delay` 秒后执行。
+-   **`execute(address target, uint256 value, bytes calldata data, bytes32 predecessor, bytes32 salt, uint256 delay)`**: 此函数允许账户（拥有 `EXECUTOR_ROLE`）执行一个已经通过时间延迟且准备就绪的操作提案。
+-   **`cancel(bytes32 proposalId)`**: 此函数允许账户（拥有 `CANCELLER_ROLE`）取消一个已经调度但尚未执行的操作提案。
+-   **`setMinDelay(uint256 minDelay)`**: 此函数允许账户（拥有 `TIMELOCK_ADMIN_ROLE`）更改时间锁的最小延迟时间。
 
 
-
-// ... (接上文)
