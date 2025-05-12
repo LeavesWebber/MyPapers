@@ -2,22 +2,22 @@
 
 ## 项目结构
 MPER-project/
-├── contracts/ # 智能合约源文件
-│  ├── MPER.sol # 主逻辑合约
-│  └── MPERproxy.sol # 代理合约
-├── deployments.json # 记录合约部署信息的JSON文件
-├── scripts/ # 部署和管理脚本
-│  ├── MPERdeploy.js # 主部署脚本
-│  ├── verify.js     # 部署后验证脚本
-│  └── utils/        # 辅助脚本目录
-│     ├── deployment.js # 部署相关的辅助函数 (例如保存部署信息、获取实现地址)
-│     └── storage.js    # 存储布局验证相关的辅助函数
-├── test/ # 测试文件
-├── MPERproxy_technical_docs.md # MPERproxy 合约详细技术说明文档
-├── hardhat.config.js # Hardhat配置
-├── package.json # 项目依赖
-├── package-lock.json # 依赖锁文件
-└── README.md # 项目文档
+├── contracts/ # 智能合约源文件  
+│  ├── MPER.sol # 主逻辑合约  
+│  └── MPERproxy.sol # 代理合约  
+├── deployments.json # 记录合约部署信息的JSON文件  
+├── scripts/ # 部署和管理脚本  
+│  ├── MPERdeploy.js # 主部署脚本  
+│  ├── verify.js     # 部署后验证脚本  
+│  └── utils/        # 辅助脚本目录  
+│     ├── deployment.js # 部署相关的辅助函数 (例如保存部署信息、获取实现地址)  
+│     └── storage.js    # 存储布局验证相关的辅助函数  
+├── test/ # 测试文件  
+├── MPERproxy_technical_docs.md # MPERproxy 合约详细技术说明文档  
+├── hardhat.config.js # Hardhat配置  
+├── package.json # 项目依赖  
+├── package-lock.json # 依赖锁文件  
+└── README.md # 项目文档  
 
 
 ## 文件说明
