@@ -3,7 +3,6 @@
 .env.local
 
 # 部署记录
-deployments.json
 deployment-history/
 
 # 依赖和生成文件

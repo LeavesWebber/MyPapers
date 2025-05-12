@@ -42,7 +42,10 @@ function saveDeployment(network, data) {
     address: data.address,
     txHash: data.txHash,
     timestamp: new Date().toISOString(),
-    implementation: data.implementation
+    implementation: data.implementation,
+    timelock: data.timelock, // 新增
+    initialAdmin: data.initialAdmin, // 新增
+    upgradeDelay: data.upgradeDelay // 新增
   };
   
   fs.writeFileSync(DEPLOYMENTS_PATH, JSON.stringify(deployments, null, 2)); // 现在 DEPLOYMENTS_PATH 已定义
