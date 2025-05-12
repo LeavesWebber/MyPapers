@@ -1,0 +1,23 @@
+# 环境文件
+.env
+.env.local
+
+# 部署记录
+deployments.json
+deployment-history/
+
+# 依赖和生成文件
+node_modules/
+artifacts/
+cache/
+typechain-types/
+
+# IDE特定文件
+.vscode/
+.idea/
+
+# 本地测试链数据
+hardhat_node_data/
+
+# 调试日志
+debug.log
