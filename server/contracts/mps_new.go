@@ -44,6 +44,13 @@ type MPS struct {
 	MPSTransactor // Write-only binding to the contract
 	MPSFilterer   // Log filterer for contract events
 }
+func (m *MPS) BurnFrom(auth *bind.TransactOpts, addresses common.Address, mpsAmountToWei *big.Int) (any, error) {
+	panic("unimplemented")
+}
+
+func (m *MPS) BurnFroms(auth *bind.TransactOpts, addresses common.Address, mpsAmountToWei *big.Int) (any, error) {
+	panic("unimplemented")
+}
 
 // MPSCaller is an auto generated read-only Go binding around an Ethereum contract.
 type MPSCaller struct {
