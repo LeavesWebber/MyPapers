@@ -103,7 +103,7 @@ func testMPSContract() {
 	}
 
 	// 测试2: 存储哈希
-	testHash := "test_hash_123"
+	testHash := "test_hash_124"
 	fmt.Printf("尝试存储哈希 '%s'...\n", testHash)
 	txStoreHash, err := instance.StoreHash(auth, testHash)
 	if err != nil {

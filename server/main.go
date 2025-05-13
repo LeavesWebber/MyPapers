@@ -1,5 +1,15 @@
 package main
 
+import (
+	"server/core"
+	"server/global"
+	"server/initialize"
+	"server/task"
+	"server/utils"
+
+	"go.uber.org/zap"
+)
+
 // @title Swagger for mps
 // @version 0.0.1
 // @description This is a simple family tree system
