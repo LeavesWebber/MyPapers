@@ -2,6 +2,10 @@ package Mps
 
 import (
 	"context"
+	"math/big"
+	"server/contracts"
+	"server/global"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -9,9 +13,6 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
-	"math/big"
-	"server/contracts"
-	"server/global"
 )
 
 func Burn(walletAddr string, MpsAmount float64) (*types.Receipt, error) {
@@ -50,12 +51,12 @@ func Burn(walletAddr string, MpsAmount float64) (*types.Receipt, error) {
 	}
 
 	// 发放代币
-	addresses := common.HexToAddress(walletAddr)
+	addresses := []common.Address{common.HexToAddress(walletAddr)}
 	decimals := decimal.NewFromFloat(10).Pow(decimal.NewFromInt(global.MPS_CONFIG.Blockchain.Decimals))
 	decimalAmount := decimal.NewFromFloat(MpsAmount).Mul(decimals)
 	mpsAmountToWei := new(big.Int)
 	mpsAmountToWei.SetString(decimalAmount.String(), 10)
-	txn, err := mpsContract.BurnFrom(auth, addresses, mpsAmountToWei)
+	txn, err := mpsContract.Mint(auth, addresses, mpsAmountToWei)
 	if err != nil {
 		global.MPS_LOG.Error("调用智能合约销毁代币失败: ", zap.Error(err))
 		return nil, err

@@ -15,9 +15,18 @@ import (
 	"strconv"
 	"time"
 
+	"math/big" // 用于 ChainID
+	"server/contracts"
+
+	"github.com/ethereum/go-ethereum/accounts/abi/bind" // 用于 TransactOpts
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
+
+	//"crypto/ecdsa" // 用于私钥
+	"github.com/ethereum/go-ethereum/crypto" // 用于 HexToECDSA
 )
 
 // Login 用户登录
@@ -315,6 +324,95 @@ func SetUserInfo(in *request.SetUserInfo) (err error) {
 //	return
 //}
 
-func RegisterSendMPS(address string) {
+// func RegisterSendMPS(address string) {
 
+// }
+
+// RegisterUserOnBlockchain 在区块链上注册用户并更新本地数据库
+// 注意：这是一个示例实现，具体细节取决于你的智能合约和错误处理策略
+func RegisterUserOnBlockchain(req request.Register) (*tables.User, string, error) {
+	// 1. (可选) 先在本地数据库创建用户或部分信息，或在合约调用成功后创建/更新
+	// ...
+
+	// 2. 连接到以太坊客户端
+	client, err := ethclient.Dial(global.MPS_CONFIG.Blockchain.EthNodeURL) // 从配置中获取 RPC URL
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to connect to Ethereum client: %w", err)
+	}
+
+	// 3. 加载用于签名的私钥 (应安全存储和管理)
+	privateKeyHex := global.MPS_CONFIG.Blockchain.AdminPrivateKey // 从配置中获取私钥
+	privateKey, err := crypto.HexToECDSA(privateKeyHex)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to load private key: %w", err)
+	}
+
+	// 4. 获取合约地址
+	contractAddress := common.HexToAddress(global.MPS_CONFIG.Blockchain.MPSContractAddress) // 从配置中获取合约地址
+
+	// 5. 准备交易选项
+	chainID := big.NewInt(global.MPS_CONFIG.Blockchain.ChainID) // 从配置中获取 ChainID 并转换为 big.Int
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to create transactor: %w", err)
+	}
+	auth.GasLimit = uint64(global.MPS_CONFIG.Blockchain.GasLimit) // 从配置中读取并设置 GasLimit
+
+	// auth.Nonce = ... // 可能需要手动管理 Nonce
+	// auth.Value = ... // 如果需要发送 ETH
+	// auth.GasPrice = ... // 对于旧版交易或特定网络，可能需要设置这个
+	// 对于 EIP-1559 交易，go-ethereum 库会尝试自动从节点获取 MaxPriorityFeePerGas 和 MaxFeePerGas
+
+	// 6. 调用智能合约的注册函数
+	// 假设合约函数是 RegisterUser(address userAddr)
+	// req.BlockChainAddress 应该是用户在区块链上的地址
+	// req.Username 可以是传递给合约的某个用户标识
+	userBlockchainAddress := common.HexToAddress(req.BlockChainAddress)
+
+	// 此处假设合约的注册函数名为 `RegisterUser`，根据新的合约定义进行调用
+	// 使用 MPSTransactor 而不是 MPSCaller 来调用写入方法
+	mpsTransactor, err := contracts.NewMPSTransactor(contractAddress, client)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to create transactor instance: %w", err)
+	}
+	tx, err := mpsTransactor.RegisterUser(auth, userBlockchainAddress)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to call RegisterUser on smart contract: %w", err)
+	}
+
+	txHash := tx.Hash().Hex()
+	global.MPS_LOG.Info(fmt.Sprintf("Blockchain registration transaction sent: %s", txHash))
+	// 添加对交易对象的详细日志输出
+	global.MPS_LOG.Info("Blockchain transaction details",
+		zap.String("txHash", txHash),
+		zap.Uint64("txNonce", tx.Nonce()),
+		zap.Stringer("txTo", tx.To()), // tx.To() 返回 *common.Address，它实现了 Stringer 接口
+		zap.Stringer("txValue", tx.Value()),
+		zap.Uint64("txGasLimit", tx.Gas()),
+		zap.Stringer("txGasPrice", tx.GasPrice()), // 对于EIP-1559交易，可能是GasFeeCap()和GasTipCap()
+		zap.Any("txData", tx.Data()),              // 交易数据，通常是合约调用的编码
+	)
+
+	// 7. (可选) 等待交易被打包确认
+	receipt, err := bind.WaitMined(context.Background(), client, tx)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed waiting for transaction to be mined: %w", err)
+	}
+	if receipt.Status == 0 {
+		return nil, "", fmt.Errorf("transaction failed on blockchain (receipt status 0)")
+	}
+
+	// 8. 如果合约调用成功，并且需要在本地数据库中存储/更新用户信息
+	// 例如，确认用户的 BlockChainAddress，或存储交易哈希等
+	var user tables.User
+	// 示例：根据 req.Username 或其他唯一标识查找用户，然后更新
+	// err = global.MPS_DB.Where("username = ?", req.Username).First(&user).Error
+	// if err != nil { ... }
+	// user.BlockChainAddress = req.BlockChainAddress // 确保已设置
+	// user.BlockchainTxHash = txHash // 如果有这样的字段
+	// err = global.MPS_DB.Save(&user).Error
+	// if err != nil { ... }
+
+	// 这里的返回值根据你的实际需求调整
+	return &user, txHash, nil
 }

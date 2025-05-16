@@ -13,7 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
+	"go.uber.org/zap" // 确保导入 zap 日志库
 )
 
 func (u *UserApi) C(c *gin.Context) {
@@ -76,8 +76,8 @@ func (u *UserApi) Register(c *gin.Context) {
 	// 逻辑处理
 	err, userId := logic.Register(in)
 	if err != nil {
-		if err == global.ErrorUserExist {
-			global.MPS_LOG.Error("logic.Register() failed", zap.Error(err))
+		if errors.Is(err, global.ErrorUserExist) {
+			global.MPS_LOG.Error("logic.Register() failed, user already exists", zap.Error(err), zap.String("username", in.Username))
 			ResponseError(c, CodeUserExist)
 			return
 		}
@@ -90,23 +90,62 @@ func (u *UserApi) Register(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
+
+	// 逻辑处理 - 区块链注册
+	// 确保 BlockChainAddress 不为空，因为 RegisterUserOnBlockchain 函数需要它
+	if in.BlockChainAddress == "" {
+		global.MPS_LOG.Warn("Blockchain address is empty for user, skipping blockchain registration.",
+			zap.String("username", in.Username))
+		// 根据业务需求，这里可能需要返回错误或仅记录警告并继续
+		// 如果区块链地址是强制的，应该在此处返回错误：
+		// ResponseErrorWithMsg(c, CodeInvalidParam, "Blockchain address is required.")
+		// return
+	} else {
+		// 调用 RegisterUserOnBlockchain 函数
+		// 注意：RegisterUserOnBlockchain 期望的是 request.Register 类型，而不是指针类型，所以我们传递 *in
+		_, txHash, errBlockchain := logic.RegisterUserOnBlockchain(*in)
+		if errBlockchain != nil {
+			global.MPS_LOG.Error("logic.RegisterUserOnBlockchain() failed",
+				zap.Error(errBlockchain),
+				zap.String("username", in.Username),
+				zap.String("blockchainAddress", in.BlockChainAddress))
+			// 此处需要根据您的业务逻辑决定如何处理区块链注册失败的情况：
+			// 1. 认为整个注册失败，可能需要回滚本地数据库的用户创建（较复杂）。
+			// 2. 允许本地注册成功，但标记用户在区块链上的状态为“待处理”或“失败”，之后可以尝试重试。
+			// 3. 仅记录错误，然后继续流程（如下面的消息队列部分）。
+			// 为了演示，这里我们仅记录错误。在生产环境中，您需要仔细考虑错误处理策略。
+		} else {
+			global.MPS_LOG.Info("User successfully registered on blockchain",
+				zap.String("username", in.Username),
+				zap.String("blockchainAddress", in.BlockChainAddress),
+				zap.String("transactionHash", txHash))
+		}
+	}
+
 	// 赠送代币,存入MQ消费
 	msg := global.QueueMessage{
-		Address:     in.BlockChainAddress,
+		Address:     in.BlockChainAddress, // 确保即使区块链注册失败，这里的值也是合理的
 		Description: "注册赠送",
 		MPSAmount:   global.MPS_CONFIG.Business.RegisterMPSAmount,
-		UUID:        userId,
-		OrderNo:     "",
+		UUID:        userId, // 从 logic.Register 返回的 userId
+		OrderNo:     "",     // 如果有订单号，则填写
 	}
 
 	jsonData, err := json.Marshal(msg)
 	if err != nil {
-		// 处理错误
-		global.MPS_LOG.Error("Error marshaling JSON", zap.Error(err))
-		return
+		global.MPS_LOG.Error("Error marshaling JSON for RabbitMQ message",
+			zap.Error(err),
+			zap.String("username", in.Username))
+		// 即使JSON序列化失败，也可能希望注册被认为是成功的，这取决于业务逻辑
+		// 如果消息队列是关键步骤，则可能需要返回错误
+		// ResponseError(c, CodeServerBusy)
+		// return
+	} else {
+		//存入rabbitmq
+		rabbitmq.PublishSimple(jsonData)
+		global.MPS_LOG.Info("Registration gift message published to RabbitMQ", zap.String("username", in.Username))
 	}
-	//存入rabbitmq
-	rabbitmq.PublishSimple(jsonData)
+
 	// 返回响应
 	ResponseSuccess(c, nil)
 }

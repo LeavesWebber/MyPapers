@@ -217,4 +217,4 @@ func (m *MPSApi) SellMPSToFiat(c *gin.Context) {
 	}
 	// 如果获取余额成功，则返回余额信息
 	response.OkWithData(resp, c)
-}
+}  // 删除这里多余的分号

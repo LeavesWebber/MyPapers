@@ -130,18 +130,18 @@ nginx:
 # 区块链相关配置
 blockchain:
   # 以太坊节点配置
-  eth-node-url: "128.1.40.107:9000"  # 以太坊节点URL
+  eth-node-url: "https://rpc.paperschain.io"  # 以太坊节点URL
   chain-id: 408                             # 链ID
   gas-limit: 300000                          # Gas限制
 
   # 智能合约配置
-  mps-contract-address: "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0"    # MPS代币合约地址
+  mps-contract-address: "0x146329c1C8e5bA10FA991B40476CD731822e1Bb0"    # MPS代币合约地址 测试版
   erc20-contract-address: "0xe49D299E6Cc29fD264A77D43Ce76dB461C9F2434"  # ERC20合约地址
   erc721-contract-address: "0xCf3150B891e5176545c9EC8BfD2321bf13168848" # ERC721合约地址
   marketplace-contract-address: "0xe699ED3A02460E3AcE9bf157C5F1098CEb10C2B0" # 市场合约地址
 
   # 管理员配置
-  #管理员私钥 示例值："your-admin-private-key-here"
+  #管理员私钥 示例值："your-admin-private-key-here"    mint.go中去掉0x
   admin-private-key: 
   #管理员地址 示例值："your-admin-address-here"
   admin-address: 

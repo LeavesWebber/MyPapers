@@ -1,3 +1,4 @@
+// 使用情去掉注释并注释mint.go文件
 package main
 
 import (
@@ -15,7 +16,7 @@ import (
 // @description This is a simple family tree system
 // @contact.name blingder
 // @BasePath /
-/*func main() {
+func main() {
 	global.MPS_VP = core.Viper("config.yaml")      // 读取配置初始化
 	global.MPS_LOG = core.Zap()                    // zap日志库初始化
 	global.MPS_TRAN = core.InitTrans("zh")         // 翻译器初始化
@@ -34,4 +35,3 @@ import (
 	task.Task()
 	core.RunServer()
 }
-*/
