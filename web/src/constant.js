@@ -664,7 +664,7 @@ if (window.ethereum) {
           symbol: 'MPSgas',
           decimals: 18
         },
-        rpcUrls: ['http://128.1.40.107:9000']
+        rpcUrls: ['https://rpc.paperschain.io']
       }]
     });
   } catch (error) {
