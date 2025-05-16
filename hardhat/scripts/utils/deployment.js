@@ -43,9 +43,9 @@ function saveDeployment(network, data) {
     txHash: data.txHash,
     timestamp: new Date().toISOString(),
     implementation: data.implementation,
-    timelock: data.timelock, // 新增
-    initialAdmin: data.initialAdmin, // 新增
-    upgradeDelay: data.upgradeDelay // 新增
+    timelock: data.timelock,
+    initialAdmin: data.initialAdmin, 
+    upgradeDelay: data.upgradeDelay
   };
   
   fs.writeFileSync(DEPLOYMENTS_PATH, JSON.stringify(deployments, null, 2)); // 现在 DEPLOYMENTS_PATH 已定义

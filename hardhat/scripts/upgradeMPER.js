@@ -179,7 +179,7 @@ const upgradeState = {
   eta: Number(etaPropose)
 };
 
-const statePath = path.join(__dirname, 'upgrade_state.json');
+const statePath = path.join(__dirname, '../upgradeinfo/upgrade_state.json');
 fs.writeFileSync(statePath, JSON.stringify(upgradeState, null, 2));
   readline.close();
 }

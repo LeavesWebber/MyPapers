@@ -153,8 +153,7 @@ contract MPERproxy is ERC1967Proxy, Ownable2Step {
      * @dev 验证升级数据（针对MPER合约）
      */
     function _validateUpgradeData(address newImplementation, bytes memory data) internal view {
-        // 基本验证
-        require(data.length >= 4, "Invalid calldata");
+
         
         // 检查是否为initialize调用
         bytes4 selector;

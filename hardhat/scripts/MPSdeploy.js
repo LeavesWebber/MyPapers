@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const { saveDeployment, getImplementationAddress } = require("./utils/deployment");
 const { verifyStorageLayout } = require("./utils/storage");
-
+const network = hre.network.name;
 async function main() {
   // 1. 获取部署者账户
   const [deployer] = await ethers.getSigners();
@@ -91,7 +91,7 @@ async function main() {
   const deploymentTx = proxy.deploymentTransaction();
   const txHash = deploymentTx ? deploymentTx.hash : "N/A";
 
-  await saveDeployment("local", {
+  await saveDeployment("network", {
     contract: "MPSProxy",
     address: proxyContractAddress,
     txHash: txHash,
