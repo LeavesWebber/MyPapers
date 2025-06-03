@@ -1,0 +1,12 @@
+{
+  "address": "0x4bf010f1b9beDA5450a8dD702ED602A104ff65EE",
+  "txHash": "0xa5065483729f30734d9cb043428c3b22098cd69342b633445281aaa29d85f051",
+  "timestamp": "2025-06-03T12:02:40.368Z",
+  "implementation": "0xefc1aB2475ACb7E60499Efb171D173be19928a05",
+  "timelock": "0x4E0C596bE5FE217cB80AeB4C47C72701DFF0F6BC",
+  "initialAdmin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "upgradeDelay": 86400,
+  "upgradedAt": 1748952814661,
+  "upgradedBy": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "version": "v2"
+}
