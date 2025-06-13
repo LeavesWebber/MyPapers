@@ -1,13 +1,13 @@
 {
-  "local": {
+  "localhost": {
     "MPERProxy": {
-      "address": "0x31FDCAd51173a67DD5fc6118E111706197e5c0C6",
-      "txHash": "0x44eaecb2ac71d5f6718e81f759e0a173913413227174ea5b611c01151e99a9f0",
-      "timestamp": "2025-05-12T04:57:17.448Z",
-      "implementation": "0x40d9c6bb107458269124226788B24013df59d184",
-      "upgradeDelay": 86400,
-      "timelock": "0x9F5F2D0D94cb918E7B728859e3c4022a98dc0494",
-      "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2"
+      "address": "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
+      "txHash": "0xc87ee2b18a2df795848974183ccf558756eec8eb8919d2163116a03bc04ee1cc",
+      "timestamp": "2025-06-06T09:08:51.438Z",
+      "implementation": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+      "timelock": "0x2b961E3959b79326A8e7F64Ef0d2d825707669b5",
+      "initialAdmin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "upgradeDelay": 86400
     },
     "MPSProxy": {
       "address": "0x9aB8199C95b77FED1ee62ecE22a23DfcC72fE81C",
@@ -17,6 +17,15 @@
       "timelock": "0x45b0ef4ba4ca8Fc929400852675D59BE88952457",
       "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2",
       "upgradeDelay": 86400
+    },
+    "MyNFTproxy": {
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "txHash": "0x46652a1da57cfbb9236ce25cf848446687d5639c9eca526bdb879ba514f973dc",
+      "timestamp": "2025-06-13T14:21:27.012Z",
+      "implementation": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "timelock": "0xCafac3dD18aC6c6e92c921884f9E4176737C052c",
+      "initialAdmin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "upgradeDelay": 1
     }
   },
   "paperschain": {

@@ -12,13 +12,16 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol"; //
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 /**
- * @title MPSproxy
+ * @title MyNFTproxy
  * @dev 透明代理合约，使用TimelockController进行升级控制
  */
 contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
     // 事件定义
     event Upgraded(address indexed newImplementation, uint256 timestamp, string reason);
     event AdminChanged(address indexed previousAdmin, address newAdmin);
+    event UpgradeScheduled(uint256 eta, uint256 minDelay, string reason);
+
+    bytes32 private constant _UPGRADE_SCHEDULED_ETA_SLOT = keccak256("mps.proxy.upgrade.scheduled.eta");
 
     // 存储槽位
     bytes32 private constant _IMPLEMENTATION_INTERFACE_ID_SLOT = keccak256("mps.proxy.implementation.interface.id");
@@ -29,7 +32,12 @@ contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
     // 添加receive函数以接收以太币
     receive() external payable {}
 
-    
+    /**
+     * @dev 获取当前实现地址
+     */
+    function implementation() external view returns (address) {
+        return _implementation();
+    }  
 
     /**
      * @dev 初始化代理合约
@@ -120,11 +128,19 @@ contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
         }
     }
 
-    /**
-     * @dev 获取当前实现地址
+        /**
+     * @dev 执行最终升级（兼容性方法）
      */
-    function implementation() external view returns (address) {
-        return ERC1967Utils.getImplementation();
+    function executeUpgrade() external {
+        revert("This proxy does not use executeUpgrade method. Use upgradeToAndCall instead.");
     }
+
+    /**
+     * @dev 获取计划的升级时间
+     */
+    function getUpgradeEta() public view returns (uint256) {
+        return StorageSlot.getUint256Slot(_UPGRADE_SCHEDULED_ETA_SLOT).value;
+    }
+    
     
 }

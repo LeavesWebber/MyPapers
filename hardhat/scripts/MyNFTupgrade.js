@@ -88,7 +88,7 @@ async function main() {
       proxyDeployment = {
         ...latestNFTDeployment,
         timelock: latestNFTDeployment.timelock || "<unknown>",
-        upgradeDelay: latestNFTDeployment.upgradeDelay || 86400
+        upgradeDelay: latestNFTDeployment.upgradeDelay || 0
       };
     } else {
       throw new Error("无法定位NFT代理合约");
@@ -256,11 +256,13 @@ async function main() {
   
   // 保存部署信息更新
   const updatedDeployment = {
+    ...upgradeState,
     ...proxyDeployment,
     implementation: newImplementationAddress,
     upgradedAt: Date.now(),
     upgradedBy: deployer.address,
-    version: "v2" // 更新版本号
+    version: "v2", // 更新版本号
+    upgradeReason:upgradeReason
   };
   
 fs.writeFileSync(statePath, JSON.stringify(updatedDeployment, null, 2));

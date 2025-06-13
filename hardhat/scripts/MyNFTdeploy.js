@@ -33,7 +33,7 @@ async function main() {
   }
 
   // 3. 设置代理合约参数
-  const initialDelay = 86400; // 24小时延迟
+  const initialDelay = 1; // 24小时延迟
 
   // 4. 准备初始化数据
   const initData = MyNFT.interface.encodeFunctionData("initialize", [

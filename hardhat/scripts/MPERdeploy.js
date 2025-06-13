@@ -101,7 +101,7 @@ async function main() {
   const deploymentTx = proxy.deploymentTransaction(); // 获取部署交易对象
   const txHash = deploymentTx ? deploymentTx.hash : "N/A"; // 获取交易哈希
 
-  await saveDeployment("local", {
+  await saveDeployment("localhost", {
     contract: "MPERProxy",
     address: proxyContractAddress,
     txHash: txHash,
