@@ -10,6 +10,7 @@ type ApiGroup struct {
 	JournalApi       // 期刊相关方法
 	PaperApi         // 论文相关方法
 	ReviewApi        // 审核相关方法
+	NFTApi           // NFT相关方法
 }
 
 var ApiGroupApp = new(ApiGroup)

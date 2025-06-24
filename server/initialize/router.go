@@ -43,6 +43,7 @@ func Routers() *gin.Engine {
 		systemRouter.InitPaperRouter(PrivateGroup)      // 投稿功能路由
 		systemRouter.InitReviewRouter(PrivateGroup)     // 评审功能路由
 		systemRouter.InitMPSRouter(PrivateGroup)        // MPS功能路由
+		systemRouter.InitNFTRouter(PrivateGroup)        // NFT功能路由
 	}
 	global.MPS_LOG.Info("router register success")
 	return Router

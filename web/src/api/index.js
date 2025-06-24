@@ -1,5 +1,8 @@
 import http from '../utils/request'
 
+// 导入NFT API
+export * from './nft'
+
 // 请求首页数据
 export const getHomeData = () => {
     return http.get('/home')

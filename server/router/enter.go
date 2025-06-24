@@ -11,7 +11,8 @@ type RouterGroup struct {
 	JournalRouter    // 期刊相关路由组
 	PaperRouter      // 论文相关路由组
 	ReviewRouter     // 审核相关路由组
-	MPSRouter
+	MPSRouter        // MPS相关路由组
+	NFTRouter        // NFT相关路由组
 }
 
 // RouterGroupApp 初始化所有路由组结构体

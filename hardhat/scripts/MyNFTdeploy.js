@@ -1,6 +1,7 @@
 const { ethers } = require("hardhat");
 const { saveDeployment, getImplementationAddress } = require("./utils/deployment");
-const { verifyStorageLayout } = require("./utils/storage"); // 添加存储布局验证
+const { verifyStorageLayout } = require("./utils/storage");
+const network = hre.network.name;
 
 async function main() {
   // 1. 获取部署者账户
@@ -15,62 +16,53 @@ async function main() {
   const logicContractAddress = await nftLogic.getAddress();
   console.log(`MyNFT逻辑合约已提交部署到: ${logicContractAddress}, 等待网络确认...`);
 
-  // 等待逻辑合约部署确认
+  // 等待逻辑合约部署完成
   try {
-    const name = await nftLogic.name(); // ERC721标准函数
-    console.log(`MyNFT逻辑合约 (${name}) 已确认.`);
+    const symbol = await nftLogic.symbol();
+    console.log(`MyNFT逻辑合约 (${symbol}) 已确认.`);
   } catch (e) {
     console.error("读取MyNFT逻辑合约状态失败:", e);
-    console.log("将等待几秒钟后重试...");
+    console.log("将等待15秒后重试...");
     await new Promise(resolve => setTimeout(resolve, 15000));
     try {
-      const name = await nftLogic.name();
-      console.log(`MyNFT逻辑合约 (${name}) 第二次尝试确认成功.`);
+      const symbol = await nftLogic.symbol();
+      console.log(`MyNFT逻辑合约 (${symbol}) 第二次尝试确认成功.`);
     } catch (e2) {
       console.error("第二次读取MyNFT逻辑合约状态仍然失败:", e2);
       throw new Error("MyNFT logic contract not ready after deployment and delay.");
     }
   }
 
-  // 3. 设置代理合约参数
+  // 3. 配置Timelock参数
   const initialDelay = 1; // 24小时延迟
 
-  // 4. 准备初始化数据
-  const initData = MyNFT.interface.encodeFunctionData("initialize", [
-    deployer.address // 初始所有者
-  ]);
-
-  // 5. 部署代理合约
+  // 4. 部署代理合约
   console.log("正在部署代理合约...");
   const NFTProxy = await ethers.getContractFactory("MyNFTproxy");
-  
+
+  // 创建初始化数据
+  const initData = nftLogic.interface.encodeFunctionData("initialize", [deployer.address]);
+
   const proxy = await NFTProxy.deploy(
     logicContractAddress,
     deployer.address,
     initData,
     initialDelay
   ).catch(err => {
-    console.error("详细部署错误:", {
-      logicAddress: logicContractAddress,
-      adminAddress: deployer.address,
-      initialDelay: initialDelay,
-      error: err,
-      errorData: err.data,
-      errorReason: err.reason
-    });
+    console.error("部署错误:", err);
     throw err;
   });
 
   const proxyContractAddress = await proxy.getAddress();
   console.log(`MyNFT代理合约已提交部署到: ${proxyContractAddress}, 等待网络确认...`);
 
-  // 等待代理合约部署确认
+  // 等待代理合约部署完成
   try {
     await proxy.timelock();
     console.log(`MyNFT代理合约 (timelock 可读) 已确认.`);
   } catch (e) {
     console.error("读取MyNFT代理合约状态失败:", e);
-    console.log("将等待几秒钟后重试...");
+    console.log("将等待15秒后重试...");
     await new Promise(resolve => setTimeout(resolve, 15000));
     try {
       await proxy.timelock();
@@ -81,32 +73,25 @@ async function main() {
     }
   }
 
-  // 6. 获取实现地址
+  // 5. 获取实现地址
   const implementationAddress = await getImplementationAddress(provider, proxyContractAddress);
 
-  // 7. 验证存储布局（假设我们有相关工具函数）
+  // 6. 验证存储布局
   console.log("验证存储布局...");
-  try {
-    await verifyStorageLayout(proxyContractAddress, {
-      // 根据实际存储布局定义槽位映射
-      _owner: 0,
-      _name: 1,
-      _symbol: 2,
-      // ... 其他存储槽
-    });
-  } catch (e) {
-    console.warn("存储布局验证失败:", e);
-  }
+  await verifyStorageLayout(proxyContractAddress, {
+    _nextTokenId: 0,
+    contractMetadataURI: 1,
+    royaltyPercentage: 2,
+    _baseTokenURI: 3,
+    __gap: 4
+  });
 
-  // 8. 获取时间锁地址
+  // 7. 保存部署记录
   const timelockAddress = await proxy.timelock();
-
-  // 9. 保存部署记录
   const deploymentTx = proxy.deploymentTransaction();
   const txHash = deploymentTx ? deploymentTx.hash : "N/A";
-  
 
-  await saveDeployment("localhost", {
+  await saveDeployment(network, {
     contract: "MyNFTproxy",
     address: proxyContractAddress,
     txHash: txHash,
@@ -116,51 +101,42 @@ async function main() {
     upgradeDelay: initialDelay
   });
 
-  // 10. 绑定代理实例到逻辑合约ABI
-  const nft = MyNFT.attach(proxyContractAddress);
+  // 8. 初始化合约状态（可选）
+  // 这里不需要像 MPS 那样转移初始供应量
 
-  // 11. 测试基本功能
-  try {
-    console.log("NFT名称:", await nft.name());
-    console.log("NFT代号:", await nft.symbol());
-    
-    console.log("测试铸币...");
-    const tx = await nft.safeMint(deployer.address, "ipfs://test1");
-    const receipt = await tx.wait();
-    
-    // 事件解析
-    const events = receipt.logs.map(log => {
-        try {
-            return nft.interface.parseLog(log);
-        } catch (e) {
-            return null;
-        }
-    }).filter(event => event !== null);
-    
-    const mintEvents = events.filter(e => e.name === "Minted" || e.name === "Transfer");
-    
-    if (mintEvents.length > 0) {
-        const tokenId = mintEvents[0].args.tokenId || mintEvents[0].args[2];
-        console.log("铸币ID:", tokenId.toString());
-        console.log("代币所有者:", await nft.ownerOf(tokenId));
-        console.log("代币URI:", await nft.tokenURI(tokenId));
-    }
-    
-    console.log("总供应量:", (await nft.totalSupply()).toString());
-  } catch (error) {
-    console.error("初始化或测试失败:", error);
-  }
+  console.log(`\n✅ 部署完成\n====================================\n逻辑合约地址: ${logicContractAddress}\n代理合约地址: ${proxyContractAddress}\n时间锁合约地址: ${timelockAddress}\n当前实现地址: ${implementationAddress}\n临时管理员: ${deployer.address}\n升级延迟: ${initialDelay}秒 (${initialDelay/3600}小时)\n`);
 
-  console.log(`
-✅ 部署完成
-====================================
-逻辑合约地址: ${logicContractAddress}
-代理合约地址: ${proxyContractAddress}
-时间锁合约地址: ${timelockAddress}
-当前实现地址: ${implementationAddress}
-临时管理员: ${deployer.address}
-升级延迟: ${initialDelay}秒 (${initialDelay/3600}小时)
-`);
+  // 9. 显示完整的升级流程引导
+  console.log(`\n🚀 下一步：升级到 MyNFTV2\n====================================`);
+  console.log(`📋 完整升级流程：`);
+  console.log(`\n1️⃣ 调度升级 (部署 MyNFTV2 并准备升级)`);
+  console.log(`   npx hardhat run scripts/MyNFTupgradeV2.js --network ${network}`);
+  console.log(`   └─ 将部署新的 MyNFTV2 逻辑合约`);
+  console.log(`   └─ 通过时间锁调度升级操作`);
+  console.log(`   └─ 生成升级状态文件`);
+  console.log(`\n2️⃣ 权限检查 (如需要)`);
+  console.log(`   npx hardhat run scripts/fixPermissions.js --network ${network}`);
+  console.log(`   └─ 检查并修复 TimelockController 权限`);
+  console.log(`   └─ 确保账户具有 PROPOSER_ROLE 和 EXECUTOR_ROLE`);
+  console.log(`\n3️⃣ 执行升级 (完成升级)`);
+  console.log(`   npx hardhat run scripts/executeUpgradeV2.js --network ${network}`);
+  console.log(`   └─ 通过时间锁执行升级操作`);
+  console.log(`   └─ 验证升级是否成功`);
+  console.log(`   └─ 自动测试新合约功能`);
+  console.log(`\n4️⃣ 功能测试 (验证升级结果)`);
+  console.log(`   npx hardhat run scripts/testNFT.js --network ${network}`);
+  console.log(`   └─ 测试所有 NFT 功能`);
+  console.log(`   └─ 验证白名单、付费铸造等新功能`);
+  console.log(`\n5️⃣ 交互测试 (可选)`);
+  console.log(`   npx hardhat console --network ${network}`);
+  console.log(`   └─ 进入交互式控制台`);
+  console.log(`   └─ 手动测试合约方法`);
+  console.log(`\n⚠️  注意事项：`);
+  console.log(`   • 如果升级延迟期未到，可使用 advanceTime.js 推进时间`);
+  console.log(`   • 每次重启 hardhat node 后需要重新部署和赋权`);
+  console.log(`   • 确保使用正确的网络和账户`);
+  console.log(`\n📖 详细说明请参考 README.md 中的 "MyNFT 完整升级流程" 部分`);
+  console.log(`====================================`);
 }
 
 main()

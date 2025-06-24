@@ -57,6 +57,9 @@ import PublishedPapers from '../views/home/PublishedPapers.vue'
 import UploadPublishedPaper from '../views/home/UploadPublishedPaper.vue'
 import MyPublishedPapers from '../views/home/MyPublishedPapers.vue'
 import PaymentResult from '@/views/center/PaymentResult.vue'
+import testpage from '../mintNFT.vue'
+import NFTMint from '../views/center/NFTMint.vue'
+import NFTMarketplace from '../views/center/NFTMarketplace.vue'
 
 Vue.use(VueRouter)
 
@@ -140,7 +143,10 @@ const routes = [
             { path: '/center/selfJournal', name: 'selfJournal', component: SelfJournal },
             { path: '/center/recharge', name: 'recharge', component: Recharge, meta: { requireAuth: true } },
             { path: '/center/payment-result', name: 'PaymentResult', component: PaymentResult, meta: { title: '支付结果', requireAuth: true } },
-            { path: '/center/publishedPaperSubmit', name: 'PublishedPaperSubmit', component: () => import('@/views/center/PublishedPaperSubmit.vue'), meta: { title: '已出版论文上传' } }
+            { path: '/center/publishedPaperSubmit', name: 'PublishedPaperSubmit', component: () => import('@/views/center/PublishedPaperSubmit.vue'), meta: { title: '已出版论文上传' } },
+            // 新增NFT相关路由
+            { path: '/center/nft-mint', name: 'nftMint', component: NFTMint, meta: { title: 'NFT铸造', requireAuth: true } },
+            { path: '/center/nft-marketplace', name: 'nftMarketplace', component: NFTMarketplace, meta: { title: 'NFT市场', requireAuth: true } }
         ]
     }
 ]

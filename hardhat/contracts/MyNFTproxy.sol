@@ -3,12 +3,8 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
-import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/utils/StorageSlot.sol";
-import "@openzeppelin/contracts/interfaces/IERC1967.sol"; // 添加
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol"; // 添加
-import "@openzeppelin/contracts/interfaces/IERC721.sol"; // 添加
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol"; // 添加
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 /**
@@ -18,26 +14,17 @@ import "@openzeppelin/contracts/governance/TimelockController.sol";
 contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
     // 事件定义
     event Upgraded(address indexed newImplementation, uint256 timestamp, string reason);
-    event AdminChanged(address indexed previousAdmin, address newAdmin);
-    event UpgradeScheduled(uint256 eta, uint256 minDelay, string reason);
-
-    bytes32 private constant _UPGRADE_SCHEDULED_ETA_SLOT = keccak256("mps.proxy.upgrade.scheduled.eta");
+    event Initialized(address indexed implementation, address indexed admin);
 
     // 存储槽位
     bytes32 private constant _IMPLEMENTATION_INTERFACE_ID_SLOT = keccak256("mps.proxy.implementation.interface.id");
     bytes32 private constant _TIMELOCK_SLOT = keccak256("mps.proxy.timelock");
+
     // 状态变量
     TimelockController public timelock;
 
     // 添加receive函数以接收以太币
     receive() external payable {}
-
-    /**
-     * @dev 获取当前实现地址
-     */
-    function implementation() external view returns (address) {
-        return _implementation();
-    }  
 
     /**
      * @dev 初始化代理合约
@@ -56,7 +43,7 @@ contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
         require(admin != address(0), "Admin address cannot be zero");
 
         // 存储逻辑合约的接口ID
-        bytes4 interfaceId = type(IERC1967).interfaceId;
+        bytes4 interfaceId = type(ERC165).interfaceId;
         StorageSlot.getBytes32Slot(_IMPLEMENTATION_INTERFACE_ID_SLOT).value = bytes32(uint256(uint32(interfaceId)));
 
         // 创建TimelockController，设置合约自身为执行人
@@ -70,7 +57,7 @@ contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
         // 转移所有权
         _transferOwnership(address(timelock));
 
-        emit AdminChanged(address(0), admin);
+        emit Initialized(logic, admin);
     }
 
     /**
@@ -118,29 +105,14 @@ contract MyNFTproxy is ERC1967Proxy, Ownable2Step {
         }
         
         if (interfaceId != 0x00000000) {
-            (bool success, bytes memory result) = newImplementation.staticcall(
-                abi.encodeWithSelector(
-                    IERC165.supportsInterface.selector, 
-                    bytes4(interfaceId)
-                )
-            );
-            require(success && abi.decode(result, (bool)), "Interface not supported");
+            require(ERC165(newImplementation).supportsInterface(interfaceId), "Interface not supported");
         }
     }
 
-        /**
-     * @dev 执行最终升级（兼容性方法）
-     */
-    function executeUpgrade() external {
-        revert("This proxy does not use executeUpgrade method. Use upgradeToAndCall instead.");
-    }
-
     /**
-     * @dev 获取计划的升级时间
+     * @dev 获取当前实现地址
      */
-    function getUpgradeEta() public view returns (uint256) {
-        return StorageSlot.getUint256Slot(_UPGRADE_SCHEDULED_ETA_SLOT).value;
+    function implementation() external view returns (address) {
+        return _implementation();
     }
-    
-    
 }

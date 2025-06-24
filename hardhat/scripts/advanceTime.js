@@ -1,22 +1,28 @@
 // scripts/advanceTime.js
+const { ethers } = require("hardhat");
+
 async function main() {
-  const seconds = parseInt(process.env.SECONDS) || 170000;
-  console.log(`推进区块链时间 ${seconds} 秒（约 ${Math.floor(seconds/86400)} 天）...`);
+  const [deployer] = await ethers.getSigners();
+  console.log(`操作账户: ${deployer.address}`);
+
+  // 推进时间（24小时 = 86400秒）
+  const timeToAdvance = 86400; // 24小时
   
-  // 连接到本地网络
-  const provider = ethers.provider;
+  console.log(`推进时间 ${timeToAdvance} 秒 (${timeToAdvance/3600} 小时)...`);
   
-  try {
-    // 推进时间
-    await provider.send("evm_increaseTime", [seconds]);
-    await provider.send("evm_mine");
-    
-    const latestBlock = await provider.getBlock("latest");
-    console.log(`✅ 成功推进时间`);
-    console.log(`新的区块时间: ${new Date(latestBlock.timestamp * 1000).toLocaleString()}`);
-  } catch (error) {
-    console.error("推进时间失败:", error.message);
-  }
+  // 使用hardhat的evm_increaseTime
+  await ethers.provider.send("evm_increaseTime", [timeToAdvance]);
+  
+  // 挖掘一个新区块来应用时间变化
+  await ethers.provider.send("evm_mine");
+  
+  const currentBlock = await ethers.provider.getBlock('latest');
+  console.log(`✅ 时间已推进到: ${new Date(currentBlock.timestamp * 1000).toLocaleString()}`);
+  
+  console.log("\n现在可以执行升级了!");
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error("时间推进失败:", error);
+  process.exit(1);
+});
