@@ -20,9 +20,18 @@
     },
     "MyNFTproxy": {
       "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      "txHash": "0x46652a1da57cfbb9236ce25cf848446687d5639c9eca526bdb879ba514f973dc",
-      "timestamp": "2025-06-13T14:21:27.012Z",
+      "txHash": "0x49d0b08ec426b919dd409086411322cbaf4d8c5e80a8a47a9a4238652c8a8c94",
+      "timestamp": "2025-06-24T07:28:42.270Z",
       "implementation": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "timelock": "0xCafac3dD18aC6c6e92c921884f9E4176737C052c",
+      "initialAdmin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "upgradeDelay": 1
+    },
+    "undefined": {
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "txHash": "0x49d0b08ec426b919dd409086411322cbaf4d8c5e80a8a47a9a4238652c8a8c94",
+      "timestamp": "2025-06-24T07:45:13.329Z",
+      "implementation": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       "timelock": "0xCafac3dD18aC6c6e92c921884f9E4176737C052c",
       "initialAdmin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       "upgradeDelay": 1
@@ -46,6 +55,15 @@
       "timelock": "0x45b0ef4ba4ca8Fc929400852675D59BE88952457",
       "initialAdmin": "0xdC0FfF81Cf674d822177F9a50fD9680201B4a1A2",
       "upgradeDelay": 86400
+    },
+    "MyNFTproxy": {
+      "address": "0xD4034D94644eD710a00375BD753aa3B32d4D3362",
+      "txHash": "0x0703704252a5596e1871e8ac6b65f2297f25bbbc416f4f20e911af5d735ed48b",
+      "timestamp": "2025-06-24T08:00:57.766Z",
+      "implementation": "0xB8504c7d37D76Ca30886620e6816aa19C75E7020",
+      "timelock": "0xA83C75f297DdCE2870Ff284b4F39b8b2678086Fa",
+      "initialAdmin": "0x270DE39CBB9d711f565AD74D56238689901aDC71",
+      "upgradeDelay": 1
     }
   }
 }

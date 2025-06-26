@@ -7,19 +7,14 @@ import (
 
 type MPSRouter struct{}
 
-// InitMPSRouter 初始化 mps 路由
-func (r *MPSRouter) InitMPSRouter(Router *gin.RouterGroup) {
-	mpsRouter := Router.Group("mps")
-	mpsApi := v1.ApiGroupApp.MPSApi
-	{
-		mpsRouter.POST("createOrder", mpsApi.CreateRechargeOrder) // 创建充值订单
-		mpsRouter.GET("orderStatus", mpsApi.GetOrderStatus)       // 获取订单状态
-		mpsRouter.GET("balance", mpsApi.GetMPSBalance)            // 查询用户MPS余额
-		mpsRouter.GET("transactions", mpsApi.GetMPSTransactions)  // 获取用户通证交易记录
-		mpsRouter.POST("buy", mpsApi.BuyMPSWithFiat)              // 法币购买MPS
-		mpsRouter.POST("sell", mpsApi.SellMPSToFiat)              // MPS卖出换取法币
-		mpsRouter.GET("rate", mpsApi.GetMPSRate)                  // 获取当前MPS兑换率
-		mpsRouter.GET("rewards", mpsApi.GetOrderStatus)           // 获取用户激励记录
-	}
-
+func InitMPSRouter(Router *gin.RouterGroup) {
+	mpsApi := api.MPSApi{}
+	Router.POST("/mps/mint", mpsApi.Mint)
+	Router.POST("/mps/transfer", mpsApi.Transfer)
+	Router.GET("/mps/balance-of/:address", mpsApi.GetBalanceOf)
+	Router.POST("/mps/store-hash", mpsApi.StoreHash)
+	Router.GET("/mps/recipient-by-hash/:hash", mpsApi.GetRecipientByHash)
+	Router.POST("/mps/store-review", mpsApi.StoreReview)
+	Router.GET("/mps/review-by-hash/:content", mpsApi.GetReviewByHash)
+	Router.POST("/mps/register-user", mpsApi.RegisterUser)
 }
