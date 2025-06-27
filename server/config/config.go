@@ -29,6 +29,7 @@ type Blockchain struct {
 	Decimals   int64  `mapstructure:"decimals"`
 	// 智能合约地址
 	MPSContractAddress         string `mapstructure:"mps-contract-address"`         // MPS代币合约地址
+	MyNFTContractAddress       string `mapstructure:"mynft-contract-address"`       // MyNFT合约地址
 	ERC20ContractAddress       string `mapstructure:"erc20-contract-address"`       // ERC20合约地址
 	ERC721ContractAddress      string `mapstructure:"erc721-contract-address"`      // ERC721合约地址
 	MarketplaceContractAddress string `mapstructure:"marketplace-contract-address"` // 市场合约地址

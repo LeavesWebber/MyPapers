@@ -371,11 +371,11 @@ func RegisterUserOnBlockchain(req request.Register) (*tables.User, string, error
 
 	// 此处假设合约的注册函数名为 `RegisterUser`，根据新的合约定义进行调用
 	// 使用 MPSTransactor 而不是 MPSCaller 来调用写入方法
-	mpsTransactor, err := contracts.NewMPSTransactor(contractAddress, client)
+	mpsContract, err := contracts.NewMPS(contractAddress, client)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to create transactor instance: %w", err)
+		return nil, "", fmt.Errorf("failed to create contract instance: %w", err)
 	}
-	tx, err := mpsTransactor.RegisterUser(auth, userBlockchainAddress)
+	tx, err := mpsContract.RegisterUser(auth, userBlockchainAddress)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to call RegisterUser on smart contract: %w", err)
 	}

@@ -1,7 +1,7 @@
 // Code generated - DO NOT EDIT.
 // This file is a generated binding and any manual changes will be lost.
 
-package contracts
+package contract
 
 import (
 	"errors"
@@ -43,13 +43,6 @@ type MPS struct {
 	MPSCaller     // Read-only binding to the contract
 	MPSTransactor // Write-only binding to the contract
 	MPSFilterer   // Log filterer for contract events
-}
-func (m *MPS) BurnFrom(auth *bind.TransactOpts, addresses common.Address, mpsAmountToWei *big.Int) (any, error) {
-	panic("unimplemented")
-}
-
-func (m *MPS) BurnFroms(auth *bind.TransactOpts, addresses common.Address, mpsAmountToWei *big.Int) (any, error) {
-	panic("unimplemented")
 }
 
 // MPSCaller is an auto generated read-only Go binding around an Ethereum contract.

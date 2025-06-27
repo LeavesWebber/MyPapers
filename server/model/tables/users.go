@@ -31,4 +31,6 @@ type User struct {
 	Conferences       []Conference `json:"-" gorm:"many2many:user_conference;"`                            // 用户所属的会议
 	Committee         []Committee  `json:"-" gorm:"many2many:user_committee;"`                             // 用户所属的委员会
 	Papers            []Paper      `json:"-" gorm:"many2many:user_paper;"`                                 // 用户的文章
+	Role              string       `json:"role" gorm:"comment:用户角色"`
+	PrivateKey        string       `json:"private_key" gorm:"comment:用户私钥"`
 }
