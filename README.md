@@ -118,9 +118,9 @@ go run main.go
 
 私有仓库，目前仅项目组员可见，项目代码请不要外传。
 
-- [MyPapers Project（Gitee）](https://gitee.com/leaveswebber/MyPapers)  
+- [MyPapers Project（Gitee）](https://gitee.com/xmrchen/MyPapers)  
 
-- [MyPapers Project（Github）](https://github.com/LeavesWebber/MyPapers)  
+- [MyPapers Project（Github）](https://github.com/leifWebber/MyPapers)  
   
 ### Host
 
